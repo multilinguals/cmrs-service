@@ -33,12 +33,15 @@ public class User {
 
     @CommandHandler
     public User(CreateUserCommand command) {
-        apply(new UserCreatedEvent(new UserId(), command.getAccountId(), command.getRoleId(), command.getUserPasswordId()));
+        apply(new UserCreatedEvent(new UserId(), command.getRealName(), command.getAccountId(), command.getRoleId(), command.getUserPasswordId()));
     }
 
     @EventSourcingHandler
     public void on(UserCreatedEvent event) {
-        this.id = event.getUserId();
+        this.id = event.getId();
+
+        this.realName = event.getRealName();
+
         if (event.getAccountId() != null) {
             this.accountIdList.add(event.getAccountId());
         }
@@ -61,6 +64,10 @@ public class User {
 
     public List<AccountId> getAccountIdList() {
         return accountIdList;
+    }
+
+    public List<RoleId> getRoleIdList() {
+        return roleIdList;
     }
 
     public UserPasswordId getUserPasswordId() {

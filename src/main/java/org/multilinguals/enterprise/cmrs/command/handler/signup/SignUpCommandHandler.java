@@ -66,10 +66,10 @@ public class SignUpCommandHandler extends AbstractCommandHandler {
      */
     @CommandHandler
     public void handler(CreateAccountCommandByUsername command) throws Exception {
-        createNewUserWithUsername(command.getUsername(), command.getPassword(), command.getRoleName());
+        createNewUserWithUsername(command.getUsername(), command.getRealName(), command.getPassword(), command.getRoleName());
     }
 
-    private void createNewUserWithUsername(String username, String password, String roleName) throws Exception {
+    private void createNewUserWithUsername(String username, String realName, String password, String roleName) throws Exception {
         RoleId roleId = new RoleId(roleName);
         // 验证角色是否存在
         this.roleAggregateRepository.load(roleId.getIdentifier());
@@ -82,7 +82,7 @@ public class SignUpCommandHandler extends AbstractCommandHandler {
                 // 如果账号存在但是没有关联密码，那么需要注册一个新的密码
                 UserPasswordId userPasswordId = this.commandGateway.sendAndWait(new CreateUserPasswordCommand(password, accountId));
                 bindUserPasswordToAccount(accountId, userPasswordId);
-                UserId userId = this.commandGateway.sendAndWait(new CreateUserCommand(accountId, roleId, userPasswordId));
+                UserId userId = this.commandGateway.sendAndWait(new CreateUserCommand(accountId, realName, roleId, userPasswordId));
                 this.commandGateway.sendAndWait(new BindUserToAccountCommand(accountId, userId));
             } else {
                 // 如果账号已经关联密码，说明账号已经被注册，抛出异常中断。
@@ -94,7 +94,7 @@ public class SignUpCommandHandler extends AbstractCommandHandler {
             UserPasswordId userPasswordId = this.commandGateway.sendAndWait(new CreateUserPasswordCommand(password, accountId));
 
             bindUserPasswordToAccount(accountId, userPasswordId);
-            UserId userId = this.commandGateway.sendAndWait(new CreateUserCommand(accountId, roleId, userPasswordId));
+            UserId userId = this.commandGateway.sendAndWait(new CreateUserCommand(accountId, realName, roleId, userPasswordId));
             this.commandGateway.sendAndWait(new BindUserToAccountCommand(accountId, userId));
         }
     }

@@ -11,10 +11,19 @@ public class CreateUserCommand extends AbstractCommand {
     @NotNull
     private AccountId accountId;
 
+    private String realName;
+
     @NotNull
     private RoleId roleId;
 
     private UserPasswordId userPasswordId;
+
+    public CreateUserCommand(@NotNull AccountId accountId, String realName, @NotNull RoleId roleId, UserPasswordId userPasswordId) {
+        this.accountId = accountId;
+        this.realName = realName;
+        this.roleId = roleId;
+        this.userPasswordId = userPasswordId;
+    }
 
     public CreateUserCommand(@NotNull AccountId accountId, @NotNull RoleId roleId, UserPasswordId userPasswordId) {
         this.accountId = accountId;
@@ -24,6 +33,10 @@ public class CreateUserCommand extends AbstractCommand {
 
     public AccountId getAccountId() {
         return accountId;
+    }
+
+    public String getRealName() {
+        return realName;
     }
 
     public RoleId getRoleId() {

@@ -40,7 +40,11 @@ public class PreProcessCommandHandler extends AbstractCommandHandler {
         this.checkAndCreateRole(DefaultRoleName.ORDER_TAKER);
 
         // 创建超级管理员
-        CreateAccountCommandByUsername createAccountCommandByUsername = new CreateAccountCommandByUsername("admin", DigestUtils.md5DigestAsHex("admin123".getBytes()), DefaultRoleName.SUPER_ADMIN);
+        CreateAccountCommandByUsername createAccountCommandByUsername = new CreateAccountCommandByUsername(
+                "admin",
+                "超级管理员",
+                DigestUtils.md5DigestAsHex("admin123".getBytes()),
+                DefaultRoleName.SUPER_ADMIN);
         try {
             commandGateway.sendAndWait(createAccountCommandByUsername);
         } catch (CommandExecutionException ex) {

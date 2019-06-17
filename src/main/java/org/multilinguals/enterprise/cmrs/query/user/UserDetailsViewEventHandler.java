@@ -25,12 +25,14 @@ public class UserDetailsViewEventHandler {
 
     /**
      * 响应用户已创建事件，并创建用户视图记录
-     * @param event 用户已创建事件
+     *
+     * @param event       用户已创建事件
      * @param createdTime 事件发生的时间
      */
     @EventHandler
     public void on(UserCreatedEvent event, @Timestamp java.time.Instant createdTime) {
-        UserDetailsView userDetailsView = new UserDetailsView(event.getUserId().getIdentifier(), new Date(createdTime.toEpochMilli()));
+        UserDetailsView userDetailsView = new UserDetailsView(event.getId().getIdentifier(), new Date(createdTime.toEpochMilli()));
+        userDetailsView.setRealName(event.getRealName());
         Role role = new Role(event.getRoleId().getIdentifier(), event.getRoleId().getRoleName(), new Date(createdTime.toEpochMilli()));
         userDetailsView.setRole(role);
         this.userDetailsViewRepository.save(userDetailsView);
@@ -38,7 +40,8 @@ public class UserDetailsViewEventHandler {
 
     /**
      * 当账号已绑定用户时，视图记录增加账号信息
-     * @param event 账号已绑定用户事件
+     *
+     * @param event       账号已绑定用户事件
      * @param createdTime 事件发生时间
      * @throws ChangeSetPersister.NotFoundException
      */
@@ -59,6 +62,7 @@ public class UserDetailsViewEventHandler {
 
     /**
      * 当密码绑定用户时，视图增加密码信息
+     *
      * @param event 密码已绑定用户事件
      * @throws ChangeSetPersister.NotFoundException
      */
@@ -74,6 +78,7 @@ public class UserDetailsViewEventHandler {
 
     /**
      * 当用户登录时，视图增加会话信息
+     *
      * @param event 用户会话已创建事件
      * @throws ChangeSetPersister.NotFoundException
      */
@@ -88,6 +93,7 @@ public class UserDetailsViewEventHandler {
 
     /**
      * 当用户退出登录时，视图更新会话信息
+     *
      * @param event 用户会话已删除事件
      * @throws ChangeSetPersister.NotFoundException
      */

@@ -9,7 +9,9 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
 public class UserCreatedEvent extends AbstractEvent {
     @TargetAggregateIdentifier
-    private UserId userId;
+    private UserId id;
+
+    private String realName;
 
     private AccountId accountId;
 
@@ -17,15 +19,20 @@ public class UserCreatedEvent extends AbstractEvent {
 
     private UserPasswordId userPasswordId;
 
-    public UserCreatedEvent(UserId userId, AccountId accountId, RoleId roleId, UserPasswordId userPasswordId) {
-        this.userId = userId;
+    public UserCreatedEvent(UserId id, String realName, AccountId accountId, RoleId roleId, UserPasswordId userPasswordId) {
+        this.id = id;
+        this.realName = realName;
         this.accountId = accountId;
         this.roleId = roleId;
         this.userPasswordId = userPasswordId;
     }
 
-    public UserId getUserId() {
-        return userId;
+    public UserId getId() {
+        return id;
+    }
+
+    public String getRealName() {
+        return realName;
     }
 
     public AccountId getAccountId() {
