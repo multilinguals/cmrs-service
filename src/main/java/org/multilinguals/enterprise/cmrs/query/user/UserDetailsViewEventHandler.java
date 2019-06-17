@@ -23,6 +23,11 @@ public class UserDetailsViewEventHandler {
         this.userDetailsViewRepository = userDetailsViewRepository;
     }
 
+    /**
+     * 响应用户已创建事件，并创建用户视图记录
+     * @param event 用户已创建事件
+     * @param createdTime 事件发生的时间
+     */
     @EventHandler
     public void on(UserCreatedEvent event, @Timestamp java.time.Instant createdTime) {
         UserDetailsView userDetailsView = new UserDetailsView(event.getUserId().getIdentifier(), new Date(createdTime.toEpochMilli()));
@@ -31,6 +36,12 @@ public class UserDetailsViewEventHandler {
         this.userDetailsViewRepository.save(userDetailsView);
     }
 
+    /**
+     * 当账号已绑定用户时，视图记录增加账号信息
+     * @param event 账号已绑定用户事件
+     * @param createdTime 事件发生时间
+     * @throws ChangeSetPersister.NotFoundException
+     */
     @EventHandler
     public void on(AccountBoundUserEvent event, @Timestamp java.time.Instant createdTime) throws ChangeSetPersister.NotFoundException {
         UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getUserId().getIdentifier())
@@ -46,6 +57,11 @@ public class UserDetailsViewEventHandler {
         this.userDetailsViewRepository.save(userDetailsView);
     }
 
+    /**
+     * 当密码绑定用户时，视图增加密码信息
+     * @param event 密码已绑定用户事件
+     * @throws ChangeSetPersister.NotFoundException
+     */
     @EventHandler
     public void on(UserPasswordBoundUserEvent event) throws ChangeSetPersister.NotFoundException {
         UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getUserId().getIdentifier())
@@ -56,6 +72,11 @@ public class UserDetailsViewEventHandler {
         this.userDetailsViewRepository.save(userDetailsView);
     }
 
+    /**
+     * 当用户登录时，视图增加会话信息
+     * @param event 用户会话已创建事件
+     * @throws ChangeSetPersister.NotFoundException
+     */
     @EventHandler
     public void on(UserSessionCreatedEvent event) throws ChangeSetPersister.NotFoundException {
         UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getUserId().getIdentifier())
@@ -65,6 +86,11 @@ public class UserDetailsViewEventHandler {
         this.userDetailsViewRepository.save(userDetailsView);
     }
 
+    /**
+     * 当用户退出登录时，视图更新会话信息
+     * @param event 用户会话已删除事件
+     * @throws ChangeSetPersister.NotFoundException
+     */
     @EventHandler
     public void on(UserSessionDeletedEvent event) throws ChangeSetPersister.NotFoundException {
         UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getUserId().getIdentifier())

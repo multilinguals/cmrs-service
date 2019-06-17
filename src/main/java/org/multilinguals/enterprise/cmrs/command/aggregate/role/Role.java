@@ -4,12 +4,8 @@ import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.spring.stereotype.Aggregate;
-import org.multilinguals.enterprise.cmrs.command.aggregate.permission.PermissionId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.command.CreateRoleCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.event.RoleCreatedEvent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
 
@@ -19,8 +15,6 @@ public class Role {
     private RoleId id;
 
     private String name;
-
-    private List<PermissionId> permissionIdList = new ArrayList<>();
 
     protected Role() {
     }
@@ -34,5 +28,13 @@ public class Role {
     public void on(RoleCreatedEvent event) {
         this.id = event.getId();
         this.name = event.getName();
+    }
+
+    public RoleId getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }
