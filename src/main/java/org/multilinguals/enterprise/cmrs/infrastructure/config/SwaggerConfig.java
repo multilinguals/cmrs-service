@@ -21,8 +21,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                //swagger要扫描的包路径
-                .apis(RequestHandlerSelectors.basePackage("org.multilinguals.enterprise.cmrs.interfaces"))
+                .apis(RequestHandlerSelectors.basePackage("org.multilinguals.enterprise.cmrs.interfaces")) //swagger要扫描的包路径
                 .paths(PathSelectors.any())
                 .build();
     }

@@ -21,4 +21,4 @@ spring:
       port: 27017
       database: cmrs
 swagger:
-  enable: true
+  enable: false
