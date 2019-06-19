@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.repository.config.EnableReactiveMongoRep
 @ComponentScan({"org.multilinguals.enterprise.cmrs"})
 @EnableReactiveMongoRepositories(basePackages = {"org.multilinguals.enterprise.cmrs"})
 public class Application {
+    // 注释一下
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
