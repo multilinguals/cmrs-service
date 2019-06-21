@@ -2,9 +2,10 @@ package org.multilinguals.enterprise.cmrs.interfaces.command;
 
 import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.CreateUserCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateAccountCommandByUsername;
 import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
+import org.multilinguals.enterprise.cmrs.dto.user.authorization.AggregateCreatedDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,10 +23,10 @@ public class UserCommandController {
 
     @PostMapping("/admin/create-user")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public void createUser(@RequestBody CreateAccountCommandByUsername command, HttpServletResponse response) {
+    public AggregateCreatedDTO<String> createUser(@RequestBody CreateAccountCommandByUsername command, HttpServletResponse response) {
         try {
-            commandGateway.sendAndWait(command);
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            UserId userId = commandGateway.sendAndWait(command);
+            return new AggregateCreatedDTO<>(userId.getIdentifier());
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof AccountSignedUpException) {
                 throw new CMRSHTTPException(HttpServletResponse.SC_CONFLICT, AuthResultCode.SIGNED_UP_ACCOUNT);

@@ -1,19 +1,13 @@
 package org.multilinguals.enterprise.cmrs.dto.user.authorization;
 
 public class AggregateCreatedDTO<IDType> {
-    private IDType aggregateId;
-    private String aggregateName;
+    private IDType id;
 
-    public AggregateCreatedDTO(IDType aggregateId, String aggregateName) {
-        this.aggregateId = aggregateId;
-        this.aggregateName = aggregateName;
+    public AggregateCreatedDTO(IDType id) {
+        this.id = id;
     }
 
-    public IDType getAggregateId() {
-        return aggregateId;
-    }
-
-    public String getAggregateName() {
-        return aggregateName;
+    public IDType getId() {
+        return id;
     }
 }

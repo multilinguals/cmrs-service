@@ -61,15 +61,15 @@ public class SignUpCommandHandler extends AbstractCommandHandler {
     /**
      * 使用账号和密码创建用户
      *
-     * @param command
+     * @param command 使用账号和密码创建用户命令
      * @throws Exception
      */
     @CommandHandler
-    public void handler(CreateAccountCommandByUsername command) throws Exception {
-        createNewUserWithUsername(command.getUsername(), command.getRealName(), command.getPassword(), command.getRoleName());
+    public UserId handler(CreateAccountCommandByUsername command) throws Exception {
+        return createNewUserWithUsername(command.getUsername(), command.getRealName(), command.getPassword(), command.getRoleName());
     }
 
-    private void createNewUserWithUsername(String username, String realName, String password, String roleName) throws Exception {
+    private UserId createNewUserWithUsername(String username, String realName, String password, String roleName) throws Exception {
         RoleId roleId = new RoleId(roleName);
         // 验证角色是否存在
         this.roleAggregateRepository.load(roleId.getIdentifier());
@@ -80,10 +80,7 @@ public class SignUpCommandHandler extends AbstractCommandHandler {
 
             if (accountAggregate.invoke(Account::getUserPasswordId) == null) {
                 // 如果账号存在但是没有关联密码，那么需要注册一个新的密码
-                UserPasswordId userPasswordId = this.commandGateway.sendAndWait(new CreateUserPasswordCommand(password, accountId));
-                bindUserPasswordToAccount(accountId, userPasswordId);
-                UserId userId = this.commandGateway.sendAndWait(new CreateUserCommand(accountId, realName, roleId, userPasswordId));
-                this.commandGateway.sendAndWait(new BindUserToAccountCommand(accountId, userId));
+                return createUserAndPassword(realName, password, roleId, accountId);
             } else {
                 // 如果账号已经关联密码，说明账号已经被注册，抛出异常中断。
                 throw new AccountSignedUpException();
@@ -91,12 +88,16 @@ public class SignUpCommandHandler extends AbstractCommandHandler {
         } catch (AggregateNotFoundException ex) {
             // 要注册的账号不存在，需要将账号和密码都注册
             this.commandGateway.sendAndWait(new CreateAccountCommand(accountId));
-            UserPasswordId userPasswordId = this.commandGateway.sendAndWait(new CreateUserPasswordCommand(password, accountId));
-
-            bindUserPasswordToAccount(accountId, userPasswordId);
-            UserId userId = this.commandGateway.sendAndWait(new CreateUserCommand(accountId, realName, roleId, userPasswordId));
-            this.commandGateway.sendAndWait(new BindUserToAccountCommand(accountId, userId));
+            return createUserAndPassword(realName, password, roleId, accountId);
         }
+    }
+
+    private UserId createUserAndPassword(String realName, String password, RoleId roleId, AccountId accountId) throws Exception {
+        UserPasswordId userPasswordId = this.commandGateway.sendAndWait(new CreateUserPasswordCommand(password, accountId));
+        bindUserPasswordToAccount(accountId, userPasswordId);
+        UserId userId = this.commandGateway.sendAndWait(new CreateUserCommand(accountId, realName, roleId, userPasswordId));
+        this.commandGateway.sendAndWait(new BindUserToAccountCommand(accountId, userId));
+        return userId;
     }
 
     private void bindUserPasswordToAccount(AccountId accountId, UserPasswordId userPasswordId) throws Exception {
