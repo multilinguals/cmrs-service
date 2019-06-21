@@ -4,11 +4,11 @@ import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.AccountId;
 
-public class AccountSignedUpEvent extends AbstractEvent {
+public class AccountCreatedEvent extends AbstractEvent {
     @AggregateIdentifier
     private AccountId accountId;
 
-    public AccountSignedUpEvent(AccountId accountId) {
+    public AccountCreatedEvent(AccountId accountId) {
         this.accountId = accountId;
     }
 

@@ -9,7 +9,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.BindU
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.CreateAccountCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.event.AccountBoundUserEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.event.AccountBoundUserPasswordEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.account.event.AccountSignedUpEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.account.event.AccountCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPasswordId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
@@ -33,7 +33,7 @@ public class Account {
 
     @CommandHandler
     public Account(CreateAccountCommand command) {
-        apply(new AccountSignedUpEvent(command.getAccountId()));
+        apply(new AccountCreatedEvent(command.getAccountId()));
     }
 
     @CommandHandler
@@ -47,7 +47,7 @@ public class Account {
     }
 
     @EventSourcingHandler
-    public void on(AccountSignedUpEvent event) {
+    public void on(AccountCreatedEvent event) {
         this.id = event.getAccountId();
     }
 
