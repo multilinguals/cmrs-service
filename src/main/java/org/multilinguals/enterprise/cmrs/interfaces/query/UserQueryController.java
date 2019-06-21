@@ -58,6 +58,7 @@ public class UserQueryController {
 
     /**
      * 管理员查看其他用户详情
+     *
      * @param id 用户id
      * @return 用户详情
      */
@@ -66,6 +67,6 @@ public class UserQueryController {
     public QueryResponse<UserDetailsView> queryUserDetails(@PathVariable String id) {
         Optional<UserDetailsView> userDetailsView = this.userDetailsViewRepository.findById(id);
 
-        return null;
+        return userDetailsView.map(QueryResponse::new).orElseGet(() -> new QueryResponse<>(null));
     }
 }
