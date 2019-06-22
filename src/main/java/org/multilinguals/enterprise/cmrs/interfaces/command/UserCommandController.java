@@ -3,6 +3,7 @@ package org.multilinguals.enterprise.cmrs.interfaces.command;
 import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUserDetailsCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateAccountCommandByUsername;
 import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
 import org.multilinguals.enterprise.cmrs.dto.aggregate.AggregateCreatedDTO;
@@ -34,5 +35,14 @@ public class UserCommandController {
                 throw ex;
             }
         }
+    }
+
+    /**
+     * @param command 更新用户详情
+     */
+    @PostMapping("/admin/update-user-details/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
+    public void updateUserDetails(UpdateUserDetailsCommand command) {
+        commandGateway.sendAndWait(command);
     }
 }

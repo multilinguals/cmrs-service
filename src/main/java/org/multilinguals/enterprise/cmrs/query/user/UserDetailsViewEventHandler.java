@@ -5,6 +5,7 @@ import org.axonframework.eventhandling.Timestamp;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.event.AccountBoundUserEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.event.UserPasswordBoundUserEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserDetailsUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.event.UserSessionCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.event.UserSessionDeletedEvent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,6 +106,17 @@ public class UserDetailsViewEventHandler {
         if (userDetailsView.getUserSessionId().equals(event.getUserSessionId().getIdentifier())) {
             userDetailsView.setUserSessionId(null);
             userDetailsView.setUserSessionExpiredAt(null);
+        }
+
+        this.userDetailsViewRepository.save(userDetailsView);
+    }
+
+    public void on(UserDetailsUpdatedEvent event) throws ChangeSetPersister.NotFoundException {
+        UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getId().getIdentifier())
+                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+
+        if (event.getRealName() != null) {
+            userDetailsView.setRealName(event.getRealName());
         }
 
         this.userDetailsViewRepository.save(userDetailsView);

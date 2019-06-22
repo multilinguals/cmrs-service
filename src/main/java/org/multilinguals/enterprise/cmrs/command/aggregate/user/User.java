@@ -8,7 +8,9 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.account.AccountId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPasswordId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.RoleId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.CreateUserCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUserDetailsCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserDetailsUpdatedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,13 @@ public class User {
         apply(new UserCreatedEvent(new UserId(), command.getRealName(), command.getAccountId(), command.getRoleId(), command.getUserPasswordId()));
     }
 
+    @CommandHandler
+    public void handle(UpdateUserDetailsCommand command) {
+        //TODO 如果是超级管理员，需要抛出异常
+
+        apply(new UserDetailsUpdatedEvent(command.getId(), command.getRealName()));
+    }
+
     @EventSourcingHandler
     public void on(UserCreatedEvent event) {
         this.id = event.getId();
@@ -52,6 +61,15 @@ public class User {
         this.accountIdList.add(event.getAccountId());
 
         roleIdList.add(event.getRoleId());
+    }
+
+    @EventSourcingHandler
+    public void on(UserDetailsUpdatedEvent event) {
+        this.id = event.getId();
+
+        if (event.getRealName() != null) {
+            this.realName = event.getRealName();
+        }
     }
 
     public UserId getId() {
