@@ -54,6 +54,7 @@ public class RequestValidationFilter extends BasicAuthenticationFilter {
             UserDetailsView userDetailsView = userList.get(0);
             String userId = userDetailsView.getId();
             request.setAttribute("reqSenderId", userId);
+            request.setAttribute("sessionId", sessionId);
 
             ArrayList<GrantedAuthority> authorities = new ArrayList<>();
 

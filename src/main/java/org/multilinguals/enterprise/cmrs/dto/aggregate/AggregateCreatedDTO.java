@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.dto.user.authorization;
+package org.multilinguals.enterprise.cmrs.dto.aggregate;
 
 public class AggregateCreatedDTO<IDType> {
     private IDType id;

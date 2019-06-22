@@ -5,16 +5,19 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.commandhandling.model.AggregateNotFoundException;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.UserSessionId;
+import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.command.DeleteUserSessionCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.signin.SignInWithPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.signup.SignUpUsernameAccountCommand;
 import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
+import org.multilinguals.enterprise.cmrs.dto.authorization.UserSignInDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.data.Tuple2;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.CommandResponse;
-import org.multilinguals.enterprise.cmrs.infrastructure.dto.user.UserSignInDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserPasswordInvalidException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,7 +30,7 @@ public class AuthorizationCommandController {
     private CommandGateway commandGateway;
 
     @PostMapping("/user/sign-up-username")
-    public void signUpUserName(@RequestBody SignUpUsernameAccountCommand command, HttpServletResponse response) {
+    public void handle(@RequestBody SignUpUsernameAccountCommand command, HttpServletResponse response) {
         try {
             commandGateway.sendAndWait(command);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
@@ -46,7 +49,7 @@ public class AuthorizationCommandController {
      * @param command 密码登录命令
      */
     @PostMapping("/user/sign-in-with-password")
-    public CommandResponse<UserSignInDTO> signIn(@RequestBody SignInWithPasswordCommand command) {
+    public CommandResponse<UserSignInDTO> handle(@RequestBody SignInWithPasswordCommand command) {
         try {
             Tuple2<UserSessionId, UserId> result = commandGateway.sendAndWait(command);
             return new CommandResponse<>(new UserSignInDTO(result.getT1().getIdentifier(), result.getT2().getIdentifier()));
@@ -58,6 +61,16 @@ public class AuthorizationCommandController {
             } else {
                 throw ex;
             }
+        }
+    }
+
+    @PostMapping("/user/logout")
+    @PreAuthorize("isAuthenticated()")
+    public void handle(@RequestAttribute("sessionId") String sessionId, HttpServletResponse response) {
+        try {
+            commandGateway.sendAndWait(new DeleteUserSessionCommand(new UserSessionId(sessionId)));
+        } catch (AggregateNotFoundException ex) {
+
         }
     }
 }

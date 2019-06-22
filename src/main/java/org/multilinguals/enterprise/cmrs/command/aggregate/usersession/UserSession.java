@@ -45,7 +45,7 @@ public class UserSession {
     @CommandHandler
     public void handler(DeleteUserSessionCommand command) {
         markDeleted();
-        apply(new UserSessionDeletedEvent(command.getUserSessionId(), this.userId));
+        apply(new UserSessionDeletedEvent(command.getId(), this.userId));
     }
 
     @EventSourcingHandler

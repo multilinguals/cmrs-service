@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.infrastructure.dto.user;
+package org.multilinguals.enterprise.cmrs.dto.authorization;
 
 public class UserSignInDTO {
     private String token;

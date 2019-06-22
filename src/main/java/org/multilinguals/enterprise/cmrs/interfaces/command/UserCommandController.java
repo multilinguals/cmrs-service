@@ -5,7 +5,7 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateAccountCommandByUsername;
 import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
-import org.multilinguals.enterprise.cmrs.dto.user.authorization.AggregateCreatedDTO;
+import org.multilinguals.enterprise.cmrs.dto.aggregate.AggregateCreatedDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.springframework.security.access.prepost.PreAuthorize;

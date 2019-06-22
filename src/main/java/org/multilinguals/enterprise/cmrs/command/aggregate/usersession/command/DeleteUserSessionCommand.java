@@ -6,13 +6,13 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.UserSessi
 
 public class DeleteUserSessionCommand extends AbstractCommand {
     @TargetAggregateIdentifier
-    private UserSessionId userSessionId;
+    private UserSessionId id;
 
-    public DeleteUserSessionCommand(UserSessionId userSessionId) {
-        this.userSessionId = userSessionId;
+    public DeleteUserSessionCommand(UserSessionId id) {
+        this.id = id;
     }
 
-    public UserSessionId getUserSessionId() {
-        return userSessionId;
+    public UserSessionId getId() {
+        return id;
     }
 }
