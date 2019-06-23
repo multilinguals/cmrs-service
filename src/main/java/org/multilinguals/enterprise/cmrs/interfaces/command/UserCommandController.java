@@ -4,6 +4,7 @@ import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUserDetailsCommand;
+import org.multilinguals.enterprise.cmrs.command.handler.password.UpdateSelfPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.password.UpdateUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateAccountCommandByUsername;
 import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
@@ -12,6 +13,7 @@ import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.Acco
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -50,7 +52,11 @@ public class UserCommandController {
 
     @PostMapping("/user/update-self-password")
     @PreAuthorize("isAuthenticated()")
-    public void updateSelfPassword(@RequestBody UpdateUserPasswordCommand command, HttpServletResponse response) {
+    public void updateSelfPassword(@RequestBody UpdateSelfPasswordCommand command, @RequestAttribute String reqSenderId, HttpServletResponse response) {
+        if (!reqSenderId.equals(command.getId().getIdentifier())) {
+            throw new CMRSHTTPException(HttpServletResponse.SC_FORBIDDEN, AuthResultCode.FORBIDDEN);
+        }
+
         commandGateway.sendAndWait(command);
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
