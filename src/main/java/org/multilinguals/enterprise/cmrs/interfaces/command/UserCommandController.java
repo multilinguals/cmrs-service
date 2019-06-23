@@ -24,7 +24,7 @@ public class UserCommandController {
 
     @PostMapping("/admin/create-user")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public AggregateCreatedDTO<String> createUser(@RequestBody CreateAccountCommandByUsername command, HttpServletResponse response) {
+    public AggregateCreatedDTO<String> createUser(@RequestBody CreateAccountCommandByUsername command) {
         try {
             UserId userId = commandGateway.sendAndWait(command);
             return new AggregateCreatedDTO<>(userId.getIdentifier());
@@ -40,9 +40,10 @@ public class UserCommandController {
     /**
      * @param command 更新用户详情
      */
-    @PostMapping("/admin/update-user-details/{id}")
+    @PostMapping("/admin/update-user-details")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public void updateUserDetails(UpdateUserDetailsCommand command) {
+    public void updateUserDetails(@RequestBody UpdateUserDetailsCommand command, HttpServletResponse response) {
         commandGateway.sendAndWait(command);
+        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 }

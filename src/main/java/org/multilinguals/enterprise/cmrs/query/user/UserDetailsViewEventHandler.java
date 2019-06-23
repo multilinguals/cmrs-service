@@ -111,12 +111,20 @@ public class UserDetailsViewEventHandler {
         this.userDetailsViewRepository.save(userDetailsView);
     }
 
+    /**
+     * 用户详情更新时，视图更新用户信息
+     *
+     * @param event
+     * @throws ChangeSetPersister.NotFoundException
+     */
+    @EventHandler
     public void on(UserDetailsUpdatedEvent event) throws ChangeSetPersister.NotFoundException {
         UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getId().getIdentifier())
                 .orElseThrow(ChangeSetPersister.NotFoundException::new);
 
         if (event.getRealName() != null) {
             userDetailsView.setRealName(event.getRealName());
+            userDetailsView.setUpdatedAt(new Date());
         }
 
         this.userDetailsViewRepository.save(userDetailsView);

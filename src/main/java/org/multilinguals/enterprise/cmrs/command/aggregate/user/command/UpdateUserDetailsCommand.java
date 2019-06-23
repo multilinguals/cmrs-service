@@ -1,14 +1,11 @@
 package org.multilinguals.enterprise.cmrs.command.aggregate.user.command;
 
-import org.axonframework.commandhandling.model.AggregateIdentifier;
+import org.axonframework.commandhandling.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
-import javax.validation.constraints.NotNull;
-
 public class UpdateUserDetailsCommand extends AbstractCommand {
-    @AggregateIdentifier
-    @NotNull
+    @TargetAggregateIdentifier
     private UserId id;
 
     private String realName;
