@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 
 @RestController
 public class RoleQueryController {
@@ -26,14 +24,10 @@ public class RoleQueryController {
 
     @GetMapping("admin/get-role-list")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public QueryResponse<List<RoleDetailsView>> adminGetRoleList(@RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
+    public QueryResponse<Page<RoleDetailsView>> adminGetRoleList(@RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
         Sort sort = new Sort(Sort.Direction.DESC, "name");
         Page<RoleDetailsView> roleDetailsViewPage = this.roleDetailsViewRepository.findAll(PageRequest.of(Integer.valueOf(page), Integer.valueOf(size), sort));
-        if (roleDetailsViewPage.hasContent()) {
-            List<RoleDetailsView> roleDetailsViewList = roleDetailsViewPage.getContent();
-            return new QueryResponse<>(roleDetailsViewList);
-        } else {
-            return new QueryResponse<>(null);
-        }
+
+        return new QueryResponse<>(roleDetailsViewPage);
     }
 }
