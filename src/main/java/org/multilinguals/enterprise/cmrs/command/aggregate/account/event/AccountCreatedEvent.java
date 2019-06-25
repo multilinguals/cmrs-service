@@ -1,6 +1,6 @@
 package org.multilinguals.enterprise.cmrs.command.aggregate.account.event;
 
-import org.axonframework.commandhandling.model.AggregateIdentifier;
+import org.axonframework.modelling.command.AggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.AccountId;
 

@@ -2,14 +2,17 @@ package org.multilinguals.enterprise.cmrs.interfaces.command;
 
 import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.modelling.command.AggregateNotFoundException;
+import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.UpdateUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUserDetailsCommand;
-import org.multilinguals.enterprise.cmrs.command.handler.password.UpdateSelfPasswordCommand;
-import org.multilinguals.enterprise.cmrs.command.handler.password.UpdateUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateAccountCommandByUsername;
+import org.multilinguals.enterprise.cmrs.constant.CommonResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
+import org.multilinguals.enterprise.cmrs.constant.result.code.UserPasswordResultCode;
 import org.multilinguals.enterprise.cmrs.dto.aggregate.AggregateCreatedDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
+import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotMatchPasswordException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,7 +55,7 @@ public class UserCommandController {
 
     @PostMapping("/user/update-self-password")
     @PreAuthorize("isAuthenticated()")
-    public void updateSelfPassword(@RequestBody UpdateSelfPasswordCommand command, @RequestAttribute String reqSenderId, HttpServletResponse response) {
+    public void updateSelfPassword(@RequestBody org.multilinguals.enterprise.cmrs.command.handler.password.UpdateSelfPasswordCommand command, @RequestAttribute String reqSenderId, HttpServletResponse response) {
         if (!reqSenderId.equals(command.getId().getIdentifier())) {
             throw new CMRSHTTPException(HttpServletResponse.SC_FORBIDDEN, AuthResultCode.FORBIDDEN);
         }
@@ -64,7 +67,15 @@ public class UserCommandController {
     @PostMapping("/admin/update-user-password")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
     public void updateUserPassword(@RequestBody UpdateUserPasswordCommand command, HttpServletResponse response) {
-        commandGateway.sendAndWait(command);
-        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        try {
+            commandGateway.sendAndWait(command);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (AggregateNotFoundException ex) {
+            throw new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, CommonResultCode.NOT_FOUND);
+        } catch (CommandExecutionException ex) {
+            if (ex.getCause() instanceof UserNotMatchPasswordException) {
+                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, UserPasswordResultCode.USER_NOT_MATCH_PASSWORD);
+            }
+        }
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -45,15 +44,10 @@ public class UserQueryController {
      */
     @GetMapping("/admin/get-user-list")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public QueryResponse<List<UserDetailsView>> queryUserList(@RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
+    public QueryResponse<Page<UserDetailsView>> queryUserList(@RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Page<UserDetailsView> userDetailsViewPage = this.userDetailsViewRepository.findAll(PageRequest.of(Integer.valueOf(page), Integer.valueOf(size), sort));
-        if (userDetailsViewPage.hasContent()) {
-            List<UserDetailsView> userDetailsViewList = userDetailsViewPage.getContent();
-            return new QueryResponse<>(userDetailsViewList);
-        } else {
-            return new QueryResponse<>(null);
-        }
+        return new QueryResponse<>(userDetailsViewPage);
     }
 
     /**

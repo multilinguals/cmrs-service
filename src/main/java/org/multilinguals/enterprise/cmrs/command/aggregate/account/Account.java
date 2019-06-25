@@ -1,11 +1,11 @@
 package org.multilinguals.enterprise.cmrs.command.aggregate.account;
 
 import org.axonframework.commandhandling.CommandHandler;
-import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
+import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
-import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.BindUserToAccountCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.BindUserPasswordToAccountCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.BindUserToAccountCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.CreateAccountCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.event.AccountBoundUserEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.event.AccountBoundUserPasswordEvent;
@@ -13,7 +13,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.account.event.Account
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPasswordId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
-import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
+import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 @Aggregate
 public class Account {

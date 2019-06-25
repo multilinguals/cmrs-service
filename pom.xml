@@ -18,7 +18,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <axon.version>3.4.2</axon.version>
+        <axon.version>4.1.1</axon.version>
         <mysql.version>8.0.12</mysql.version>
     </properties>
 
@@ -50,7 +50,7 @@
             <version>${axon.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.axonframework</groupId>
+            <groupId>org.axonframework.extensions.mongo</groupId>
             <artifactId>axon-mongo</artifactId>
             <version>${axon.version}</version>
         </dependency>

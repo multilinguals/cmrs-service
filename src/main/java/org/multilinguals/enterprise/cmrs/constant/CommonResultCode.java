@@ -12,4 +12,7 @@ public interface CommonResultCode {
 
     // 服务未知错误
     public static final int UNKNOWN_EXCEPTION = 50000;
+
+    // 操作对象不存在
+    public static final int NOT_FOUND = 40400;
 }

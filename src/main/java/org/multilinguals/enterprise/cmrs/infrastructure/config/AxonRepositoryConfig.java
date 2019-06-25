@@ -1,8 +1,8 @@
 package org.multilinguals.enterprise.cmrs.infrastructure.config;
 
-import org.axonframework.commandhandling.model.Repository;
 import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.axonframework.eventsourcing.eventstore.EventStore;
+import org.axonframework.modelling.command.Repository;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.Account;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPassword;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.Role;
@@ -14,21 +14,21 @@ import org.springframework.context.annotation.Configuration;
 public class AxonRepositoryConfig {
     @Bean()
     public Repository<Account> accountAggregateRepository(EventStore eventStore) {
-        return new EventSourcingRepository<>(Account.class, eventStore);
+        return EventSourcingRepository.builder(Account.class).eventStore(eventStore).build();
     }
 
     @Bean()
     public Repository<User> userAggregateRepository(EventStore eventStore) {
-        return new EventSourcingRepository<>(User.class, eventStore);
+        return EventSourcingRepository.builder(User.class).eventStore(eventStore).build();
     }
 
     @Bean()
     public Repository<UserPassword> userPasswordRepositoryAggregateRepository(EventStore eventStore) {
-        return new EventSourcingRepository<>(UserPassword.class, eventStore);
+        return EventSourcingRepository.builder(UserPassword.class).eventStore(eventStore).build();
     }
 
     @Bean()
     public Repository<Role> roleRepositoryAggregateRepository(EventStore eventStore) {
-        return new EventSourcingRepository<>(Role.class, eventStore);
+        return EventSourcingRepository.builder(Role.class).eventStore(eventStore).build();
     }
 }

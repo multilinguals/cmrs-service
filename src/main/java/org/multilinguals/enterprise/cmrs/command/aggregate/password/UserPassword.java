@@ -1,21 +1,25 @@
 package org.multilinguals.enterprise.cmrs.command.aggregate.password;
 
 import org.axonframework.commandhandling.CommandHandler;
-import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
+import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.AccountId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.BindUserToUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.CreateUserPasswordCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.UpdateUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.event.UserPasswordBoundUserEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.password.event.UserPasswordSignedUpEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.password.event.UserPasswordCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.password.event.UserPasswordUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
+import org.multilinguals.enterprise.cmrs.constant.result.code.UserPasswordResultCode;
+import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotMatchPasswordException;
 import org.springframework.util.DigestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
+import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 @Aggregate
 public class UserPassword {
@@ -34,8 +38,17 @@ public class UserPassword {
 
     @CommandHandler
     public UserPassword(CreateUserPasswordCommand command) {
-        apply(new UserPasswordSignedUpEvent(new UserPasswordId(), hashInputPassword(command.getPassword()),
+        apply(new UserPasswordCreatedEvent(new UserPasswordId(), hashInputPassword(command.getPassword()),
                 command.getAccountId()));
+    }
+
+    @CommandHandler
+    public void handler(UpdateUserPasswordCommand command) throws UserNotMatchPasswordException {
+        if (!command.getUserId().equals(this.userId)) {
+            throw new UserNotMatchPasswordException(UserPasswordResultCode.USER_NOT_MATCH_PASSWORD);
+        }
+
+        apply(new UserPasswordUpdatedEvent(command.getUserPasswordId(), hashInputPassword(command.getNewUserPassword())));
     }
 
     @CommandHandler
@@ -44,10 +57,15 @@ public class UserPassword {
     }
 
     @EventSourcingHandler
-    public void on(UserPasswordSignedUpEvent event) {
+    public void on(UserPasswordCreatedEvent event) {
         this.id = event.getUserPasswordId();
         this.hashValue = event.getHashValue();
         this.accountIdList.add(event.getAccountId());
+    }
+
+    @EventSourcingHandler
+    public void on(UserPasswordUpdatedEvent event) {
+        this.hashValue = event.getHashValue();
     }
 
     @EventSourcingHandler

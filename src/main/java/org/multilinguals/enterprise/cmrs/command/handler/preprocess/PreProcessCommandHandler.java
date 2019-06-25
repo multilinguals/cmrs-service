@@ -2,8 +2,8 @@ package org.multilinguals.enterprise.cmrs.command.handler.preprocess;
 
 import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.commandhandling.CommandHandler;
-import org.axonframework.commandhandling.model.AggregateNotFoundException;
-import org.axonframework.commandhandling.model.Repository;
+import org.axonframework.modelling.command.AggregateNotFoundException;
+import org.axonframework.modelling.command.Repository;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.Role;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.RoleId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.command.CreateRoleCommand;

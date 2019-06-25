@@ -1,16 +1,13 @@
 package org.multilinguals.enterprise.cmrs.command.handler.signin;
 
 import org.axonframework.commandhandling.CommandHandler;
-import org.axonframework.commandhandling.model.Aggregate;
-import org.axonframework.commandhandling.model.Repository;
+import org.axonframework.modelling.command.Aggregate;
+import org.axonframework.modelling.command.Repository;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.Account;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.AccountId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.BindUserToAccountCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPassword;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPasswordId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.BindUserToUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.CreateUserCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.UserSessionId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.command.CreateUserSessionCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.AbstractCommandHandler;
@@ -42,12 +39,6 @@ public class SignInCommandHandler extends AbstractCommandHandler {
 
             // 获取用户密码实例
             Aggregate<UserPassword> userPasswordAggregate = userPasswordRepositoryAggregateRepository.load(userPasswordId.getIdentifier());
-            UserId passwordUserId = userPasswordAggregate.invoke(UserPassword::getUserId);
-
-            // 如果密码没有关联用户，那么也需要关联
-            if (passwordUserId == null) {
-                this.commandGateway.sendAndWait(new BindUserToUserPasswordCommand(accountUserId, userPasswordId));
-            }
 
             // 判断密码是否正确
             if (!userPasswordAggregate.invoke(userPassword -> userPassword.validPassword(command.getPassword()))) {

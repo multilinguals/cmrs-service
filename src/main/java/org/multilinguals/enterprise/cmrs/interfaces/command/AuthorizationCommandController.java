@@ -2,7 +2,7 @@ package org.multilinguals.enterprise.cmrs.interfaces.command;
 
 import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.axonframework.commandhandling.model.AggregateNotFoundException;
+import org.axonframework.modelling.command.AggregateNotFoundException;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.UserSessionId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.command.DeleteUserSessionCommand;

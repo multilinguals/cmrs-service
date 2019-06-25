@@ -1,6 +1,6 @@
 package org.multilinguals.enterprise.cmrs.command.aggregate.password.event;
 
-import org.axonframework.commandhandling.TargetAggregateIdentifier;
+import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPasswordId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;

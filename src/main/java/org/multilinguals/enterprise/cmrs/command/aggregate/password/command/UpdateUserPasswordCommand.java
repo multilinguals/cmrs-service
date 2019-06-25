@@ -1,26 +1,29 @@
-package org.multilinguals.enterprise.cmrs.command.handler.password;
+package org.multilinguals.enterprise.cmrs.command.aggregate.password.command;
 
-import org.axonframework.commandhandling.TargetAggregateIdentifier;
+import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPasswordId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
+import javax.validation.constraints.NotNull;
+
 public class UpdateUserPasswordCommand extends AbstractCommand {
     @TargetAggregateIdentifier
-    private UserPasswordId id;
+    private UserPasswordId userPasswordId;
 
+    @NotNull
     private UserId userId;
 
     private String newUserPassword;
 
-    public UpdateUserPasswordCommand(UserPasswordId id, UserId userId, String newUserPassword) {
-        this.id = id;
+    public UpdateUserPasswordCommand(UserPasswordId userPasswordId, @NotNull UserId userId, String newUserPassword) {
+        this.userPasswordId = userPasswordId;
         this.userId = userId;
         this.newUserPassword = newUserPassword;
     }
 
-    public UserPasswordId getId() {
-        return id;
+    public UserPasswordId getUserPasswordId() {
+        return userPasswordId;
     }
 
     public UserId getUserId() {

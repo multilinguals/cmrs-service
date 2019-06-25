@@ -1,9 +1,9 @@
 package org.multilinguals.enterprise.cmrs.command.handler.signup;
 
 import org.axonframework.commandhandling.CommandHandler;
-import org.axonframework.commandhandling.model.Aggregate;
-import org.axonframework.commandhandling.model.AggregateNotFoundException;
-import org.axonframework.commandhandling.model.Repository;
+import org.axonframework.modelling.command.Aggregate;
+import org.axonframework.modelling.command.AggregateNotFoundException;
+import org.axonframework.modelling.command.Repository;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.Account;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.AccountId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.BindUserPasswordToAccountCommand;

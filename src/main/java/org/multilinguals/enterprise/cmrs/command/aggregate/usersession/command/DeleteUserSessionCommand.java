@@ -1,6 +1,6 @@
 package org.multilinguals.enterprise.cmrs.command.aggregate.usersession.command;
 
-import org.axonframework.commandhandling.TargetAggregateIdentifier;
+import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.UserSessionId;
 

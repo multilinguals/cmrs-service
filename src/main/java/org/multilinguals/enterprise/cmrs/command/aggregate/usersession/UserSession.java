@@ -1,8 +1,8 @@
 package org.multilinguals.enterprise.cmrs.command.aggregate.usersession;
 
 import org.axonframework.commandhandling.CommandHandler;
-import org.axonframework.commandhandling.model.AggregateIdentifier;
 import org.axonframework.eventsourcing.EventSourcingHandler;
+import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.command.CreateUserSessionCommand;
@@ -13,8 +13,8 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.event.Use
 import java.util.Calendar;
 import java.util.Date;
 
-import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
-import static org.axonframework.commandhandling.model.AggregateLifecycle.markDeleted;
+import static org.axonframework.modelling.command.AggregateLifecycle.apply;
+import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted;
 
 @Aggregate
 public class UserSession {
