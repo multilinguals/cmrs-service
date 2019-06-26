@@ -46,9 +46,14 @@
         <!--Axon 依赖-->
         <dependency>
             <groupId>org.axonframework</groupId>
-            <artifactId>axon-spring-boot-autoconfigure</artifactId>
+            <artifactId>axon-spring-boot-starter</artifactId>
             <version>${axon.version}</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.axonframework</groupId>-->
+<!--            <artifactId>axon-spring-boot-autoconfigure</artifactId>-->
+<!--            <version>${axon.version}</version>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.axonframework.extensions.mongo</groupId>
             <artifactId>axon-mongo</artifactId>
