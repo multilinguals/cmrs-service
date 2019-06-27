@@ -48,12 +48,13 @@
             <groupId>org.axonframework</groupId>
             <artifactId>axon-spring-boot-starter</artifactId>
             <version>${axon.version}</version>
+            <exclusions>
+                <exclusion><!-- 排出axon server的连接依赖，避免报错 -->
+                    <groupId>org.axonframework</groupId>
+                    <artifactId>axon-server-connector</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.axonframework</groupId>-->
-<!--            <artifactId>axon-spring-boot-autoconfigure</artifactId>-->
-<!--            <version>${axon.version}</version>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.axonframework.extensions.mongo</groupId>
             <artifactId>axon-mongo</artifactId>
