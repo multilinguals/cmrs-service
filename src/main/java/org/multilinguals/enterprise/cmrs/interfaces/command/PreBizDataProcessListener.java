@@ -4,7 +4,7 @@ import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.command.CreateRoleCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.preprocess.InitializeUserDataCommand;
-import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateAccountCommandByUsername;
+import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateUserWithUsernameCommand;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.role.DefaultRoleName;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -44,13 +44,13 @@ public class PreBizDataProcessListener implements ApplicationListener<Applicatio
         this.createRole(DefaultRoleName.ORDER_TAKER);
 
         // 创建超级管理员
-        CreateAccountCommandByUsername createAccountCommandByUsername = new CreateAccountCommandByUsername(
+        CreateUserWithUsernameCommand createUserWithUsernameCommand = new CreateUserWithUsernameCommand(
                 "admin",
                 "超级管理员",
                 DigestUtils.md5DigestAsHex("admin123".getBytes()),
                 DefaultRoleName.SUPER_ADMIN);
         try {
-            commandGateway.sendAndWait(createAccountCommandByUsername);
+            commandGateway.sendAndWait(createUserWithUsernameCommand);
         } catch (CommandExecutionException ex) {
             if (!(ex.getCause() instanceof AccountSignedUpException)) {
                 throw ex;

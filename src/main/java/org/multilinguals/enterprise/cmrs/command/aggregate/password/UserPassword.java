@@ -6,7 +6,6 @@ import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.AccountId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.BindUserToUserPasswordCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.CreateUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.UpdateUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.event.UserPasswordBoundUserEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.event.UserPasswordCreatedEvent;
@@ -36,10 +35,8 @@ public class UserPassword {
     protected UserPassword() {
     }
 
-    @CommandHandler
-    public UserPassword(CreateUserPasswordCommand command) {
-        apply(new UserPasswordCreatedEvent(new UserPasswordId(), hashInputPassword(command.getPassword()),
-                command.getAccountId()));
+    public UserPassword(AccountId accountId, String password) {
+        apply(new UserPasswordCreatedEvent(new UserPasswordId(), hashInputPassword(password), accountId));
     }
 
     @CommandHandler

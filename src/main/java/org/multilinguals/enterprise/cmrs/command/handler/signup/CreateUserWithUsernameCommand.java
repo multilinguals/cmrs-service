@@ -2,7 +2,7 @@ package org.multilinguals.enterprise.cmrs.command.handler.signup;
 
 import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
 
-public class CreateAccountCommandByUsername extends AbstractCommand {
+public class CreateUserWithUsernameCommand extends AbstractCommand {
     private String username;
 
     private String realName;
@@ -11,7 +11,7 @@ public class CreateAccountCommandByUsername extends AbstractCommand {
 
     private String roleName;
 
-    public CreateAccountCommandByUsername(String username, String realName, String password, String roleName) {
+    public CreateUserWithUsernameCommand(String username, String realName, String password, String roleName) {
         this.username = username;
         this.realName = realName;
         this.password = password;

@@ -8,7 +8,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.role.Role;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.RoleId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.command.CreateRoleCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.AbstractCommandHandler;
-import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateAccountCommandByUsername;
+import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateUserWithUsernameCommand;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.role.DefaultRoleName;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
 import org.springframework.stereotype.Component;
@@ -40,13 +40,13 @@ public class PreProcessCommandHandler extends AbstractCommandHandler {
         this.checkAndCreateRole(DefaultRoleName.ORDER_TAKER);
 
         // 创建超级管理员
-        CreateAccountCommandByUsername createAccountCommandByUsername = new CreateAccountCommandByUsername(
+        CreateUserWithUsernameCommand createUserWithUsernameCommand = new CreateUserWithUsernameCommand(
                 "admin",
                 "超级管理员",
                 DigestUtils.md5DigestAsHex("admin123".getBytes()),
                 DefaultRoleName.SUPER_ADMIN);
         try {
-            commandGateway.sendAndWait(createAccountCommandByUsername);
+            commandGateway.sendAndWait(createUserWithUsernameCommand);
         } catch (CommandExecutionException ex) {
             if (!(ex.getCause() instanceof AccountSignedUpException)) {
                 throw ex;

@@ -29,20 +29,6 @@ public class AuthorizationCommandController {
     @Resource
     private CommandGateway commandGateway;
 
-    @PostMapping("/user/sign-up-username")
-    public void handle(@RequestBody SignUpUsernameAccountCommand command, HttpServletResponse response) {
-        try {
-            commandGateway.sendAndWait(command);
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        } catch (CommandExecutionException ex) {
-            if (ex.getCause() instanceof AccountSignedUpException) {
-                throw new CMRSHTTPException(HttpServletResponse.SC_CONFLICT, AuthResultCode.SIGNED_UP_ACCOUNT);
-            } else {
-                throw ex;
-            }
-        }
-    }
-
     /**
      * 使用密码登录
      *

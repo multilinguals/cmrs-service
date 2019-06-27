@@ -8,7 +8,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.account.Account;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.AccountId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.BindUserPasswordToAccountCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.BindUserToAccountCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.CreateAccountCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.CreateAccountCommandWithPassword;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPasswordId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.CreateUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.DeleteUserPasswordCommand;
@@ -32,40 +32,13 @@ public class SignUpCommandHandler extends AbstractCommandHandler {
     private Repository<Role> roleAggregateRepository;
 
     /**
-     * @param command 注册用户名账号命令
-     * @throws AccountSignedUpException 账号注册失败异常
-     */
-    @CommandHandler
-    public void handler(SignUpUsernameAccountCommand command) throws Exception {
-        AccountId accountId = new AccountId(command.getUsername(), AccountType.USERNAME);
-        try {
-            Aggregate<Account> accountAggregate = accountAggregateRepository.load(accountId.getIdentifier());
-
-            if (accountAggregate.invoke(Account::getUserPasswordId) == null) {
-                // 如果账号存在但是没有关联密码，那么需要注册一个新的密码
-                UserPasswordId userPasswordId = this.commandGateway.sendAndWait(new CreateUserPasswordCommand(command.getPassword(), accountId));
-                bindUserPasswordToAccount(accountId, userPasswordId);
-            } else {
-                // 如果账号已经关联密码，说明账号已经被注册，抛出异常中断。
-                throw new AccountSignedUpException();
-            }
-        } catch (AggregateNotFoundException ex) {
-            // 要注册的账号不存在，需要将账号和密码都注册
-            this.commandGateway.sendAndWait(new CreateAccountCommand(accountId));
-            UserPasswordId userPasswordId = this.commandGateway.sendAndWait(new CreateUserPasswordCommand(command.getPassword(), accountId));
-
-            bindUserPasswordToAccount(accountId, userPasswordId);
-        }
-    }
-
-    /**
      * 使用账号和密码创建用户
      *
      * @param command 使用账号和密码创建用户命令
      * @throws Exception
      */
     @CommandHandler
-    public UserId handler(CreateAccountCommandByUsername command) throws Exception {
+    public UserId handler(CreateUserWithUsernameCommand command) throws Exception {
         return createNewUserWithUsername(command.getUsername(), command.getRealName(), command.getPassword(), command.getRoleName());
     }
 
@@ -87,9 +60,11 @@ public class SignUpCommandHandler extends AbstractCommandHandler {
             }
         } catch (AggregateNotFoundException ex) {
             // 要注册的账号不存在，需要将账号和密码都注册
-            this.commandGateway.sendAndWait(new CreateAccountCommand(accountId));
-            return createUserAndPassword(realName, password, roleId, accountId);
+            this.commandGateway.sendAndWait(new CreateAccountCommandWithPassword(accountId, password));
+            //return createUserAndPassword(realName, password, roleId, accountId);
         }
+
+        return new UserId();
     }
 
     private UserId createUserAndPassword(String realName, String password, RoleId roleId, AccountId accountId) throws Exception {
