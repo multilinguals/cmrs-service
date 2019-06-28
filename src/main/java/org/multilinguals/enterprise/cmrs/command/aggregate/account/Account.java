@@ -3,15 +3,13 @@ package org.multilinguals.enterprise.cmrs.command.aggregate.account;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
-import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.BindUserPasswordToAccountCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.BindUserToAccountCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.CreateAccountCommandWithPassword;
+import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.CreateAccountCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.event.AccountBoundUserEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.event.AccountBoundUserPasswordEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.event.AccountCreatedEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPassword;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPasswordId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
@@ -34,10 +32,8 @@ public class Account {
     }
 
     @CommandHandler
-    public Account(CreateAccountCommandWithPassword command) throws Exception {
-        AggregateLifecycle.createNew(UserPassword.class, () -> new UserPassword(command.getAccountId(), command.getPassword()));
-
-        apply(new AccountCreatedEvent(command.getAccountId()));
+    public Account(CreateAccountCommand command) {
+        apply(new AccountCreatedEvent(command.getId(), command.getUserId(), command.getUserPasswordId()));
     }
 
     @CommandHandler
@@ -52,7 +48,8 @@ public class Account {
 
     @EventSourcingHandler
     public void on(AccountCreatedEvent event) {
-        this.id = event.getAccountId();
+        this.id = event.getId();
+        this.userPasswordId = event.getUserPasswordId();
     }
 
     @EventSourcingHandler

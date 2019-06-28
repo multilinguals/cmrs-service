@@ -11,7 +11,7 @@ public class BindUserToAccountCommand extends AbstractCommand {
 
     private UserId userId;
 
-    public BindUserToAccountCommand(AccountId accountId, UserId userId) {
+    public BindUserToAccountCommand(UserId userId, AccountId accountId) {
         this.accountId = accountId;
         this.userId = userId;
     }

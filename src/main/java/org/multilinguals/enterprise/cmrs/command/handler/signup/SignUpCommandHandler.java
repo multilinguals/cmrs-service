@@ -1,17 +1,16 @@
 package org.multilinguals.enterprise.cmrs.command.handler.signup;
 
 import org.axonframework.commandhandling.CommandHandler;
-import org.axonframework.modelling.command.Aggregate;
+import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.modelling.command.AggregateNotFoundException;
 import org.axonframework.modelling.command.Repository;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.Account;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.AccountId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.BindUserPasswordToAccountCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.BindUserToAccountCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.CreateAccountCommandWithPassword;
+import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.CreateAccountCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPassword;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPasswordId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.CreateUserPasswordCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.DeleteUserPasswordCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.BindUserToUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.Role;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.RoleId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
@@ -43,47 +42,34 @@ public class SignUpCommandHandler extends AbstractCommandHandler {
     }
 
     private UserId createNewUserWithUsername(String username, String realName, String password, String roleName) throws Exception {
-        RoleId roleId = new RoleId(roleName);
         // 验证角色是否存在
+        RoleId roleId = new RoleId(roleName);
         this.roleAggregateRepository.load(roleId.getIdentifier());
 
+        // 账号ID对象
         AccountId accountId = new AccountId(username, AccountType.USERNAME);
-        try {
-            Aggregate<Account> accountAggregate = accountAggregateRepository.load(accountId.getIdentifier());
 
-            if (accountAggregate.invoke(Account::getUserPasswordId) == null) {
-                // 如果账号存在但是没有关联密码，那么需要注册一个新的密码
-                return createUserAndPassword(realName, password, roleId, accountId);
-            } else {
-                // 如果账号已经关联密码，说明账号已经被注册，抛出异常中断。
-                throw new AccountSignedUpException();
-            }
+        try {
+            this.accountAggregateRepository.load(accountId.getIdentifier());
+            throw new AccountSignedUpException();
         } catch (AggregateNotFoundException ex) {
-            // 要注册的账号不存在，需要将账号和密码都注册
-            this.commandGateway.sendAndWait(new CreateAccountCommandWithPassword(accountId, password));
-            //return createUserAndPassword(realName, password, roleId, accountId);
-        }
+            org.axonframework.modelling.command.Aggregate<UserPassword> userPasswordAggregate = AggregateLifecycle.createNew(
+                    UserPassword.class,
+                    () -> new UserPassword(accountId, password)
+            );
 
-        return new UserId();
+            UserPasswordId userPasswordId = userPasswordAggregate.invoke(UserPassword::getId);
+
+            this.commandGateway.sendAndWait(new CreateAccountCommand(accountId, null, userPasswordId));
+
+            return createUser(realName, userPasswordId, roleId, accountId);
+        }
     }
 
-    private UserId createUserAndPassword(String realName, String password, RoleId roleId, AccountId accountId) throws Exception {
-        UserPasswordId userPasswordId = this.commandGateway.sendAndWait(new CreateUserPasswordCommand(password, accountId));
-        bindUserPasswordToAccount(accountId, userPasswordId);
+    private UserId createUser(String realName, UserPasswordId userPasswordId, RoleId roleId, AccountId accountId) {
         UserId userId = this.commandGateway.sendAndWait(new CreateUserCommand(accountId, realName, roleId, userPasswordId));
-        this.commandGateway.sendAndWait(new BindUserToAccountCommand(accountId, userId));
+        this.commandGateway.sendAndWait(new BindUserToAccountCommand(userId, accountId));
+        this.commandGateway.sendAndWait(new BindUserToUserPasswordCommand(userId, userPasswordId));
         return userId;
-    }
-
-    private void bindUserPasswordToAccount(AccountId accountId, UserPasswordId userPasswordId) throws Exception {
-        try {
-            // 绑定账号和用户
-            this.commandGateway.sendAndWait(new BindUserPasswordToAccountCommand(accountId, userPasswordId));
-        } catch (Exception bindAccountEx) {
-            // 如果绑定异常要删除密码，避免脏数据
-            this.commandGateway.send(new DeleteUserPasswordCommand(userPasswordId));
-
-            throw new Exception("User Account Bind User Password Exception!");
-        }
     }
 }

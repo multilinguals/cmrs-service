@@ -55,10 +55,18 @@ public class PreBizDataProcessListener implements ApplicationListener<Applicatio
             if (!(ex.getCause() instanceof AccountSignedUpException)) {
                 throw ex;
             }
+
+            //TODO 替换成log4j
+            System.out.println("超级管理员已创建");
         }
     }
 
     private void createRole(String roleName) {
-        this.commandGateway.sendAndWait(new CreateRoleCommand(roleName));
+        try {
+            this.commandGateway.sendAndWait(new CreateRoleCommand(roleName));
+        } catch (org.axonframework.modelling.command.ConcurrencyException ex) {
+            //TODO 替换成log4j
+            System.out.println("角色" + roleName + "已创建");
+        }
     }
 }
