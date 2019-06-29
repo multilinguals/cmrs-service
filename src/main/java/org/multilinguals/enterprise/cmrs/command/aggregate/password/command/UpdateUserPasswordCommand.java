@@ -33,4 +33,8 @@ public class UpdateUserPasswordCommand extends AbstractCommand {
     public String getNewUserPassword() {
         return newUserPassword;
     }
+
+    public void setUserId(UserId userId) {
+        this.userId = userId;
+    }
 }

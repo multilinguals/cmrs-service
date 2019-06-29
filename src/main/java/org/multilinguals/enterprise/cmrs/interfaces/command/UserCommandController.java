@@ -53,21 +53,26 @@ public class UserCommandController {
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
-    @PostMapping("/user/update-self-password")
-    @PreAuthorize("isAuthenticated()")
-    public void updateSelfPassword(@RequestBody org.multilinguals.enterprise.cmrs.command.handler.password.UpdateSelfPasswordCommand command, @RequestAttribute String reqSenderId, HttpServletResponse response) {
-        if (!reqSenderId.equals(command.getId().getIdentifier())) {
-            throw new CMRSHTTPException(HttpServletResponse.SC_FORBIDDEN, AuthResultCode.FORBIDDEN);
-        }
-
-        commandGateway.sendAndWait(command);
-        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-    }
-
     @PostMapping("/admin/update-user-password")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
     public void updateUserPassword(@RequestBody UpdateUserPasswordCommand command, HttpServletResponse response) {
         try {
+            commandGateway.sendAndWait(command);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (AggregateNotFoundException ex) {
+            throw new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, CommonResultCode.NOT_FOUND);
+        } catch (CommandExecutionException ex) {
+            if (ex.getCause() instanceof UserNotMatchPasswordException) {
+                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, UserPasswordResultCode.USER_NOT_MATCH_PASSWORD);
+            }
+        }
+    }
+
+    @PostMapping("/admin/update-self-password")
+    @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
+    public void updateSelfPassword(@RequestBody UpdateUserPasswordCommand command, @RequestAttribute String reqSenderId, HttpServletResponse response) {
+        try {
+            command.setUserId(new UserId(reqSenderId));
             commandGateway.sendAndWait(command);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (AggregateNotFoundException ex) {
