@@ -51,16 +51,9 @@ public class User {
 
         this.realName = event.getRealName();
 
-        if (event.getAccountId() != null) {
-            this.accountIdList.add(event.getAccountId());
-        }
-
-        if (event.getUserPasswordId() != null) {
-            this.userPasswordId = event.getUserPasswordId();
-        }
         this.accountIdList.add(event.getAccountId());
 
-        roleIdList.add(event.getRoleId());
+        this.roleIdList.add(event.getRoleId());
 
         this.userPasswordId = event.getUserPasswordId();
     }
