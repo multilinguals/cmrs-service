@@ -2,11 +2,17 @@ package org.multilinguals.enterprise.cmrs.infrastructure.config;
 
 import com.mongodb.MongoClient;
 import org.axonframework.commandhandling.SimpleCommandBus;
+import org.axonframework.eventsourcing.eventstore.EventStorageEngine;
+import org.axonframework.extensions.mongo.DefaultMongoTemplate;
+import org.axonframework.extensions.mongo.MongoTemplate;
+import org.axonframework.extensions.mongo.eventhandling.saga.repository.MongoSagaStore;
+import org.axonframework.extensions.mongo.eventsourcing.eventstore.MongoEventStorageEngine;
+import org.axonframework.extensions.mongo.eventsourcing.eventstore.StorageStrategy;
+import org.axonframework.extensions.mongo.eventsourcing.eventstore.documentpercommit.DocumentPerCommitStorageStrategy;
 import org.axonframework.messaging.interceptors.BeanValidationInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import javax.inject.Inject;
@@ -29,13 +35,23 @@ public class StorageConfig {
     }
 
     @Bean
-    public MongoTemplate mongoSpringTemplate(MongoClient client) {
-        return new MongoTemplate(client, mongoDatabase);
+    public StorageStrategy storageStrategy() {
+        return new DocumentPerCommitStorageStrategy();
     }
 
     @Bean
-    public MongoTemplate mongoTemplate(MongoClient client) {
-        return new MongoTemplate(client, mongoDatabase);
+    public MongoTemplate axonMongoTemplate(MongoClient client) {
+        return DefaultMongoTemplate.builder().mongoDatabase(client, this.mongoDatabase).build();
+    }
+
+    @Bean
+    public EventStorageEngine eventStorageEngine(MongoTemplate axonTemplate) {
+        return MongoEventStorageEngine.builder().mongoTemplate(axonTemplate).build();
+    }
+
+    @Bean
+    public MongoSagaStore sagaRepository(MongoTemplate axonTemplate) {
+        return MongoSagaStore.builder().mongoTemplate(axonTemplate).build();
     }
 
 }
