@@ -4,6 +4,7 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.AccountId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPasswordId;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
 public class UserPasswordCreatedEvent extends AbstractEvent {
     @TargetAggregateIdentifier
@@ -13,21 +14,28 @@ public class UserPasswordCreatedEvent extends AbstractEvent {
 
     private AccountId accountId;
 
-    public UserPasswordCreatedEvent(UserPasswordId userPasswordId, String hashValue, AccountId accountId) {
+    private UserId userId;
+
+    public UserPasswordCreatedEvent(UserPasswordId userPasswordId, String hashValue, AccountId accountId, UserId userId) {
         this.userPasswordId = userPasswordId;
-        this.accountId = accountId;
         this.hashValue = hashValue;
+        this.accountId = accountId;
+        this.userId = userId;
     }
 
     public UserPasswordId getUserPasswordId() {
         return userPasswordId;
     }
 
+    public String getHashValue() {
+        return hashValue;
+    }
+
     public AccountId getAccountId() {
         return accountId;
     }
 
-    public String getHashValue() {
-        return hashValue;
+    public UserId getUserId() {
+        return userId;
     }
 }

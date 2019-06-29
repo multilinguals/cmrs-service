@@ -2,8 +2,6 @@ package org.multilinguals.enterprise.cmrs.query.user;
 
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
-import org.multilinguals.enterprise.cmrs.command.aggregate.account.event.AccountBoundUserEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.password.event.UserPasswordBoundUserEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserDetailsUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.event.UserSessionCreatedEvent;
@@ -33,23 +31,11 @@ public class UserDetailsViewEventHandler {
     @EventHandler
     public void on(UserCreatedEvent event, @Timestamp java.time.Instant createdTime) {
         UserDetailsView userDetailsView = new UserDetailsView(event.getId().getIdentifier(), new Date(createdTime.toEpochMilli()));
-        userDetailsView.setRealName(event.getRealName());
-        Role role = new Role(event.getRoleId().getIdentifier(), event.getRoleId().getRoleName(), new Date(createdTime.toEpochMilli()));
-        userDetailsView.setRole(role);
-        this.userDetailsViewRepository.save(userDetailsView);
-    }
 
-    /**
-     * 当账号已绑定用户时，视图记录增加账号信息
-     *
-     * @param event       账号已绑定用户事件
-     * @param createdTime 事件发生时间
-     * @throws ChangeSetPersister.NotFoundException
-     */
-    @EventHandler
-    public void on(AccountBoundUserEvent event, @Timestamp java.time.Instant createdTime) throws ChangeSetPersister.NotFoundException {
-        UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getUserId().getIdentifier())
-                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+        // 设置姓名
+        userDetailsView.setRealName(event.getRealName());
+
+        // 设置账号
         UserAccount userAccount = new UserAccount(
                 event.getAccountId().getIdentifier(),
                 event.getAccountId().getIdInType(),
@@ -58,20 +44,11 @@ public class UserDetailsViewEventHandler {
         );
         userDetailsView.setUserAccount(userAccount);
 
-        this.userDetailsViewRepository.save(userDetailsView);
-    }
+        // 设置角色
+        Role role = new Role(event.getRoleId().getIdentifier(), event.getRoleId().getRoleName(), new Date(createdTime.toEpochMilli()));
+        userDetailsView.setRole(role);
 
-    /**
-     * 当密码绑定用户时，视图增加密码信息
-     *
-     * @param event 密码已绑定用户事件
-     * @throws ChangeSetPersister.NotFoundException
-     */
-    @EventHandler
-    public void on(UserPasswordBoundUserEvent event) throws ChangeSetPersister.NotFoundException {
-        UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getUserId().getIdentifier())
-                .orElseThrow(ChangeSetPersister.NotFoundException::new);
-
+        // 设置关联密码
         userDetailsView.setUserPasswordId(event.getUserPasswordId().getIdentifier());
 
         this.userDetailsViewRepository.save(userDetailsView);

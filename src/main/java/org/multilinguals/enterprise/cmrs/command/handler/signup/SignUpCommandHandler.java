@@ -1,16 +1,13 @@
 package org.multilinguals.enterprise.cmrs.command.handler.signup;
 
 import org.axonframework.commandhandling.CommandHandler;
-import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.modelling.command.AggregateNotFoundException;
 import org.axonframework.modelling.command.Repository;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.Account;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.AccountId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.BindUserToAccountCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.command.CreateAccountCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPassword;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPasswordId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.BindUserToUserPasswordCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.CreateUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.Role;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.RoleId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
@@ -34,42 +31,36 @@ public class SignUpCommandHandler extends AbstractCommandHandler {
      * 使用账号和密码创建用户
      *
      * @param command 使用账号和密码创建用户命令
-     * @throws Exception
+     * @throws AccountSignedUpException 注册失败异常
      */
     @CommandHandler
-    public UserId handler(CreateUserWithUsernameCommand command) throws Exception {
+    public UserId handler(CreateUserWithUsernameCommand command) throws AccountSignedUpException {
         return createNewUserWithUsername(command.getUsername(), command.getRealName(), command.getPassword(), command.getRoleName());
     }
 
-    private UserId createNewUserWithUsername(String username, String realName, String password, String roleName) throws Exception {
+    private UserId createNewUserWithUsername(String username, String realName, String password, String roleName) throws AccountSignedUpException {
         // 验证角色是否存在
         RoleId roleId = new RoleId(roleName);
         this.roleAggregateRepository.load(roleId.getIdentifier());
 
         // 账号ID对象
         AccountId accountId = new AccountId(username, AccountType.USERNAME);
+        UserId userId = new UserId();
+        UserPasswordId userPasswordId = new UserPasswordId();
+
 
         try {
-            this.accountAggregateRepository.load(accountId.getIdentifier());
+            accountAggregateRepository.load(accountId.getIdentifier());
             throw new AccountSignedUpException();
         } catch (AggregateNotFoundException ex) {
-            org.axonframework.modelling.command.Aggregate<UserPassword> userPasswordAggregate = AggregateLifecycle.createNew(
-                    UserPassword.class,
-                    () -> new UserPassword(accountId, password)
-            );
-
-            UserPasswordId userPasswordId = userPasswordAggregate.invoke(UserPassword::getId);
-
-            this.commandGateway.sendAndWait(new CreateAccountCommand(accountId, null, userPasswordId));
-
-            return createUser(realName, userPasswordId, roleId, accountId);
+            // 创建账号聚合
+            this.commandGateway.sendAndWait(new CreateAccountCommand(accountId, userId, userPasswordId));
+            // 创建密码聚合
+            this.commandGateway.sendAndWait(new CreateUserPasswordCommand(userPasswordId, password, accountId, userId));
+            // 创建用户聚合
+            this.commandGateway.sendAndWait(new CreateUserCommand(userId, accountId, realName, roleId, userPasswordId));
         }
-    }
 
-    private UserId createUser(String realName, UserPasswordId userPasswordId, RoleId roleId, AccountId accountId) {
-        UserId userId = this.commandGateway.sendAndWait(new CreateUserCommand(accountId, realName, roleId, userPasswordId));
-        this.commandGateway.sendAndWait(new BindUserToAccountCommand(userId, accountId));
-        this.commandGateway.sendAndWait(new BindUserToUserPasswordCommand(userId, userPasswordId));
         return userId;
     }
 }

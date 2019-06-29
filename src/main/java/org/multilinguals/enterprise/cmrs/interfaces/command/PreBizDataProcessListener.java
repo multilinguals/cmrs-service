@@ -3,7 +3,6 @@ package org.multilinguals.enterprise.cmrs.interfaces.command;
 import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.command.CreateRoleCommand;
-import org.multilinguals.enterprise.cmrs.command.handler.preprocess.InitializeUserDataCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateUserWithUsernameCommand;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.role.DefaultRoleName;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
@@ -16,8 +15,6 @@ import javax.annotation.Resource;
 
 /**
  * 应用启动时，进行业务数据的预处理
- * 初始化用户数据命令 {@link InitializeUserDataCommand}，被处理器{@link org.multilinguals.enterprise.cmrs.command.handler.signup.SignUpCommandHandler}
- * 接收并处理
  */
 @Component
 public class PreBizDataProcessListener implements ApplicationListener<ApplicationStartedEvent> {

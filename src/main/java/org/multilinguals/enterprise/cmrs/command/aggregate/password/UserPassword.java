@@ -5,9 +5,8 @@ import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.AccountId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.BindUserToUserPasswordCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.CreateUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.UpdateUserPasswordCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.password.event.UserPasswordBoundUserEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.event.UserPasswordCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.event.UserPasswordUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
@@ -35,8 +34,9 @@ public class UserPassword {
     protected UserPassword() {
     }
 
-    public UserPassword(AccountId accountId, String password) {
-        apply(new UserPasswordCreatedEvent(new UserPasswordId(), hashInputPassword(password), accountId));
+    @CommandHandler
+    public UserPassword(CreateUserPasswordCommand command) {
+        apply(new UserPasswordCreatedEvent(command.getUserPasswordId(), hashInputPassword(command.getPassword()), command.getAccountId(), command.getUserId()));
     }
 
     @CommandHandler
@@ -48,26 +48,17 @@ public class UserPassword {
         apply(new UserPasswordUpdatedEvent(command.getUserPasswordId(), hashInputPassword(command.getNewUserPassword())));
     }
 
-    @CommandHandler
-    public void handler(BindUserToUserPasswordCommand command) {
-        apply(new UserPasswordBoundUserEvent(new UserPasswordId(), command.getUserId()));
-    }
-
     @EventSourcingHandler
     public void on(UserPasswordCreatedEvent event) {
         this.id = event.getUserPasswordId();
         this.hashValue = event.getHashValue();
         this.accountIdList.add(event.getAccountId());
+        this.userId = event.getUserId();
     }
 
     @EventSourcingHandler
     public void on(UserPasswordUpdatedEvent event) {
         this.hashValue = event.getHashValue();
-    }
-
-    @EventSourcingHandler
-    public void on(UserPasswordBoundUserEvent event) {
-        this.userId = event.getUserId();
     }
 
     private String hashInputPassword(String input) {

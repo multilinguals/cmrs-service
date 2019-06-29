@@ -35,7 +35,7 @@ public class User {
 
     @CommandHandler
     public User(CreateUserCommand command) {
-        apply(new UserCreatedEvent(new UserId(), command.getRealName(), command.getAccountId(), command.getRoleId(), command.getUserPasswordId()));
+        apply(new UserCreatedEvent(command.getUserId(), command.getRealName(), command.getAccountId(), command.getRoleId(), command.getUserPasswordId()));
     }
 
     @CommandHandler
@@ -61,6 +61,8 @@ public class User {
         this.accountIdList.add(event.getAccountId());
 
         roleIdList.add(event.getRoleId());
+
+        this.userPasswordId = event.getUserPasswordId();
     }
 
     @EventSourcingHandler

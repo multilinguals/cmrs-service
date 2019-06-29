@@ -24,6 +24,10 @@ public class AccountCreatedEvent extends AbstractEvent {
         return id;
     }
 
+    public UserId getUserId() {
+        return userId;
+    }
+
     public UserPasswordId getUserPasswordId() {
         return userPasswordId;
     }
