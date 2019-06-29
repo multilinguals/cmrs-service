@@ -1,9 +1,12 @@
 package org.multilinguals.enterprise.cmrs.query.rbac;
 
+import org.springframework.data.annotation.Id;
+
 import java.util.Date;
 import java.util.List;
 
 public class RoleDetailsView {
+    @Id
     private String id;
 
     private String name;

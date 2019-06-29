@@ -8,7 +8,7 @@ import org.axonframework.extensions.mongo.MongoTemplate;
 import org.axonframework.extensions.mongo.eventhandling.saga.repository.MongoSagaStore;
 import org.axonframework.extensions.mongo.eventsourcing.eventstore.MongoEventStorageEngine;
 import org.axonframework.extensions.mongo.eventsourcing.eventstore.StorageStrategy;
-import org.axonframework.extensions.mongo.eventsourcing.eventstore.documentpercommit.DocumentPerCommitStorageStrategy;
+import org.axonframework.extensions.mongo.eventsourcing.eventstore.documentperevent.DocumentPerEventStorageStrategy;
 import org.axonframework.messaging.interceptors.BeanValidationInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -32,11 +32,6 @@ public class StorageConfig {
     public MongoClient mongo(@Value("${spring.data.mongodb.host}") String mongoHost,
                              @Value("${spring.data.mongodb.port}") int mongoPort) {
         return new MongoClient(mongoHost, mongoPort);
-    }
-
-    @Bean
-    public StorageStrategy storageStrategy() {
-        return new DocumentPerCommitStorageStrategy();
     }
 
     @Bean
