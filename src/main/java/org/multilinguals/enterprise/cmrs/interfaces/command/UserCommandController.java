@@ -6,7 +6,7 @@ import org.axonframework.modelling.command.AggregateNotFoundException;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.UpdateUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUserDetailsCommand;
-import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateUserWithUsernameCommand;
+import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateClerkWithUsernameCommand;
 import org.multilinguals.enterprise.cmrs.constant.CommonResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.code.UserPasswordResultCode;
@@ -31,7 +31,7 @@ public class UserCommandController {
 
     @PostMapping("/admin/create-clerk")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public CommandResponse<AggregateCreatedDTO<String>> createUser(@RequestBody CreateUserWithUsernameCommand command) {
+    public CommandResponse<AggregateCreatedDTO<String>> createUser(@RequestBody CreateClerkWithUsernameCommand command) {
         try {
             UserId userId = commandGateway.sendAndWait(command);
             return new CommandResponse<>(new AggregateCreatedDTO<>(userId.getIdentifier()));

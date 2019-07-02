@@ -14,6 +14,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.CreateUserCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.AbstractCommandHandler;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.account.AccountType;
+import org.multilinguals.enterprise.cmrs.constant.aggregate.role.DefaultRoleName;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
 import org.springframework.stereotype.Component;
 
@@ -36,6 +37,18 @@ public class SignUpCommandHandler extends AbstractCommandHandler {
     @CommandHandler
     public UserId handler(CreateUserWithUsernameCommand command) throws AccountSignedUpException {
         return createNewUserWithUsername(command.getUsername(), command.getRealName(), command.getPassword(), command.getRoleName());
+    }
+
+    /**
+     * 使用账号密码创建职员
+     *
+     * @param command 使用账号密码创建职员命令
+     * @return
+     * @throws AccountSignedUpException
+     */
+    @CommandHandler
+    public UserId handler(CreateClerkWithUsernameCommand command) throws AccountSignedUpException {
+        return createNewUserWithUsername(command.getUsername(), command.getRealName(), command.getPassword(), DefaultRoleName.CLERK);
     }
 
     private UserId createNewUserWithUsername(String username, String realName, String password, String roleName) throws AccountSignedUpException {
