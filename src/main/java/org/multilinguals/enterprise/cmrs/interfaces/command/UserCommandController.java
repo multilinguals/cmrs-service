@@ -11,6 +11,7 @@ import org.multilinguals.enterprise.cmrs.constant.CommonResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.code.UserPasswordResultCode;
 import org.multilinguals.enterprise.cmrs.dto.aggregate.AggregateCreatedDTO;
+import org.multilinguals.enterprise.cmrs.infrastructure.dto.CommandResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotMatchPasswordException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
@@ -28,12 +29,12 @@ public class UserCommandController {
     @Resource
     private CommandGateway commandGateway;
 
-    @PostMapping("/admin/create-user")
+    @PostMapping("/admin/create-clerk")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public AggregateCreatedDTO<String> createUser(@RequestBody CreateUserWithUsernameCommand command) {
+    public CommandResponse<AggregateCreatedDTO<String>> createUser(@RequestBody CreateUserWithUsernameCommand command) {
         try {
             UserId userId = commandGateway.sendAndWait(command);
-            return new AggregateCreatedDTO<>(userId.getIdentifier());
+            return new CommandResponse<>(new AggregateCreatedDTO<>(userId.getIdentifier()));
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof AccountSignedUpException) {
                 throw new CMRSHTTPException(HttpServletResponse.SC_CONFLICT, AuthResultCode.SIGNED_UP_ACCOUNT);
