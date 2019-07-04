@@ -1,5 +1,7 @@
 package org.multilinguals.enterprise.cmrs.infrastructure.config;
 
+import org.multilinguals.enterprise.cmrs.infrastructure.security.AuthenticationExceptionEntryPoint;
+import org.multilinguals.enterprise.cmrs.infrastructure.security.CmrsAccessDeniedHandler;
 import org.multilinguals.enterprise.cmrs.infrastructure.security.RequestValidationFilter;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
 import org.springframework.http.HttpMethod;
@@ -36,6 +38,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // 允许所有的OPTIONS通过
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new RequestValidationFilter(authenticationManager(), userDetailsViewRepository));
+                .addFilter(new RequestValidationFilter(authenticationManager(), userDetailsViewRepository))
+                .exceptionHandling()
+                .authenticationEntryPoint(new AuthenticationExceptionEntryPoint())
+                .accessDeniedHandler(new CmrsAccessDeniedHandler());
     }
 }
