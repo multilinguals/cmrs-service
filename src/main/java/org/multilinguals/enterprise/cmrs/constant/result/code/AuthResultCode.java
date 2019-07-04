@@ -7,6 +7,9 @@ public interface AuthResultCode {
     // 用户认证失败
     int AUTHORIZE_FAILED = 40101;
 
+    // Token失效
+    int INVALID_TOKEN = 40102;
+
     // 没有权限查看
     int FORBIDDEN = 40301;
 }
