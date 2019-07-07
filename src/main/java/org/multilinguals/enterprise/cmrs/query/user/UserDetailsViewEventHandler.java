@@ -46,7 +46,7 @@ public class UserDetailsViewEventHandler {
         userDetailsView.setUserAccount(userAccount);
 
         // 设置角色
-        Role role = new Role(event.getRoleId().getIdentifier(), event.getRoleId().getRoleName(), new Date(createdTime.toEpochMilli()));
+        Role role = new Role(event.getRoleId().getIdentifier(), event.getRoleId().getName(), new Date(createdTime.toEpochMilli()));
         userDetailsView.setRole(role);
 
         // 设置关联密码
@@ -59,7 +59,7 @@ public class UserDetailsViewEventHandler {
     public void on(RoleBoundToUserEvent event, @Timestamp java.time.Instant createdTime) throws ChangeSetPersister.NotFoundException {
         UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getUserId().getIdentifier())
                 .orElseThrow(ChangeSetPersister.NotFoundException::new);
-        userDetailsView.setRole(new Role(event.getRoleId().getIdentifier(), event.getRoleName(), new Date(createdTime.toEpochMilli())));
+        userDetailsView.setRole(new Role(event.getRoleId().getIdentifier(), event.getRoleId().getName(), new Date(createdTime.toEpochMilli())));
 
         this.userDetailsViewRepository.save(userDetailsView);
     }

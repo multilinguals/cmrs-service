@@ -11,12 +11,9 @@ public class RoleBoundToUserEvent extends AbstractEvent {
 
     private RoleId roleId;
 
-    private String roleName;
-
-    public RoleBoundToUserEvent(UserId userId, RoleId roleId, String roleName) {
+    public RoleBoundToUserEvent(UserId userId, RoleId roleId) {
         this.userId = userId;
         this.roleId = roleId;
-        this.roleName = roleName;
     }
 
     public UserId getUserId() {
@@ -25,9 +22,5 @@ public class RoleBoundToUserEvent extends AbstractEvent {
 
     public RoleId getRoleId() {
         return roleId;
-    }
-
-    public String getRoleName() {
-        return roleName;
     }
 }

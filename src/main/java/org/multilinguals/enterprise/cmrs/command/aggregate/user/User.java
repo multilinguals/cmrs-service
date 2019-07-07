@@ -49,7 +49,7 @@ public class User {
 
     @CommandHandler
     public void handle(BindRoleToUserCommand command) {
-        apply(new RoleBoundToUserEvent(command.getUserId(), command.getRoleId(), command.getRoleName()));
+        apply(new RoleBoundToUserEvent(command.getUserId(), command.getRoleId()));
     }
 
     @EventSourcingHandler

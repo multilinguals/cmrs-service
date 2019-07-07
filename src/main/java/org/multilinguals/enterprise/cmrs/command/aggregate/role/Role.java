@@ -21,7 +21,7 @@ public class Role {
 
     @CommandHandler
     public Role(CreateRoleCommand command) {
-        apply(new RoleCreatedEvent(new RoleId(command.getName()), command.getName()));
+        apply(new RoleCreatedEvent(RoleId.ofName(command.getName()), command.getName()));
     }
 
     @EventSourcingHandler

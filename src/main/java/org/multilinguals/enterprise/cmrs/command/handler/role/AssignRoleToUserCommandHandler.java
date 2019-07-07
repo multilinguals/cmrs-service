@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 @Component
-public class AssignRoleToUserHandler extends AbstractCommandHandler {
+public class AssignRoleToUserCommandHandler extends AbstractCommandHandler {
     @Resource
     private Repository<Role> roleAggregateRepository;
 
@@ -26,17 +26,18 @@ public class AssignRoleToUserHandler extends AbstractCommandHandler {
     @CommandHandler
     public void handler(AssignRoleToUserCommand command) throws RoleNotExistException, UserNotExistException {
         try {
+            // 获取用户聚合根
             Aggregate<User> userAggregate = userAggregateRepository.load(command.getUserId().getIdentifier());
 
             try {
-                Aggregate<Role> roleAggregate = roleAggregateRepository.load(new RoleId(command.getRoleName()).getIdentifier());
-                RoleId roleId = roleAggregate.invoke(Role::getId);
+                // 获取角色聚合根
+                Aggregate<Role> roleAggregate = roleAggregateRepository.load(command.getRoleId().getIdentifier());
 
                 // 如果角色不存在，才会添加
-                if (!userAggregate.invoke((user) -> user.hasRole(roleId))) {
-                    String roleName = roleAggregate.invoke(Role::getName);
+                if (!userAggregate.invoke((user) -> user.hasRole(command.getRoleId()))) {
+                    RoleId roleId = roleAggregate.invoke(Role::getId);
 
-                    commandGateway.sendAndWait(new BindRoleToUserCommand(command.getUserId(), roleId, roleName));
+                    commandGateway.sendAndWait(new BindRoleToUserCommand(command.getUserId(), roleId));
                 }
             } catch (AggregateNotFoundException ex) {
                 throw new RoleNotExistException();

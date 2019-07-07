@@ -11,12 +11,9 @@ public class BindRoleToUserCommand extends AbstractCommand {
 
     private RoleId roleId;
 
-    private String roleName;
-
-    public BindRoleToUserCommand(UserId userId, RoleId roleId, String roleName) {
+    public BindRoleToUserCommand(UserId userId, RoleId roleId) {
         this.userId = userId;
         this.roleId = roleId;
-        this.roleName = roleName;
     }
 
     public UserId getUserId() {
@@ -25,9 +22,5 @@ public class BindRoleToUserCommand extends AbstractCommand {
 
     public RoleId getRoleId() {
         return roleId;
-    }
-
-    public String getRoleName() {
-        return roleName;
     }
 }

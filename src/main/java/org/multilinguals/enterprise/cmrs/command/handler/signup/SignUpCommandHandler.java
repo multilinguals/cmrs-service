@@ -53,7 +53,7 @@ public class SignUpCommandHandler extends AbstractCommandHandler {
 
     private UserId createNewUserWithUsername(String username, String realName, String password, String roleName) throws AccountSignedUpException {
         // 验证角色是否存在
-        RoleId roleId = new RoleId(roleName);
+        RoleId roleId = RoleId.ofName(roleName);
         this.roleAggregateRepository.load(roleId.getIdentifier());
 
         // 账号ID对象
