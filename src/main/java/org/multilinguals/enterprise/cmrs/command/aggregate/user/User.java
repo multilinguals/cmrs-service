@@ -7,8 +7,10 @@ import org.axonframework.spring.stereotype.Aggregate;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.AccountId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPasswordId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.RoleId;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.BindRoleToUserCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.CreateUserCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUserDetailsCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.RoleBoundToUserEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserDetailsUpdatedEvent;
 
@@ -45,6 +47,11 @@ public class User {
         apply(new UserDetailsUpdatedEvent(command.getId(), command.getRealName()));
     }
 
+    @CommandHandler
+    public void handle(BindRoleToUserCommand command) {
+        apply(new RoleBoundToUserEvent(command.getUserId(), command.getRoleId(), command.getRoleName()));
+    }
+
     @EventSourcingHandler
     public void on(UserCreatedEvent event) {
         this.id = event.getId();
@@ -65,6 +72,15 @@ public class User {
         if (event.getRealName() != null) {
             this.realName = event.getRealName();
         }
+    }
+
+    @EventSourcingHandler
+    public void on(RoleBoundToUserEvent event) {
+        this.roleIdList.add(event.getRoleId());
+    }
+
+    public Boolean hasRole(RoleId roleId) {
+        return this.roleIdList.contains(roleId);
     }
 
     public UserId getId() {

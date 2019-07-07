@@ -23,12 +23,12 @@ public class AxonRepositoryConfig {
     }
 
     @Bean()
-    public Repository<UserPassword> userPasswordRepositoryAggregateRepository(EventStore eventStore) {
+    public Repository<UserPassword> userPasswordAggregateRepository(EventStore eventStore) {
         return EventSourcingRepository.builder(UserPassword.class).eventStore(eventStore).build();
     }
 
     @Bean()
-    public Repository<Role> roleRepositoryAggregateRepository(EventStore eventStore) {
+    public Repository<Role> roleAggregateRepository(EventStore eventStore) {
         return EventSourcingRepository.builder(Role.class).eventStore(eventStore).build();
     }
 }

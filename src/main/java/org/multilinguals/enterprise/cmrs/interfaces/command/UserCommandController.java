@@ -6,6 +6,7 @@ import org.axonframework.modelling.command.AggregateNotFoundException;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.UpdateUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUserDetailsCommand;
+import org.multilinguals.enterprise.cmrs.command.handler.role.AssignRoleToUserCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateClerkWithUsernameCommand;
 import org.multilinguals.enterprise.cmrs.constant.CommonResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
@@ -13,6 +14,8 @@ import org.multilinguals.enterprise.cmrs.constant.result.code.UserPasswordResult
 import org.multilinguals.enterprise.cmrs.dto.aggregate.AggregateCreatedDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.CommandResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
+import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.RoleNotExistException;
+import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotExistException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotMatchPasswordException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -81,6 +84,19 @@ public class UserCommandController {
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof UserNotMatchPasswordException) {
                 throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, UserPasswordResultCode.USER_NOT_MATCH_PASSWORD);
+            }
+        }
+    }
+
+    @PostMapping("/admin/assign-role-to-user")
+    @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
+    public void assignRoleToUser(@RequestBody AssignRoleToUserCommand command, HttpServletResponse response) {
+        try {
+            commandGateway.sendAndWait(command);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (CommandExecutionException ex) {
+            if (ex.getCause() instanceof RoleNotExistException || ex.getCause() instanceof UserNotExistException) {
+                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ((RoleNotExistException) ex.getCause()).getMessageCode());
             }
         }
     }

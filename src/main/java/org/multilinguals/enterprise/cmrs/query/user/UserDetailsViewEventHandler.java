@@ -2,6 +2,7 @@ package org.multilinguals.enterprise.cmrs.query.user;
 
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.RoleBoundToUserEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserDetailsUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.event.UserSessionCreatedEvent;
@@ -50,6 +51,15 @@ public class UserDetailsViewEventHandler {
 
         // 设置关联密码
         userDetailsView.setUserPasswordId(event.getUserPasswordId().getIdentifier());
+
+        this.userDetailsViewRepository.save(userDetailsView);
+    }
+
+    @EventHandler
+    public void on(RoleBoundToUserEvent event, @Timestamp java.time.Instant createdTime) throws ChangeSetPersister.NotFoundException {
+        UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getUserId().getIdentifier())
+                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+        userDetailsView.setRole(new Role(event.getRoleId().getIdentifier(), event.getRoleName(), new Date(createdTime.toEpochMilli())));
 
         this.userDetailsViewRepository.save(userDetailsView);
     }
