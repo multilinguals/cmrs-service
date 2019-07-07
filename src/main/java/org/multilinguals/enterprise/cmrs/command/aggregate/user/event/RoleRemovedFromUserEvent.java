@@ -1,20 +1,17 @@
-package org.multilinguals.enterprise.cmrs.command.aggregate.user.command;
+package org.multilinguals.enterprise.cmrs.command.aggregate.user.event;
 
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
-import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
+import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.RoleId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
-import javax.validation.constraints.NotNull;
-
-public class RemoveRoleFromUserCommand extends AbstractCommand {
+public class RoleRemovedFromUserEvent extends AbstractEvent {
     @TargetAggregateIdentifier
     private UserId userId;
 
-    @NotNull
     private RoleId roleId;
 
-    public RemoveRoleFromUserCommand(UserId userId, @NotNull RoleId roleId) {
+    public RoleRemovedFromUserEvent(UserId userId, RoleId roleId) {
         this.userId = userId;
         this.roleId = roleId;
     }

@@ -113,4 +113,13 @@ public class UserDetailsView extends AbstractMongoEntity {
     public void setRole(Role role) {
         this.roleViewList.add(role);
     }
+
+    public void removeRole(String roleId) {
+        for (Role role : this.roleViewList) {
+            if (role.getId().equals(roleId)) {
+                this.roleViewList.remove(role);
+                break;
+            }
+        }
+    }
 }

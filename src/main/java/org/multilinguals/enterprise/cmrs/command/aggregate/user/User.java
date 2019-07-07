@@ -9,8 +9,10 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPassword
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.RoleId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.BindRoleToUserCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.CreateUserCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.RemoveRoleFromUserCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUserDetailsCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.RoleBoundToUserEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.RoleRemovedFromUserEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserDetailsUpdatedEvent;
 
@@ -49,7 +51,17 @@ public class User {
 
     @CommandHandler
     public void handle(BindRoleToUserCommand command) {
-        apply(new RoleBoundToUserEvent(command.getUserId(), command.getRoleId()));
+        if (!this.hasRole(command.getRoleId())) {
+            apply(new RoleBoundToUserEvent(command.getUserId(), command.getRoleId()));
+        }
+    }
+
+    @CommandHandler
+    public void handle(RemoveRoleFromUserCommand command) {
+        if (this.hasRole(command.getRoleId())) {
+            this.roleIdList.remove(command.getRoleId());
+            apply(new RoleRemovedFromUserEvent(command.getUserId(), command.getRoleId()));
+        }
     }
 
     @EventSourcingHandler
@@ -77,6 +89,11 @@ public class User {
     @EventSourcingHandler
     public void on(RoleBoundToUserEvent event) {
         this.roleIdList.add(event.getRoleId());
+    }
+
+    @EventSourcingHandler
+    public void on(RoleRemovedFromUserEvent event) {
+        this.roleIdList.remove(event.getRoleId());
     }
 
     public Boolean hasRole(RoleId roleId) {

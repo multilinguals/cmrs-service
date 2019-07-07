@@ -3,6 +3,7 @@ package org.multilinguals.enterprise.cmrs.query.user;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.RoleBoundToUserEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.RoleRemovedFromUserEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserDetailsUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.event.UserSessionCreatedEvent;
@@ -60,6 +61,17 @@ public class UserDetailsViewEventHandler {
         UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getUserId().getIdentifier())
                 .orElseThrow(ChangeSetPersister.NotFoundException::new);
         userDetailsView.setRole(new Role(event.getRoleId().getIdentifier(), event.getRoleId().getName(), new Date(createdTime.toEpochMilli())));
+        userDetailsView.setUpdatedAt(new Date(createdTime.toEpochMilli()));
+
+        this.userDetailsViewRepository.save(userDetailsView);
+    }
+
+    @EventHandler
+    public void on(RoleRemovedFromUserEvent event, @Timestamp java.time.Instant createdTime) throws ChangeSetPersister.NotFoundException {
+        UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getUserId().getIdentifier())
+                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+        userDetailsView.removeRole(event.getRoleId().getIdentifier());
+        userDetailsView.setUpdatedAt(new Date(createdTime.toEpochMilli()));
 
         this.userDetailsViewRepository.save(userDetailsView);
     }

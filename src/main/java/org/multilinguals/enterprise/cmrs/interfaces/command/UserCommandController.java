@@ -5,14 +5,17 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.command.AggregateNotFoundException;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.UpdateUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.RemoveRoleFromUserCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUserDetailsCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.role.AssignRoleToUserCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateClerkWithUsernameCommand;
 import org.multilinguals.enterprise.cmrs.constant.CommonResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.code.UserPasswordResultCode;
+import org.multilinguals.enterprise.cmrs.constant.result.code.UserResultCode;
 import org.multilinguals.enterprise.cmrs.dto.aggregate.AggregateCreatedDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.CommandResponse;
+import org.multilinguals.enterprise.cmrs.infrastructure.exception.AbstractException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.RoleNotExistException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotExistException;
@@ -96,8 +99,19 @@ public class UserCommandController {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof RoleNotExistException || ex.getCause() instanceof UserNotExistException) {
-                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ((RoleNotExistException) ex.getCause()).getMessageCode());
+                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ((AbstractException) ex.getCause()).getMessageCode());
             }
+        }
+    }
+
+    @PostMapping("/admin/remove-role-from-user")
+    @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
+    public void assignRoleToUser(@RequestBody RemoveRoleFromUserCommand command, HttpServletResponse response) {
+        try {
+            commandGateway.sendAndWait(command);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (AggregateNotFoundException ex) {
+            throw new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, UserResultCode.USER_NOT_EXISTED);
         }
     }
 }
