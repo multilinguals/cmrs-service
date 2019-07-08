@@ -5,11 +5,8 @@ public interface AuthResultCode {
     String SIGNED_UP_ACCOUNT = "40901";
 
     // 用户认证失信息有误
-    String AUTHORIZE_FAILED = "40101";
+    String ACCOUNT_PASSWORD_INVALID = "40101";
 
     // Token失效
     String INVALID_TOKEN = "40102";
-
-    // 没有权限查看
-    String FORBIDDEN = "40301";
 }

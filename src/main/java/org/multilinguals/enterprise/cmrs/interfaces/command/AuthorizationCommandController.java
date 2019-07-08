@@ -13,7 +13,6 @@ import org.multilinguals.enterprise.cmrs.infrastructure.data.Tuple2;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.CommandResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserPasswordInvalidException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
-import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
@@ -39,7 +38,7 @@ public class AuthorizationCommandController {
             Tuple2<UserSessionId, UserId> result = commandGateway.sendAndWait(command);
             return new CommandResponse<>(new UserSignInDTO(result.getT1().getIdentifier(), result.getT2().getIdentifier()));
         } catch (AggregateNotFoundException ex) {
-            throw new CMRSHTTPException(HttpServletResponse.SC_UNAUTHORIZED, AuthResultCode.AUTHORIZE_FAILED);
+            throw new CMRSHTTPException(HttpServletResponse.SC_UNAUTHORIZED, AuthResultCode.ACCOUNT_PASSWORD_INVALID);
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof UserPasswordInvalidException) {
                 throw new CMRSHTTPException(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());

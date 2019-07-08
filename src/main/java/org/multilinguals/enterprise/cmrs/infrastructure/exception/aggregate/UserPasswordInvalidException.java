@@ -4,6 +4,6 @@ import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
 
 public class UserPasswordInvalidException extends Exception {
     public UserPasswordInvalidException() {
-        super(AuthResultCode.AUTHORIZE_FAILED);
+        super(AuthResultCode.ACCOUNT_PASSWORD_INVALID);
     }
 }
