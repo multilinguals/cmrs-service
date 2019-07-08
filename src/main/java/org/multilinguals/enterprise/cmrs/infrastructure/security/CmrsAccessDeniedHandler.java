@@ -16,6 +16,6 @@ public class CmrsAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
         e.printStackTrace();
         httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        httpServletResponse.getWriter().write(JSON.toJSONString(new ExceptionResponse(AuthResultCode.FORBIDDEN)));
+        httpServletResponse.getWriter().write(JSON.toJSONString(new ExceptionResponse(AuthResultCode.FORBIDDEN, "")));
     }
 }

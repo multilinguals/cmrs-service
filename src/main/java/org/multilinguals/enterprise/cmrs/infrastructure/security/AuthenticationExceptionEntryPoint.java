@@ -17,6 +17,6 @@ public class AuthenticationExceptionEntryPoint implements AuthenticationEntryPoi
         e.printStackTrace();
         httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        httpServletResponse.getWriter().write(JSON.toJSONString(new ExceptionResponse(AuthResultCode.INVALID_TOKEN)));
+        httpServletResponse.getWriter().write(JSON.toJSONString(new ExceptionResponse(AuthResultCode.INVALID_TOKEN, "")));
     }
 }

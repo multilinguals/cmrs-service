@@ -13,6 +13,7 @@ import org.multilinguals.enterprise.cmrs.infrastructure.data.Tuple2;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.CommandResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserPasswordInvalidException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
+import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
