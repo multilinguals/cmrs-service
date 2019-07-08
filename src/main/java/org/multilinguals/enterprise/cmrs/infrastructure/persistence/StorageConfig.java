@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.infrastructure.config;
+package org.multilinguals.enterprise.cmrs.infrastructure.persistence;
 
 import com.mongodb.MongoClient;
 import org.axonframework.commandhandling.SimpleCommandBus;

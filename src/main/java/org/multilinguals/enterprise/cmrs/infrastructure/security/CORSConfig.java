@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.infrastructure.config;
+package org.multilinguals.enterprise.cmrs.infrastructure.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

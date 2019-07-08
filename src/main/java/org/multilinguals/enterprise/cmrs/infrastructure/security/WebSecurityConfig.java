@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.infrastructure.config;
+package org.multilinguals.enterprise.cmrs.infrastructure.security;
 
 import org.multilinguals.enterprise.cmrs.infrastructure.security.AuthenticationExceptionEntryPoint;
 import org.multilinguals.enterprise.cmrs.infrastructure.security.CmrsAccessDeniedHandler;
