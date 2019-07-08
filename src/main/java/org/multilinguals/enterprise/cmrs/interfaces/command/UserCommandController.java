@@ -11,11 +11,9 @@ import org.multilinguals.enterprise.cmrs.command.handler.role.AssignRoleToUserCo
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateClerkWithUsernameCommand;
 import org.multilinguals.enterprise.cmrs.constant.CommonResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
-import org.multilinguals.enterprise.cmrs.constant.result.code.UserPasswordResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.code.UserResultCode;
 import org.multilinguals.enterprise.cmrs.dto.aggregate.AggregateCreatedDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.CommandResponse;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.AbstractException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.RoleNotExistException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotExistException;
@@ -70,7 +68,9 @@ public class UserCommandController {
             throw new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, CommonResultCode.NOT_FOUND);
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof UserNotMatchPasswordException) {
-                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, UserPasswordResultCode.USER_NOT_MATCH_PASSWORD);
+                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+            } else {
+                throw new CMRSHTTPException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, CommonResultCode.UNKNOWN_EXCEPTION);
             }
         }
     }
@@ -86,7 +86,9 @@ public class UserCommandController {
             throw new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, CommonResultCode.NOT_FOUND);
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof UserNotMatchPasswordException) {
-                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, UserPasswordResultCode.USER_NOT_MATCH_PASSWORD);
+                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+            } else {
+                throw new CMRSHTTPException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, CommonResultCode.UNKNOWN_EXCEPTION);
             }
         }
     }
@@ -99,7 +101,7 @@ public class UserCommandController {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof RoleNotExistException || ex.getCause() instanceof UserNotExistException) {
-                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ((AbstractException) ex.getCause()).getMessageCode());
+                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
             }
         }
     }

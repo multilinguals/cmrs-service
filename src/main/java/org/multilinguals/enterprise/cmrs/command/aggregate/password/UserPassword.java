@@ -10,7 +10,6 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.Upda
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.event.UserPasswordCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.event.UserPasswordUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
-import org.multilinguals.enterprise.cmrs.constant.result.code.UserPasswordResultCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotMatchPasswordException;
 import org.springframework.util.DigestUtils;
 
@@ -42,7 +41,7 @@ public class UserPassword {
     @CommandHandler
     public void handler(UpdateUserPasswordCommand command) throws UserNotMatchPasswordException {
         if (!command.getUserId().equals(this.userId)) {
-            throw new UserNotMatchPasswordException(UserPasswordResultCode.USER_NOT_MATCH_PASSWORD);
+            throw new UserNotMatchPasswordException();
         }
 
         apply(new UserPasswordUpdatedEvent(command.getUserPasswordId(), hashInputPassword(command.getNewUserPassword())));

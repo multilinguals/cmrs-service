@@ -7,7 +7,7 @@ public class CommandResponse<T> extends AbstractResponse {
         this.data = data;
     }
 
-    public CommandResponse(int code, T data) {
+    public CommandResponse(String code, T data) {
         super(code);
         this.data = data;
     }

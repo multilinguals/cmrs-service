@@ -7,7 +7,7 @@ public class QueryResponse<T> extends AbstractResponse {
         this.data = data;
     }
 
-    public QueryResponse(int code, T data) {
+    public QueryResponse(String code, T data) {
         super(code);
         this.data = data;
     }
