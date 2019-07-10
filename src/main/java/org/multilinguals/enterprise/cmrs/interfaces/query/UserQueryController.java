@@ -1,6 +1,8 @@
 package org.multilinguals.enterprise.cmrs.interfaces.query;
 
+import org.multilinguals.enterprise.cmrs.constant.result.code.UserResultCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.QueryResponse;
+import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsView;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @RestController
@@ -59,8 +62,9 @@ public class UserQueryController {
     @GetMapping("/admin/get-user-details/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
     public QueryResponse<UserDetailsView> queryUserDetails(@PathVariable String id) {
-        Optional<UserDetailsView> userDetailsView = this.userDetailsViewRepository.findById(id);
+        UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(id)
+                .orElseThrow(() -> new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, UserResultCode.USER_NOT_EXISTED));
 
-        return userDetailsView.map(QueryResponse::new).orElseGet(() -> new QueryResponse<>(null));
+        return new QueryResponse<>(userDetailsView);
     }
 }

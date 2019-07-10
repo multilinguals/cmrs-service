@@ -59,9 +59,12 @@ public class UserDetailsViewEventHandler {
     @EventHandler
     public void on(RoleBoundToUserEvent event, @Timestamp java.time.Instant createdTime) throws ChangeSetPersister.NotFoundException {
         UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getUserId().getIdentifier())
+                .map(user -> {
+                    user.setRole(new Role(event.getRoleId().getIdentifier(), event.getRoleId().getName(), new Date(createdTime.toEpochMilli())));
+                    user.setUpdatedAt(new Date(createdTime.toEpochMilli()));
+                    return user;
+                })
                 .orElseThrow(ChangeSetPersister.NotFoundException::new);
-        userDetailsView.setRole(new Role(event.getRoleId().getIdentifier(), event.getRoleId().getName(), new Date(createdTime.toEpochMilli())));
-        userDetailsView.setUpdatedAt(new Date(createdTime.toEpochMilli()));
 
         this.userDetailsViewRepository.save(userDetailsView);
     }
@@ -69,9 +72,12 @@ public class UserDetailsViewEventHandler {
     @EventHandler
     public void on(RoleRemovedFromUserEvent event, @Timestamp java.time.Instant createdTime) throws ChangeSetPersister.NotFoundException {
         UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getUserId().getIdentifier())
+                .map(user -> {
+                    user.removeRole(event.getRoleId().getIdentifier());
+                    user.setUpdatedAt(new Date(createdTime.toEpochMilli()));
+                    return user;
+                })
                 .orElseThrow(ChangeSetPersister.NotFoundException::new);
-        userDetailsView.removeRole(event.getRoleId().getIdentifier());
-        userDetailsView.setUpdatedAt(new Date(createdTime.toEpochMilli()));
 
         this.userDetailsViewRepository.save(userDetailsView);
     }

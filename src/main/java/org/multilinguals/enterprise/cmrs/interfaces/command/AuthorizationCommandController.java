@@ -41,7 +41,7 @@ public class AuthorizationCommandController {
             throw new CMRSHTTPException(HttpServletResponse.SC_UNAUTHORIZED, AuthResultCode.ACCOUNT_PASSWORD_INVALID);
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof UserPasswordInvalidException) {
-                throw new CMRSHTTPException(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
+                throw new CMRSHTTPException(HttpServletResponse.SC_UNAUTHORIZED, ex.getCause().getMessage());
             } else {
                 throw ex;
             }
