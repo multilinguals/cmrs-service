@@ -68,7 +68,7 @@ public class UserCommandController {
             throw new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, CommonResultCode.NOT_FOUND);
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof UserNotMatchPasswordException) {
-                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getCause().getMessage());
             } else {
                 throw new CMRSHTTPException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, CommonResultCode.UNKNOWN_EXCEPTION);
             }
@@ -86,7 +86,7 @@ public class UserCommandController {
             throw new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, CommonResultCode.NOT_FOUND);
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof UserNotMatchPasswordException) {
-                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getCause().getMessage());
             } else {
                 throw new CMRSHTTPException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, CommonResultCode.UNKNOWN_EXCEPTION);
             }
@@ -101,7 +101,7 @@ public class UserCommandController {
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof RoleNotExistException || ex.getCause() instanceof UserNotExistException) {
-                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getCause().getMessage());
             }
         }
     }
