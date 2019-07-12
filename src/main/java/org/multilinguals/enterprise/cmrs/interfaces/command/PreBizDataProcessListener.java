@@ -3,13 +3,17 @@ package org.multilinguals.enterprise.cmrs.interfaces.command;
 import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.multilinguals.enterprise.cmrs.command.aggregate.dishtype.command.CreateDishTypeCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.menuitemtype.command.CreateMenuItemTypeCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.command.CreateRoleCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateUserWithUsernameCommand;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.dishtype.DefaultDishType;
+import org.multilinguals.enterprise.cmrs.constant.aggregate.menutype.DefaultMenuItemType;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.role.DefaultRoleName;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeView;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeViewRepository;
+import org.multilinguals.enterprise.cmrs.query.menuitemtype.MenuItemTypeView;
+import org.multilinguals.enterprise.cmrs.query.menuitemtype.MenuItemTypeViewRepository;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.domain.Example;
@@ -28,6 +32,9 @@ public class PreBizDataProcessListener implements ApplicationListener<Applicatio
 
     @Resource
     private DishTypeViewRepository dishTypeViewRepository;
+
+    @Resource
+    private MenuItemTypeViewRepository menuItemTypeViewRepository;
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
@@ -61,6 +68,9 @@ public class PreBizDataProcessListener implements ApplicationListener<Applicatio
         this.createDishType(DefaultDishType.PASTA);
         this.createDishType(DefaultDishType.RICE);
         this.createDishType(DefaultDishType.SOUP);
+
+        this.createMenuItemType(DefaultMenuItemType.SINGLE);
+        this.createMenuItemType(DefaultMenuItemType.SET);
     }
 
     private void createRole(String name) {
@@ -76,6 +86,13 @@ public class PreBizDataProcessListener implements ApplicationListener<Applicatio
         DishTypeView dishTypeView = this.dishTypeViewRepository.findOne(Example.of(new DishTypeView(null, name, null))).orElse(null);
         if (dishTypeView == null) {
             this.commandGateway.sendAndWait(new CreateDishTypeCommand(name));
+        }
+    }
+
+    private void createMenuItemType(String name) {
+        MenuItemTypeView menuItemTypeView = this.menuItemTypeViewRepository.findOne(Example.of(new MenuItemTypeView(null, name, null))).orElse(null);
+        if (menuItemTypeView == null) {
+            this.commandGateway.sendAndWait(new CreateMenuItemTypeCommand(name));
         }
     }
 }

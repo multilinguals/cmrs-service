@@ -1,0 +1,25 @@
+package org.multilinguals.enterprise.cmrs.command.aggregate.menuitemtype.event;
+
+import org.axonframework.modelling.command.AggregateIdentifier;
+import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.menuitemtype.MenuTypeItemId;
+
+public class MenuItemTypeCreatedEvent extends AbstractEvent {
+    @AggregateIdentifier
+    private MenuTypeItemId id;
+
+    private String name;
+
+    public MenuItemTypeCreatedEvent(MenuTypeItemId id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public MenuTypeItemId getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
