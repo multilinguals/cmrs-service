@@ -9,7 +9,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.RemoveRo
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUserDetailsCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.role.AssignRoleToUserCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateClerkWithUsernameCommand;
-import org.multilinguals.enterprise.cmrs.constant.CommonResultCode;
+import org.multilinguals.enterprise.cmrs.constant.result.CommonResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.code.UserResultCode;
 import org.multilinguals.enterprise.cmrs.dto.aggregate.AggregateCreatedDTO;

@@ -9,5 +9,7 @@ public interface DefaultDishType {
 
     String SOUP = "SOUP";
 
+    String DESSERT = "DESSERT";
+
     String DRINKS = "DRINKS";
 }

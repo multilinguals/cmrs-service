@@ -2,7 +2,7 @@ package org.multilinguals.enterprise.cmrs.infrastructure.exception;
 
 
 import org.axonframework.messaging.interceptors.JSR303ViolationException;
-import org.multilinguals.enterprise.cmrs.constant.CommonResultCode;
+import org.multilinguals.enterprise.cmrs.constant.result.CommonResultCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.ExceptionResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;

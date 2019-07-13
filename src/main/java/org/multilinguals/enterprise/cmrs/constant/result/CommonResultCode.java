@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.constant;
+package org.multilinguals.enterprise.cmrs.constant.result;
 
 public interface CommonResultCode {
     // 处理成功

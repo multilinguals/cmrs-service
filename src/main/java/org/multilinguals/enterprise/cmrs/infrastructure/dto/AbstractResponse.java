@@ -1,7 +1,7 @@
 package org.multilinguals.enterprise.cmrs.infrastructure.dto;
 
 
-import org.multilinguals.enterprise.cmrs.constant.CommonResultCode;
+import org.multilinguals.enterprise.cmrs.constant.result.CommonResultCode;
 
 public class AbstractResponse {
     private String code;

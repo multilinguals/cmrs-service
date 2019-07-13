@@ -6,10 +6,13 @@ import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateMember;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.CreateRestaurantCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.CreateSingleMenuItemCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.MenuItemSingleCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.RestaurantCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
@@ -25,7 +28,7 @@ public class Restaurant {
     private UserId creatorId;
 
     @AggregateMember
-    private List<MenuItem> menu;
+    private Map<MenuItemId, MenuItem> menu = new HashMap<>();
 
     protected Restaurant() {
     }
@@ -35,12 +38,26 @@ public class Restaurant {
         apply(new RestaurantCreatedEvent(new RestaurantId(), command.getName(), command.getDescription(), command.getCreatorId()));
     }
 
+    @CommandHandler
+    public MenuItemId handler(CreateSingleMenuItemCommand command) {
+        MenuItemId menuItemId = new MenuItemId();
+        apply(new MenuItemSingleCreatedEvent(menuItemId, this.id, command.getName(), command.getMenuItemTypeId(), command.getDishTypeId(), command.getTasteId(), command.getPrice()));
+        return menuItemId;
+    }
+
     @EventSourcingHandler
-    public void handler(RestaurantCreatedEvent event) {
+    public void on(RestaurantCreatedEvent event) {
         this.id = event.getId();
         this.name = event.getName();
         this.description = event.getDescription();
         this.creatorId = event.getCreatorId();
+    }
+
+    @EventSourcingHandler
+    public void on(MenuItemSingleCreatedEvent event) {
+        SingleMenuItem singleMenuItem = new SingleMenuItem(event.getId(), event.getName(), event.getMenuItemTypeId(), event.getPrice(), event.getDishTypeId(), event.getTasteId());
+
+        this.menu.put(singleMenuItem.getId(), singleMenuItem);
     }
 
     public RestaurantId getId() {
@@ -59,7 +76,7 @@ public class Restaurant {
         return creatorId;
     }
 
-    public List<MenuItem> getMenu() {
+    public Map<MenuItemId, MenuItem> getMenu() {
         return menu;
     }
 }

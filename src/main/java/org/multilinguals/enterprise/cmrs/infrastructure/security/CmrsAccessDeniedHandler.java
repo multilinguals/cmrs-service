@@ -1,7 +1,7 @@
 package org.multilinguals.enterprise.cmrs.infrastructure.security;
 
 import com.alibaba.fastjson.JSON;
-import org.multilinguals.enterprise.cmrs.constant.CommonResultCode;
+import org.multilinguals.enterprise.cmrs.constant.result.CommonResultCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.ExceptionResponse;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;

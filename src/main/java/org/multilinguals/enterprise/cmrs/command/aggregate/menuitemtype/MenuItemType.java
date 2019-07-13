@@ -12,13 +12,13 @@ import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 @Aggregate
 public class MenuItemType {
     @AggregateIdentifier
-    private MenuTypeItemId id;
+    private MenuItemTypeId id;
 
     private String name;
 
     @CommandHandler
     public MenuItemType(CreateMenuItemTypeCommand command) {
-        apply(new MenuItemTypeCreatedEvent(new MenuTypeItemId(), command.getName()));
+        apply(new MenuItemTypeCreatedEvent(new MenuItemTypeId(), command.getName()));
     }
 
     @EventSourcingHandler
@@ -27,7 +27,7 @@ public class MenuItemType {
         this.name = event.getName();
     }
 
-    public MenuTypeItemId getId() {
+    public MenuItemTypeId getId() {
         return id;
     }
 

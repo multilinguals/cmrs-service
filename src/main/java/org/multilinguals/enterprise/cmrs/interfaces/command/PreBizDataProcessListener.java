@@ -74,6 +74,7 @@ public class PreBizDataProcessListener implements ApplicationListener<Applicatio
         this.createDishType(DefaultDishType.DRINKS);
         this.createDishType(DefaultDishType.PASTA);
         this.createDishType(DefaultDishType.RICE);
+        this.createDishType(DefaultDishType.DESSERT);
         this.createDishType(DefaultDishType.SOUP);
 
         this.createMenuItemType(DefaultMenuItemType.SINGLE);
