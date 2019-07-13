@@ -25,7 +25,7 @@ public class Restaurant {
     private UserId creatorId;
 
     @AggregateMember
-    private List<MenuItem> menuItems;
+    private List<MenuItem> menu;
 
     protected Restaurant() {
     }
@@ -59,7 +59,7 @@ public class Restaurant {
         return creatorId;
     }
 
-    public List<MenuItem> getMenuItems() {
-        return menuItems;
+    public List<MenuItem> getMenu() {
+        return menu;
     }
 }

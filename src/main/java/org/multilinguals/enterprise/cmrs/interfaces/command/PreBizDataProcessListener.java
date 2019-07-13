@@ -5,15 +5,19 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.multilinguals.enterprise.cmrs.command.aggregate.dishtype.command.CreateDishTypeCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.menuitemtype.command.CreateMenuItemTypeCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.command.CreateRoleCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.taste.command.CreateTasteCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateUserWithUsernameCommand;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.dishtype.DefaultDishType;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.menutype.DefaultMenuItemType;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.role.DefaultRoleName;
+import org.multilinguals.enterprise.cmrs.constant.aggregate.taste.DefaultTaste;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeView;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeViewRepository;
 import org.multilinguals.enterprise.cmrs.query.menuitemtype.MenuItemTypeView;
 import org.multilinguals.enterprise.cmrs.query.menuitemtype.MenuItemTypeViewRepository;
+import org.multilinguals.enterprise.cmrs.query.taste.TasteView;
+import org.multilinguals.enterprise.cmrs.query.taste.TasteViewRepository;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.domain.Example;
@@ -35,6 +39,9 @@ public class PreBizDataProcessListener implements ApplicationListener<Applicatio
 
     @Resource
     private MenuItemTypeViewRepository menuItemTypeViewRepository;
+
+    @Resource
+    private TasteViewRepository tasteViewRepository;
 
     @Override
     public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
@@ -71,6 +78,10 @@ public class PreBizDataProcessListener implements ApplicationListener<Applicatio
 
         this.createMenuItemType(DefaultMenuItemType.SINGLE);
         this.createMenuItemType(DefaultMenuItemType.SET);
+
+        this.createTaste(DefaultTaste.HOT);
+        this.createTaste(DefaultTaste.SOUR);
+        this.createTaste(DefaultTaste.SWEET);
     }
 
     private void createRole(String name) {
@@ -93,6 +104,13 @@ public class PreBizDataProcessListener implements ApplicationListener<Applicatio
         MenuItemTypeView menuItemTypeView = this.menuItemTypeViewRepository.findOne(Example.of(new MenuItemTypeView(null, name, null))).orElse(null);
         if (menuItemTypeView == null) {
             this.commandGateway.sendAndWait(new CreateMenuItemTypeCommand(name));
+        }
+    }
+
+    private void createTaste(String name) {
+        TasteView tasteView = this.tasteViewRepository.findOne(Example.of(new TasteView(null, name, null))).orElse(null);
+        if (tasteView == null) {
+            this.commandGateway.sendAndWait(new CreateTasteCommand(name));
         }
     }
 }
