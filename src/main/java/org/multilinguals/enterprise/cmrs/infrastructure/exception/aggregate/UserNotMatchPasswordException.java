@@ -1,9 +1,9 @@
 package org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate;
 
-import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
+import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
 
 public class UserNotMatchPasswordException extends Exception {
     public UserNotMatchPasswordException() {
-        super(AuthResultCode.ACCOUNT_PASSWORD_INVALID);
+        super(ErrorCode.ACCOUNT_PASSWORD_INVALID);
     }
 }

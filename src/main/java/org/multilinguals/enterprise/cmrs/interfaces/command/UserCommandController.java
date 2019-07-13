@@ -10,8 +10,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUs
 import org.multilinguals.enterprise.cmrs.command.handler.role.AssignRoleToUserCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateClerkWithUsernameCommand;
 import org.multilinguals.enterprise.cmrs.constant.result.CommonResultCode;
-import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
-import org.multilinguals.enterprise.cmrs.constant.result.code.UserResultCode;
+import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
 import org.multilinguals.enterprise.cmrs.dto.aggregate.AggregateCreatedDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.CommandResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
@@ -41,7 +40,7 @@ public class UserCommandController {
             return new CommandResponse<>(new AggregateCreatedDTO<>(userId.getIdentifier()));
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof AccountSignedUpException) {
-                throw new CMRSHTTPException(HttpServletResponse.SC_CONFLICT, AuthResultCode.SIGNED_UP_ACCOUNT);
+                throw new CMRSHTTPException(HttpServletResponse.SC_CONFLICT, ErrorCode.SIGNED_UP_ACCOUNT);
             } else {
                 throw ex;
             }
@@ -113,7 +112,7 @@ public class UserCommandController {
             commandGateway.sendAndWait(command);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (AggregateNotFoundException ex) {
-            throw new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, UserResultCode.USER_NOT_EXISTED);
+            throw new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, ErrorCode.USER_NOT_EXISTED);
         }
     }
 }

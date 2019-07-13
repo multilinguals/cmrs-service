@@ -1,6 +1,6 @@
 package org.multilinguals.enterprise.cmrs.interfaces.query;
 
-import org.multilinguals.enterprise.cmrs.constant.result.code.UserResultCode;
+import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.QueryResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsView;
@@ -63,7 +63,7 @@ public class UserQueryController {
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
     public QueryResponse<UserDetailsView> queryUserDetails(@PathVariable String id) {
         UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(id)
-                .orElseThrow(() -> new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, UserResultCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, ErrorCode.USER_NOT_EXISTED));
 
         return new QueryResponse<>(userDetailsView);
     }

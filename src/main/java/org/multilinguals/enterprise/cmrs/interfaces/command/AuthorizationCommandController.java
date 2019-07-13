@@ -7,7 +7,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.UserSessionId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.command.DeleteUserSessionCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.signin.SignInWithPasswordCommand;
-import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
+import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
 import org.multilinguals.enterprise.cmrs.dto.authorization.UserSignInDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.data.Tuple2;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.CommandResponse;
@@ -38,7 +38,7 @@ public class AuthorizationCommandController {
             Tuple2<UserSessionId, UserId> result = commandGateway.sendAndWait(command);
             return new CommandResponse<>(new UserSignInDTO(result.getT1().getIdentifier(), result.getT2().getIdentifier()));
         } catch (AggregateNotFoundException ex) {
-            throw new CMRSHTTPException(HttpServletResponse.SC_UNAUTHORIZED, AuthResultCode.ACCOUNT_PASSWORD_INVALID);
+            throw new CMRSHTTPException(HttpServletResponse.SC_UNAUTHORIZED, ErrorCode.ACCOUNT_PASSWORD_INVALID);
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof UserPasswordInvalidException) {
                 throw new CMRSHTTPException(HttpServletResponse.SC_UNAUTHORIZED, ex.getCause().getMessage());

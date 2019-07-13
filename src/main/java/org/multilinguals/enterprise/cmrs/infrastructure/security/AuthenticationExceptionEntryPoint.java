@@ -1,7 +1,7 @@
 package org.multilinguals.enterprise.cmrs.infrastructure.security;
 
 import com.alibaba.fastjson.JSON;
-import org.multilinguals.enterprise.cmrs.constant.result.code.AuthResultCode;
+import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.ExceptionResponse;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -17,6 +17,6 @@ public class AuthenticationExceptionEntryPoint implements AuthenticationEntryPoi
         e.printStackTrace();
         httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        httpServletResponse.getWriter().write(JSON.toJSONString(new ExceptionResponse(AuthResultCode.INVALID_TOKEN, "")));
+        httpServletResponse.getWriter().write(JSON.toJSONString(new ExceptionResponse(ErrorCode.INVALID_TOKEN, "")));
     }
 }
