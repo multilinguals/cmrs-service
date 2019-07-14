@@ -49,7 +49,7 @@ public class Restaurant {
 
     @CommandHandler
     public void handler(UpdateSingleMenuItemCommand command) {
-        apply(new SingleMenuItemUpdatedEvent(command.getId(), command.getName(), command.getDishTypeId(), command.getTasteId(), command.getPrice(), command.getOnShelve()));
+        apply(new SingleMenuItemUpdatedEvent(command.getRestaurantId(), command.getId(), command.getName(), command.getDishTypeId(), command.getTasteId(), command.getPrice(), command.getOnShelve()));
     }
 
     @EventSourcingHandler

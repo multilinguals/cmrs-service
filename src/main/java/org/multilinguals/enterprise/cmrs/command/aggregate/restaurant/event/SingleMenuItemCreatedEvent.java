@@ -11,9 +11,9 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.taste.TasteId;
 import java.math.BigDecimal;
 
 public class SingleMenuItemCreatedEvent extends AbstractEvent {
-    @TargetAggregateIdentifier
     private MenuItemId id;
 
+    @TargetAggregateIdentifier
     private RestaurantId restaurantId;
 
     private String name;
