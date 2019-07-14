@@ -25,6 +25,12 @@ public interface ErrorCode {
     // 口味不存在
     String TASTE_NOT_EXISTED = "40006";
 
+    // 菜单项不存在
+    String MENU_ITEM_NOT_EXISTED = "40007";
+
+    // 餐厅和菜单项不匹配
+    String REST_NOT_MATCH_MENU_ITEM = "40008";
+
     // 用户身份凭证已经存在
     String SIGNED_UP_ACCOUNT = "40901";
 }

@@ -7,8 +7,10 @@ import org.axonframework.modelling.command.AggregateMember;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.CreateRestaurantCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.CreateSingleMenuItemCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.MenuItemSingleCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.UpdateSingleMenuItemCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.RestaurantCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SingleMenuItemCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SingleMenuItemUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
 import java.util.HashMap;
@@ -41,8 +43,13 @@ public class Restaurant {
     @CommandHandler
     public MenuItemId handler(CreateSingleMenuItemCommand command) {
         MenuItemId menuItemId = new MenuItemId();
-        apply(new MenuItemSingleCreatedEvent(menuItemId, this.id, command.getName(), command.getMenuItemTypeId(), command.getDishTypeId(), command.getTasteId(), command.getPrice()));
+        apply(new SingleMenuItemCreatedEvent(menuItemId, this.id, command.getName(), command.getMenuItemTypeId(), command.getDishTypeId(), command.getTasteId(), command.getPrice()));
         return menuItemId;
+    }
+
+    @CommandHandler
+    public void handler(UpdateSingleMenuItemCommand command) {
+        apply(new SingleMenuItemUpdatedEvent(command.getId(), command.getName(), command.getDishTypeId(), command.getTasteId(), command.getPrice(), command.getOnShelve()));
     }
 
     @EventSourcingHandler
@@ -54,10 +61,34 @@ public class Restaurant {
     }
 
     @EventSourcingHandler
-    public void on(MenuItemSingleCreatedEvent event) {
+    public void on(SingleMenuItemCreatedEvent event) {
         SingleMenuItem singleMenuItem = new SingleMenuItem(event.getId(), event.getName(), event.getMenuItemTypeId(), event.getPrice(), event.getDishTypeId(), event.getTasteId());
 
         this.menu.put(singleMenuItem.getId(), singleMenuItem);
+    }
+
+    @EventSourcingHandler
+    public void on(SingleMenuItemUpdatedEvent event) {
+        SingleMenuItem menuItem = (SingleMenuItem) this.menu.get(event.getId());
+        if (event.getDishTypeId() != null) {
+            menuItem.setDishTypeId(event.getDishTypeId());
+        }
+
+        if (event.getName() != null) {
+            menuItem.setName(event.getName());
+        }
+
+        if (event.getTasteId() != null) {
+            menuItem.setTasteId(event.getTasteId());
+        }
+
+        if (event.getPrice() != null) {
+            menuItem.setPrice(event.getPrice());
+        }
+
+        if (event.getOnShelve() != null) {
+            menuItem.setOnShelve(event.getOnShelve());
+        }
     }
 
     public RestaurantId getId() {

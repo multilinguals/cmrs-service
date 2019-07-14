@@ -29,19 +29,39 @@ public abstract class MenuItem {
         return id;
     }
 
+    public void setId(MenuItemId id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public MenuItemTypeId getMenuItemTypeId() {
         return menuItemTypeId;
     }
 
+    public void setMenuItemTypeId(MenuItemTypeId menuItemTypeId) {
+        this.menuItemTypeId = menuItemTypeId;
+    }
+
     public BigDecimal getPrice() {
         return price;
     }
 
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
     public Boolean getOnShelve() {
         return onShelve;
+    }
+
+    public void setOnShelve(Boolean onShelve) {
+        this.onShelve = onShelve;
     }
 }

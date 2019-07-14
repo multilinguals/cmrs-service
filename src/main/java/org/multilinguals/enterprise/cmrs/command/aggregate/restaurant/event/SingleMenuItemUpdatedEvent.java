@@ -1,24 +1,17 @@
 package org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event;
 
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
-import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.dishtype.DishTypeId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.menuitemtype.MenuItemTypeId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.MenuItemId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.taste.TasteId;
 
 import java.math.BigDecimal;
 
-public class MenuItemSingleCreatedEvent extends AbstractEvent {
+public class SingleMenuItemUpdatedEvent {
     @TargetAggregateIdentifier
     private MenuItemId id;
 
-    private RestaurantId restaurantId;
-
     private String name;
-
-    private MenuItemTypeId menuItemTypeId;
 
     private DishTypeId dishTypeId;
 
@@ -26,30 +19,23 @@ public class MenuItemSingleCreatedEvent extends AbstractEvent {
 
     private BigDecimal price;
 
-    public MenuItemSingleCreatedEvent(MenuItemId id, RestaurantId restaurantId, String name, MenuItemTypeId menuItemTypeId, DishTypeId dishTypeId, TasteId tasteId, BigDecimal price) {
+    private Boolean onShelve;
+
+    public SingleMenuItemUpdatedEvent(MenuItemId id, String name, DishTypeId dishTypeId, TasteId tasteId, BigDecimal price, Boolean onShelve) {
         this.id = id;
-        this.restaurantId = restaurantId;
         this.name = name;
-        this.menuItemTypeId = menuItemTypeId;
         this.dishTypeId = dishTypeId;
         this.tasteId = tasteId;
         this.price = price;
+        this.onShelve = onShelve;
     }
 
     public MenuItemId getId() {
         return id;
     }
 
-    public RestaurantId getRestaurantId() {
-        return restaurantId;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public MenuItemTypeId getMenuItemTypeId() {
-        return menuItemTypeId;
     }
 
     public DishTypeId getDishTypeId() {
@@ -62,5 +48,9 @@ public class MenuItemSingleCreatedEvent extends AbstractEvent {
 
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public Boolean getOnShelve() {
+        return onShelve;
     }
 }

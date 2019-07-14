@@ -5,7 +5,7 @@ import org.springframework.data.annotation.Id;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class MenuItemView {
+public class SingleMenuItemView {
     @Id
     private String id;
 
@@ -33,14 +33,14 @@ public class MenuItemView {
 
     private Date updatedAt;
 
-    public MenuItemView() {
+    public SingleMenuItemView() {
     }
 
-    public MenuItemView(String restaurantId) {
+    public SingleMenuItemView(String restaurantId) {
         this.restaurantId = restaurantId;
     }
 
-    public MenuItemView(String id, String restaurantId, String name, String menuItemTypeId, String menuItemName, String dishTypeId, String dishTypeName, String tasteId, String tasteName, BigDecimal price, Boolean onShelve, Date createdAt) {
+    public SingleMenuItemView(String id, String restaurantId, String name, String menuItemTypeId, String menuItemName, String dishTypeId, String dishTypeName, String tasteId, String tasteName, BigDecimal price, Boolean onShelve, Date createdAt) {
         this.id = id;
         this.restaurantId = restaurantId;
         this.name = name;
@@ -59,40 +59,80 @@ public class MenuItemView {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getRestaurantId() {
         return restaurantId;
+    }
+
+    public void setRestaurantId(String restaurantId) {
+        this.restaurantId = restaurantId;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getMenuItemTypeId() {
         return menuItemTypeId;
+    }
+
+    public void setMenuItemTypeId(String menuItemTypeId) {
+        this.menuItemTypeId = menuItemTypeId;
     }
 
     public String getMenuItemName() {
         return menuItemName;
     }
 
+    public void setMenuItemName(String menuItemName) {
+        this.menuItemName = menuItemName;
+    }
+
     public String getDishTypeId() {
         return dishTypeId;
+    }
+
+    public void setDishTypeId(String dishTypeId) {
+        this.dishTypeId = dishTypeId;
     }
 
     public String getDishTypeName() {
         return dishTypeName;
     }
 
+    public void setDishTypeName(String dishTypeName) {
+        this.dishTypeName = dishTypeName;
+    }
+
     public String getTasteId() {
         return tasteId;
+    }
+
+    public void setTasteId(String tasteId) {
+        this.tasteId = tasteId;
     }
 
     public String getTasteName() {
         return tasteName;
     }
 
+    public void setTasteName(String tasteName) {
+        this.tasteName = tasteName;
+    }
+
     public BigDecimal getPrice() {
         return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public Boolean getOnShelve() {
@@ -107,7 +147,15 @@ public class MenuItemView {
         return createdAt;
     }
 
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
     public Date getUpdatedAt() {
         return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

@@ -24,4 +24,12 @@ public class SingleMenuItem extends MenuItem {
     public TasteId getTasteId() {
         return tasteId;
     }
+
+    public void setDishTypeId(DishTypeId dishTypeId) {
+        this.dishTypeId = dishTypeId;
+    }
+
+    public void setTasteId(TasteId tasteId) {
+        this.tasteId = tasteId;
+    }
 }

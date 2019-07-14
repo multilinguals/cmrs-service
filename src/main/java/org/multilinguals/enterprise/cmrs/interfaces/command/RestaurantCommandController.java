@@ -6,16 +6,16 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.MenuItemId
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.CreateRestaurantCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.CreateSingleMenuItemCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.UpdateSingleMenuItemCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.menutype.DefaultMenuItemType;
 import org.multilinguals.enterprise.cmrs.dto.aggregate.AggregateCreatedDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.CommandResponse;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.DishTypeNotExistException;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.MenuItemTypeNotExistException;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.RestaurantNotExistException;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.TasteNotExistException;
+import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.*;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeViewRepository;
+import org.multilinguals.enterprise.cmrs.query.menuitem.SingleMenuItemView;
+import org.multilinguals.enterprise.cmrs.query.menuitem.SingleMenuItemViewRepository;
 import org.multilinguals.enterprise.cmrs.query.menuitemtype.MenuItemTypeView;
 import org.multilinguals.enterprise.cmrs.query.menuitemtype.MenuItemTypeViewRepository;
 import org.multilinguals.enterprise.cmrs.query.restaurant.RestaurantDetailsViewRepository;
@@ -23,10 +23,7 @@ import org.multilinguals.enterprise.cmrs.query.taste.TasteViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -38,6 +35,8 @@ public class RestaurantCommandController {
 
     private RestaurantDetailsViewRepository restaurantDetailsViewRepository;
 
+    private SingleMenuItemViewRepository singleMenuItemViewRepository;
+
     private MenuItemTypeViewRepository menuItemTypeViewRepository;
 
     private DishTypeViewRepository dishTypeViewRepository;
@@ -45,8 +44,9 @@ public class RestaurantCommandController {
     private TasteViewRepository tasteViewRepository;
 
     @Autowired
-    public RestaurantCommandController(RestaurantDetailsViewRepository restaurantDetailsViewRepository, MenuItemTypeViewRepository menuItemTypeViewRepository, DishTypeViewRepository dishTypeViewRepository, TasteViewRepository tasteViewRepository) {
+    public RestaurantCommandController(RestaurantDetailsViewRepository restaurantDetailsViewRepository, SingleMenuItemViewRepository singleMenuItemViewRepository, MenuItemTypeViewRepository menuItemTypeViewRepository, DishTypeViewRepository dishTypeViewRepository, TasteViewRepository tasteViewRepository) {
         this.restaurantDetailsViewRepository = restaurantDetailsViewRepository;
+        this.singleMenuItemViewRepository = singleMenuItemViewRepository;
         this.menuItemTypeViewRepository = menuItemTypeViewRepository;
         this.dishTypeViewRepository = dishTypeViewRepository;
         this.tasteViewRepository = tasteViewRepository;
@@ -78,5 +78,23 @@ public class RestaurantCommandController {
 
         MenuItemId menuItemId = commandGateway.sendAndWait(command);
         return new CommandResponse<>(new AggregateCreatedDTO<>(menuItemId.getIdentifier()));
+    }
+
+    @PostMapping("/admin/update-restaurant/{restId}/single-menu-item")
+    @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
+    public void updateSingleMenuItem(@PathVariable String restId, @RequestBody UpdateSingleMenuItemCommand command, HttpServletResponse response) throws MenuItemTypeNotExistException {
+        try {
+            this.restaurantDetailsViewRepository.findById(restId).orElseThrow(RestaurantNotExistException::new);
+            SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(command.getId().getIdentifier()).orElseThrow(MenuItemNotExistException::new);
+
+            if (!restId.equals(singleMenuItemView.getRestaurantId())) {
+                throw new RestaurantNotMatchMenuItemException();
+            }
+        } catch (RestaurantNotExistException | MenuItemNotExistException | RestaurantNotMatchMenuItemException ex) {
+            throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+        }
+
+        command.setRestaurantId(new RestaurantId(restId));
+        commandGateway.sendAndWait(command);
     }
 }

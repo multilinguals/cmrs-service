@@ -2,8 +2,10 @@ package org.multilinguals.enterprise.cmrs.query.menuitem;
 
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.MenuItemSingleCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SingleMenuItemCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SingleMenuItemUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.DishTypeNotExistException;
+import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.MenuItemNotExistException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.MenuItemTypeNotExistException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.TasteNotExistException;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeView;
@@ -36,7 +38,7 @@ public class SingleMenuItemViewHandler {
     }
 
     @EventHandler
-    public void on(MenuItemSingleCreatedEvent event, @Timestamp java.time.Instant createdTime) throws Exception {
+    public void on(SingleMenuItemCreatedEvent event, @Timestamp java.time.Instant createdTime) throws Exception {
         MenuItemTypeView menuItemTypeView = this.menuItemTypeViewRepository.findById(event.getMenuItemTypeId().getIdentifier())
                 .orElseThrow(MenuItemTypeNotExistException::new);
         DishTypeView dishTypeView = this.dishTypeViewRepository.findById(event.getDishTypeId().getIdentifier())
@@ -44,7 +46,7 @@ public class SingleMenuItemViewHandler {
         TasteView tasteView = this.tasteViewRepository.findById(event.getTasteId().getIdentifier())
                 .orElseThrow(TasteNotExistException::new);
 
-        MenuItemView menuItemView = new MenuItemView(
+        SingleMenuItemView singleMenuItemView = new SingleMenuItemView(
                 event.getId().getIdentifier(),
                 event.getRestaurantId().getIdentifier(),
                 event.getName(),
@@ -59,6 +61,41 @@ public class SingleMenuItemViewHandler {
                 new Date(createdTime.toEpochMilli())
         );
 
-        this.singleMenuItemViewRepository.save(menuItemView);
+        this.singleMenuItemViewRepository.save(singleMenuItemView);
+    }
+
+    @EventHandler
+    public void on(SingleMenuItemUpdatedEvent event, @Timestamp java.time.Instant updatedTime) throws Exception {
+        SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(event.getId().getIdentifier()).orElseThrow(MenuItemNotExistException::new);
+
+        if (event.getDishTypeId() != null) {
+            singleMenuItemView.setDishTypeId(event.getDishTypeId().getIdentifier());
+            DishTypeView dishTypeView = this.dishTypeViewRepository.findById(event.getDishTypeId().getIdentifier())
+                    .orElseThrow(DishTypeNotExistException::new);
+            singleMenuItemView.setDishTypeName(dishTypeView.getName());
+        }
+
+        if (event.getName() != null) {
+            singleMenuItemView.setName(event.getName());
+        }
+
+        if (event.getTasteId() != null) {
+            singleMenuItemView.setTasteId(event.getTasteId().getIdentifier());
+            TasteView tasteView = this.tasteViewRepository.findById(event.getTasteId().getIdentifier())
+                    .orElseThrow(TasteNotExistException::new);
+            singleMenuItemView.setMenuItemName(tasteView.getName());
+        }
+
+        if (event.getPrice() != null) {
+            singleMenuItemView.setPrice(event.getPrice());
+        }
+
+        if (event.getOnShelve() != null) {
+            singleMenuItemView.setOnShelve(event.getOnShelve());
+        }
+
+        singleMenuItemView.setUpdatedAt(new Date(updatedTime.toEpochMilli()));
+
+        this.singleMenuItemViewRepository.save(singleMenuItemView);
     }
 }
