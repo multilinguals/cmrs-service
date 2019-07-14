@@ -17,7 +17,6 @@ public class CreateSingleMenuItemCommand extends AbstractCommand {
     @NotNull
     private String name;
 
-    @NotNull
     private MenuItemTypeId menuItemTypeId;
 
     @NotNull
@@ -28,7 +27,7 @@ public class CreateSingleMenuItemCommand extends AbstractCommand {
     @NotNull
     private BigDecimal price;
 
-    public CreateSingleMenuItemCommand(RestaurantId restaurantId, @NotNull String name, @NotNull MenuItemTypeId menuItemTypeId, @NotNull DishTypeId dishTypeId, TasteId tasteId, @NotNull BigDecimal price) {
+    public CreateSingleMenuItemCommand(RestaurantId restaurantId, @NotNull String name, MenuItemTypeId menuItemTypeId, @NotNull DishTypeId dishTypeId, TasteId tasteId, @NotNull BigDecimal price) {
         this.restaurantId = restaurantId;
         this.name = name;
         this.menuItemTypeId = menuItemTypeId;
