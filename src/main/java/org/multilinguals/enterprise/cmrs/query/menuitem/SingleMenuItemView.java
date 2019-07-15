@@ -15,7 +15,7 @@ public class SingleMenuItemView {
 
     private String menuItemTypeId;
 
-    private String menuItemName;
+    private String menuItemTypeName;
 
     private String dishTypeId;
 
@@ -40,12 +40,12 @@ public class SingleMenuItemView {
         this.restaurantId = restaurantId;
     }
 
-    public SingleMenuItemView(String id, String restaurantId, String name, String menuItemTypeId, String menuItemName, String dishTypeId, String dishTypeName, String tasteId, String tasteName, BigDecimal price, Boolean onShelve, Date createdAt) {
+    public SingleMenuItemView(String id, String restaurantId, String name, String menuItemTypeId, String menuItemTypeName, String dishTypeId, String dishTypeName, String tasteId, String tasteName, BigDecimal price, Boolean onShelve, Date createdAt) {
         this.id = id;
         this.restaurantId = restaurantId;
         this.name = name;
         this.menuItemTypeId = menuItemTypeId;
-        this.menuItemName = menuItemName;
+        this.menuItemTypeName = menuItemTypeName;
         this.dishTypeId = dishTypeId;
         this.dishTypeName = dishTypeName;
         this.tasteId = tasteId;
@@ -87,12 +87,12 @@ public class SingleMenuItemView {
         this.menuItemTypeId = menuItemTypeId;
     }
 
-    public String getMenuItemName() {
-        return menuItemName;
+    public String getMenuItemTypeName() {
+        return menuItemTypeName;
     }
 
-    public void setMenuItemName(String menuItemName) {
-        this.menuItemName = menuItemName;
+    public void setMenuItemTypeName(String menuItemTypeName) {
+        this.menuItemTypeName = menuItemTypeName;
     }
 
     public String getDishTypeId() {

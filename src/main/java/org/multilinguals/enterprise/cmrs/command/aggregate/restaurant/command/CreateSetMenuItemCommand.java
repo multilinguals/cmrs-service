@@ -8,6 +8,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.Restaurant
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.SingleMenuItem;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Map;
 
 public class CreateSetMenuItemCommand extends AbstractCommand {
@@ -20,11 +21,16 @@ public class CreateSetMenuItemCommand extends AbstractCommand {
     private String name;
 
     @NotNull
+    private BigDecimal price;
+
+    @NotNull
     private Map<MenuItemId, SingleMenuItem> singleMenuItems;
 
-    public CreateSetMenuItemCommand(RestaurantId restaurantId, @NotNull String name, @NotNull Map<MenuItemId, SingleMenuItem> singleMenuItems) {
+    public CreateSetMenuItemCommand(RestaurantId restaurantId, MenuItemTypeId menuItemTypeId, @NotNull String name, @NotNull BigDecimal price, @NotNull Map<MenuItemId, SingleMenuItem> singleMenuItems) {
         this.restaurantId = restaurantId;
+        this.menuItemTypeId = menuItemTypeId;
         this.name = name;
+        this.price = price;
         this.singleMenuItems = singleMenuItems;
     }
 
@@ -50,6 +56,14 @@ public class CreateSetMenuItemCommand extends AbstractCommand {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
     }
 
     public Map<MenuItemId, SingleMenuItem> getSingleMenuItems() {

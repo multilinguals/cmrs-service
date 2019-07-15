@@ -15,6 +15,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.Sing
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SingleMenuItemUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,7 +57,11 @@ public class Restaurant {
 
     @CommandHandler
     public void handler(CreateSetMenuItemCommand command) {
-        apply(new SetMenuItemCreatedEvent());
+        BigDecimal totalPrice = BigDecimal.ZERO;
+        for (Map.Entry<MenuItemId, SingleMenuItem> item : command.getSingleMenuItems().entrySet()) {
+            totalPrice = totalPrice.add(item.getValue().getPrice());
+        }
+        apply(new SetMenuItemCreatedEvent(new MenuItemId(), command.getRestaurantId(), command.getName(), command.getMenuItemTypeId(), command.getPrice(), totalPrice, command.getSingleMenuItems()));
     }
 
     @EventSourcingHandler
@@ -96,6 +101,13 @@ public class Restaurant {
         if (event.getOnShelve() != null) {
             menuItem.setOnShelve(event.getOnShelve());
         }
+    }
+
+    @EventSourcingHandler
+    public void on(SetMenuItemCreatedEvent event) {
+        SetMenuItem setMenuItem = new SetMenuItem(event.getId(), event.getName(), event.getMenuItemTypeId(), event.getPrice(), event.getTotalPrice(), event.getSingleMenuItems());
+
+        this.menu.put(setMenuItem.getId(), setMenuItem);
     }
 
     public RestaurantId getId() {

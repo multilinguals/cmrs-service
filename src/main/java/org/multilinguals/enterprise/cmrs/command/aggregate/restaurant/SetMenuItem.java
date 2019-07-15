@@ -10,13 +10,9 @@ public class SetMenuItem extends MenuItem {
 
     private Map<MenuItemId, SingleMenuItem> singleMenuItems;
 
-    public SetMenuItem(MenuItemId id, String name, MenuItemTypeId menuItemTypeId, BigDecimal price, Map<MenuItemId, SingleMenuItem> singleMenuItems) {
+    public SetMenuItem(MenuItemId id, String name, MenuItemTypeId menuItemTypeId, BigDecimal price, BigDecimal totalPrice, Map<MenuItemId, SingleMenuItem> singleMenuItems) {
         super(id, name, menuItemTypeId, price);
-
-        for (Map.Entry<MenuItemId, SingleMenuItem> item : singleMenuItems.entrySet()) {
-            this.totalPrice = this.totalPrice.add(item.getValue().getPrice());
-        }
-
+        this.totalPrice = totalPrice;
         this.singleMenuItems = singleMenuItems;
     }
 

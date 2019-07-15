@@ -83,7 +83,7 @@ public class SingleMenuItemViewHandler {
             singleMenuItemView.setTasteId(event.getTasteId().getIdentifier());
             TasteView tasteView = this.tasteViewRepository.findById(event.getTasteId().getIdentifier())
                     .orElseThrow(TasteNotExistException::new);
-            singleMenuItemView.setMenuItemName(tasteView.getName());
+            singleMenuItemView.setMenuItemTypeName(tasteView.getName());
         }
 
         if (event.getPrice() != null) {
