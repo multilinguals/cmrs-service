@@ -5,11 +5,10 @@ import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.menuitemtype.MenuItemTypeId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.MenuItemId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.SingleMenuItem;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
-import java.util.Map;
+import java.util.List;
 
 public class CreateSetMenuItemCommand extends AbstractCommand {
     @TargetAggregateIdentifier
@@ -24,14 +23,14 @@ public class CreateSetMenuItemCommand extends AbstractCommand {
     private BigDecimal price;
 
     @NotNull
-    private Map<MenuItemId, SingleMenuItem> singleMenuItems;
+    private List<MenuItemId> menuItemIdList;
 
-    public CreateSetMenuItemCommand(RestaurantId restaurantId, MenuItemTypeId menuItemTypeId, @NotNull String name, @NotNull BigDecimal price, @NotNull Map<MenuItemId, SingleMenuItem> singleMenuItems) {
+    public CreateSetMenuItemCommand(RestaurantId restaurantId, MenuItemTypeId menuItemTypeId, @NotNull String name, @NotNull BigDecimal price, @NotNull List<MenuItemId> menuItemIdList) {
         this.restaurantId = restaurantId;
         this.menuItemTypeId = menuItemTypeId;
         this.name = name;
         this.price = price;
-        this.singleMenuItems = singleMenuItems;
+        this.menuItemIdList = menuItemIdList;
     }
 
     public RestaurantId getRestaurantId() {
@@ -66,11 +65,11 @@ public class CreateSetMenuItemCommand extends AbstractCommand {
         this.price = price;
     }
 
-    public Map<MenuItemId, SingleMenuItem> getSingleMenuItems() {
-        return singleMenuItems;
+    public List<MenuItemId> getMenuItemIdList() {
+        return menuItemIdList;
     }
 
-    public void setSingleMenuItems(Map<MenuItemId, SingleMenuItem> singleMenuItems) {
-        this.singleMenuItems = singleMenuItems;
+    public void setMenuItemIdList(List<MenuItemId> menuItemIdList) {
+        this.menuItemIdList = menuItemIdList;
     }
 }

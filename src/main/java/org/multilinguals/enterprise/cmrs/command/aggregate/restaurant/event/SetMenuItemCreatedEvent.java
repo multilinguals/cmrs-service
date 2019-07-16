@@ -26,7 +26,9 @@ public class SetMenuItemCreatedEvent extends AbstractEvent {
 
     private Map<MenuItemId, SingleMenuItem> singleMenuItems;
 
-    public SetMenuItemCreatedEvent(MenuItemId id, RestaurantId restaurantId, String name, MenuItemTypeId menuItemTypeId, BigDecimal price, BigDecimal totalPrice, Map<MenuItemId, SingleMenuItem> singleMenuItems) {
+    private Boolean onShelve;
+
+    public SetMenuItemCreatedEvent(MenuItemId id, RestaurantId restaurantId, String name, MenuItemTypeId menuItemTypeId, BigDecimal price, BigDecimal totalPrice, Map<MenuItemId, SingleMenuItem> singleMenuItems, Boolean onShelve) {
         this.id = id;
         this.restaurantId = restaurantId;
         this.name = name;
@@ -34,6 +36,7 @@ public class SetMenuItemCreatedEvent extends AbstractEvent {
         this.price = price;
         this.totalPrice = totalPrice;
         this.singleMenuItems = singleMenuItems;
+        this.onShelve = onShelve;
     }
 
     public MenuItemId getId() {
@@ -62,5 +65,9 @@ public class SetMenuItemCreatedEvent extends AbstractEvent {
 
     public Map<MenuItemId, SingleMenuItem> getSingleMenuItems() {
         return singleMenuItems;
+    }
+
+    public Boolean getOnShelve() {
+        return onShelve;
     }
 }

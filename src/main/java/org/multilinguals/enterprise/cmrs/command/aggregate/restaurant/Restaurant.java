@@ -58,7 +58,7 @@ public class Restaurant {
     @CommandHandler
     public void handler(CreateSetMenuItemCommand command) {
         BigDecimal totalPrice = BigDecimal.ZERO;
-        for (Map.Entry<MenuItemId, SingleMenuItem> item : command.getSingleMenuItems().entrySet()) {
+        for (MenuItemId itemId : command.getMenuItemIdList()) {
             totalPrice = totalPrice.add(item.getValue().getPrice());
         }
         apply(new SetMenuItemCreatedEvent(new MenuItemId(), command.getRestaurantId(), command.getName(), command.getMenuItemTypeId(), command.getPrice(), totalPrice, command.getSingleMenuItems()));
