@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class SetMenuItemView {
     @Id
@@ -22,10 +23,8 @@ public class SetMenuItemView {
 
     private Boolean onShelve;
 
-    private BigDecimal totalPrice;
-
     @DBRef
-    private Iterable<SingleMenuItemView> singleMenuItems;
+    private List<SingleMenuItemView> singleMenuItems;
 
     private Date createdAt;
 
@@ -38,7 +37,7 @@ public class SetMenuItemView {
         this.restaurantId = restaurantId;
     }
 
-    public SetMenuItemView(String id, String restaurantId, String name, String menuItemTypeId, String menuItemTypeName, BigDecimal price, Boolean onShelve, BigDecimal totalPrice, Iterable<SingleMenuItemView> singleMenuItems, Date createdAt) {
+    public SetMenuItemView(String id, String restaurantId, String name, String menuItemTypeId, String menuItemTypeName, BigDecimal price, Boolean onShelve, List<SingleMenuItemView> singleMenuItems, Date createdAt) {
         this.id = id;
         this.restaurantId = restaurantId;
         this.name = name;
@@ -46,7 +45,6 @@ public class SetMenuItemView {
         this.menuItemTypeName = menuItemTypeName;
         this.price = price;
         this.onShelve = onShelve;
-        this.totalPrice = totalPrice;
         this.singleMenuItems = singleMenuItems;
         this.createdAt = createdAt;
     }
@@ -107,19 +105,11 @@ public class SetMenuItemView {
         this.onShelve = onShelve;
     }
 
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
     public Iterable<SingleMenuItemView> getSingleMenuItems() {
         return singleMenuItems;
     }
 
-    public void setSingleMenuItems(Iterable<SingleMenuItemView> singleMenuItems) {
+    public void setSingleMenuItems(List<SingleMenuItemView> singleMenuItems) {
         this.singleMenuItems = singleMenuItems;
     }
 

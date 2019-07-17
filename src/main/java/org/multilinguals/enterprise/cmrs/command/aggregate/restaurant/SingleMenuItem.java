@@ -11,8 +11,8 @@ public class SingleMenuItem extends MenuItem {
 
     private TasteId tasteId;
 
-    public SingleMenuItem(MenuItemId id, String name, MenuItemTypeId menuItemTypeId, BigDecimal price, DishTypeId dishTypeId, TasteId tasteId) {
-        super(id, name, menuItemTypeId, price);
+    public SingleMenuItem(MenuItemId id, String name, MenuItemTypeId menuItemTypeId, BigDecimal price, Boolean onShelve, DishTypeId dishTypeId, TasteId tasteId) {
+        super(id, name, menuItemTypeId, price, onShelve);
         this.dishTypeId = dishTypeId;
         this.tasteId = tasteId;
     }

@@ -108,12 +108,6 @@ public class RestaurantCommandController {
             throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
         }
 
-       for(command.getMenuItemIdList()){
-
-       }
-
-        this.singleMenuItemViewRepository.findAllById(command.getMenuItemIdList().iterator());
-
         MenuItemTypeView menuItemTypeView = this.menuItemTypeViewRepository.findOne(Example.of(new MenuItemTypeView(null, DefaultMenuItemType.SET, null)))
                 .orElseThrow(MenuItemTypeNotExistException::new);
 

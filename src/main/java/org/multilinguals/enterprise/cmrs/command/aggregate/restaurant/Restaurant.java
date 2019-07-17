@@ -15,7 +15,6 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.Sing
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SingleMenuItemUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -57,11 +56,7 @@ public class Restaurant {
 
     @CommandHandler
     public void handler(CreateSetMenuItemCommand command) {
-        BigDecimal totalPrice = BigDecimal.ZERO;
-        for (MenuItemId itemId : command.getMenuItemIdList()) {
-            totalPrice = totalPrice.add(item.getValue().getPrice());
-        }
-        apply(new SetMenuItemCreatedEvent(new MenuItemId(), command.getRestaurantId(), command.getName(), command.getMenuItemTypeId(), command.getPrice(), totalPrice, command.getSingleMenuItems()));
+        apply(new SetMenuItemCreatedEvent(new MenuItemId(), command.getRestaurantId(), command.getName(), command.getMenuItemTypeId(), command.getPrice(), command.getSingleItemIdList(), Boolean.FALSE));
     }
 
     @EventSourcingHandler
@@ -74,7 +69,7 @@ public class Restaurant {
 
     @EventSourcingHandler
     public void on(SingleMenuItemCreatedEvent event) {
-        SingleMenuItem singleMenuItem = new SingleMenuItem(event.getId(), event.getName(), event.getMenuItemTypeId(), event.getPrice(), event.getDishTypeId(), event.getTasteId());
+        SingleMenuItem singleMenuItem = new SingleMenuItem(event.getId(), event.getName(), event.getMenuItemTypeId(), event.getPrice(), Boolean.FALSE, event.getDishTypeId(), event.getTasteId());
 
         this.menu.put(singleMenuItem.getId(), singleMenuItem);
     }
@@ -105,7 +100,14 @@ public class Restaurant {
 
     @EventSourcingHandler
     public void on(SetMenuItemCreatedEvent event) {
-        SetMenuItem setMenuItem = new SetMenuItem(event.getId(), event.getName(), event.getMenuItemTypeId(), event.getPrice(), event.getTotalPrice(), event.getSingleMenuItems());
+        SetMenuItem setMenuItem = new SetMenuItem(
+                event.getId(),
+                event.getName(),
+                event.getMenuItemTypeId(),
+                event.getPrice(),
+                Boolean.FALSE,
+                event.getSingleMenuItemIdList()
+        );
 
         this.menu.put(setMenuItem.getId(), setMenuItem);
     }

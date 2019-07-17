@@ -17,12 +17,12 @@ public abstract class MenuItem {
 
     private Boolean onShelve;
 
-    public MenuItem(MenuItemId id, String name, MenuItemTypeId menuItemTypeId, BigDecimal price) {
+    public MenuItem(MenuItemId id, String name, MenuItemTypeId menuItemTypeId, BigDecimal price, Boolean onShelve) {
         this.id = id;
         this.name = name;
         this.menuItemTypeId = menuItemTypeId;
         this.price = price;
-        this.onShelve = false;
+        this.onShelve = onShelve;
     }
 
     public MenuItemId getId() {

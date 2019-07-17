@@ -23,14 +23,14 @@ public class CreateSetMenuItemCommand extends AbstractCommand {
     private BigDecimal price;
 
     @NotNull
-    private List<MenuItemId> menuItemIdList;
+    private List<MenuItemId> singleItemIdList;
 
-    public CreateSetMenuItemCommand(RestaurantId restaurantId, MenuItemTypeId menuItemTypeId, @NotNull String name, @NotNull BigDecimal price, @NotNull List<MenuItemId> menuItemIdList) {
+    public CreateSetMenuItemCommand(RestaurantId restaurantId, MenuItemTypeId menuItemTypeId, @NotNull String name, @NotNull BigDecimal price, @NotNull List<MenuItemId> singleItemIdList) {
         this.restaurantId = restaurantId;
         this.menuItemTypeId = menuItemTypeId;
         this.name = name;
         this.price = price;
-        this.menuItemIdList = menuItemIdList;
+        this.singleItemIdList = singleItemIdList;
     }
 
     public RestaurantId getRestaurantId() {
@@ -65,11 +65,11 @@ public class CreateSetMenuItemCommand extends AbstractCommand {
         this.price = price;
     }
 
-    public List<MenuItemId> getMenuItemIdList() {
-        return menuItemIdList;
+    public List<MenuItemId> getSingleItemIdList() {
+        return singleItemIdList;
     }
 
-    public void setMenuItemIdList(List<MenuItemId> menuItemIdList) {
-        this.menuItemIdList = menuItemIdList;
+    public void setSingleItemIdList(List<MenuItemId> singleItemIdList) {
+        this.singleItemIdList = singleItemIdList;
     }
 }

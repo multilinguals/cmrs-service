@@ -30,11 +30,13 @@ public class SetMenuItemViewHandler {
     public void on(SetMenuItemCreatedEvent event, @Timestamp java.time.Instant createdTime) throws MenuItemTypeNotExistException {
         List<String> singleItemIdList = new ArrayList<>();
 
-        for (MenuItemId id : event.getSingleMenuItems().keySet()) {
+        for (MenuItemId id : event.getSingleMenuItemIdList()) {
             singleItemIdList.add(id.getIdentifier());
         }
 
-        Iterable<SingleMenuItemView> singleMenuItemList = this.singleMenuItemViewRepository.findAllById(singleItemIdList);
+        List<SingleMenuItemView> singleMenuItemViews = new ArrayList<>();
+        Iterable<SingleMenuItemView> singleMenuItemViewIterable = this.singleMenuItemViewRepository.findAllById(singleItemIdList);
+        singleMenuItemViewIterable.forEach(singleMenuItemViews::add);
 
         MenuItemTypeView menuItemTypeView = this.menuItemTypeViewRepository.findById(event.getMenuItemTypeId().getIdentifier())
                 .orElseThrow(MenuItemTypeNotExistException::new);
@@ -47,7 +49,7 @@ public class SetMenuItemViewHandler {
                 menuItemTypeView.getName(),
                 event.getPrice(),
                 event.getOnShelve(),
-                event.getTotalPrice(), singleMenuItemList,
+                singleMenuItemViews,
                 new Date(createdTime.toEpochMilli())
         );
 
