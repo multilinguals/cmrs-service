@@ -40,7 +40,7 @@ public class SingleMenuItemView {
         this.restaurantId = restaurantId;
     }
 
-    public SingleMenuItemView(String id, String restaurantId, String name, String menuItemTypeId, String menuItemTypeName, String dishTypeId, String dishTypeName, String tasteId, String tasteName, BigDecimal price, Boolean onShelve, Date createdAt) {
+    public SingleMenuItemView(String id, String restaurantId, String name, String menuItemTypeId, String menuItemTypeName, String dishTypeId, String dishTypeName, BigDecimal price, Boolean onShelve, Date createdAt) {
         this.id = id;
         this.restaurantId = restaurantId;
         this.name = name;
@@ -48,8 +48,6 @@ public class SingleMenuItemView {
         this.menuItemTypeName = menuItemTypeName;
         this.dishTypeId = dishTypeId;
         this.dishTypeName = dishTypeName;
-        this.tasteId = tasteId;
-        this.tasteName = tasteName;
         this.price = price;
         this.onShelve = onShelve;
         this.createdAt = createdAt;

@@ -67,7 +67,9 @@ public class RestaurantCommandController {
         try {
             this.restaurantDetailsViewRepository.findById(command.getRestaurantId().getIdentifier()).orElseThrow(RestaurantNotExistException::new);
             this.dishTypeViewRepository.findById(command.getDishTypeId().getIdentifier()).orElseThrow(DishTypeNotExistException::new);
-            this.tasteViewRepository.findById(command.getTasteId().getIdentifier()).orElseThrow(TasteNotExistException::new);
+            if (command.getTasteId() != null) {
+                this.tasteViewRepository.findById(command.getTasteId().getIdentifier()).orElseThrow(TasteNotExistException::new);
+            }
         } catch (RestaurantNotExistException | DishTypeNotExistException | TasteNotExistException ex) {
             throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
         }

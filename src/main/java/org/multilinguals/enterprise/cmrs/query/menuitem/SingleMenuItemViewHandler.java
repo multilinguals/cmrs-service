@@ -43,8 +43,6 @@ public class SingleMenuItemViewHandler {
                 .orElseThrow(MenuItemTypeNotExistException::new);
         DishTypeView dishTypeView = this.dishTypeViewRepository.findById(event.getDishTypeId().getIdentifier())
                 .orElseThrow(DishTypeNotExistException::new);
-        TasteView tasteView = this.tasteViewRepository.findById(event.getTasteId().getIdentifier())
-                .orElseThrow(TasteNotExistException::new);
 
         SingleMenuItemView singleMenuItemView = new SingleMenuItemView(
                 event.getId().getIdentifier(),
@@ -54,12 +52,18 @@ public class SingleMenuItemViewHandler {
                 menuItemTypeView.getName(),
                 event.getDishTypeId().getIdentifier(),
                 dishTypeView.getName(),
-                event.getTasteId().getIdentifier(),
-                tasteView.getName(),
                 event.getPrice(),
                 false,
                 new Date(createdTime.toEpochMilli())
         );
+
+        if (event.getTasteId() != null) {
+            TasteView tasteView = this.tasteViewRepository.findById(event.getTasteId().getIdentifier())
+                    .orElseThrow(TasteNotExistException::new);
+
+            singleMenuItemView.setTasteId(event.getTasteId().getIdentifier());
+            singleMenuItemView.setTasteName(tasteView.getName());
+        }
 
         this.singleMenuItemViewRepository.save(singleMenuItemView);
     }
