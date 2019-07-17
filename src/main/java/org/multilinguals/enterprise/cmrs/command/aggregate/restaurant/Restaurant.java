@@ -55,8 +55,10 @@ public class Restaurant {
     }
 
     @CommandHandler
-    public void handler(CreateSetMenuItemCommand command) {
-        apply(new SetMenuItemCreatedEvent(new MenuItemId(), command.getRestaurantId(), command.getName(), command.getMenuItemTypeId(), command.getPrice(), command.getSingleItemIdList(), Boolean.FALSE));
+    public MenuItemId handler(CreateSetMenuItemCommand command) {
+        MenuItemId menuItemId = new MenuItemId();
+        apply(new SetMenuItemCreatedEvent(menuItemId, command.getRestaurantId(), command.getName(), command.getMenuItemTypeId(), command.getPrice(), command.getSingleItemIdList(), Boolean.FALSE));
+        return menuItemId;
     }
 
     @EventSourcingHandler

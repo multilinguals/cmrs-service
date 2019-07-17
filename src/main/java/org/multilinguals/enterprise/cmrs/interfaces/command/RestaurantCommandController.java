@@ -83,7 +83,7 @@ public class RestaurantCommandController {
 
     @PostMapping("/admin/update-restaurant/{restId}/single-menu-item")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
-    public void updateSingleMenuItem(@PathVariable String restId, @RequestBody UpdateSingleMenuItemCommand command) throws MenuItemTypeNotExistException {
+    public void updateSingleMenuItem(@PathVariable String restId, @RequestBody UpdateSingleMenuItemCommand command) {
         try {
             this.restaurantDetailsViewRepository.findById(restId).orElseThrow(RestaurantNotExistException::new);
             SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(command.getId().getIdentifier()).orElseThrow(MenuItemNotExistException::new);

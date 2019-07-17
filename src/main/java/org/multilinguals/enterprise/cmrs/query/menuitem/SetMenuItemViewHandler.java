@@ -21,9 +21,10 @@ public class SetMenuItemViewHandler {
     private SingleMenuItemViewRepository singleMenuItemViewRepository;
 
     @Autowired
-    public SetMenuItemViewHandler(SetMenuItemViewRepository setMenuItemViewRepository, MenuItemTypeViewRepository menuItemTypeViewRepository) {
+    public SetMenuItemViewHandler(SetMenuItemViewRepository setMenuItemViewRepository, MenuItemTypeViewRepository menuItemTypeViewRepository, SingleMenuItemViewRepository singleMenuItemViewRepository) {
         this.setMenuItemViewRepository = setMenuItemViewRepository;
         this.menuItemTypeViewRepository = menuItemTypeViewRepository;
+        this.singleMenuItemViewRepository = singleMenuItemViewRepository;
     }
 
     @EventHandler
