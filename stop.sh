@@ -4,6 +4,6 @@ if [[ -z "$PID" ]]
 then
     echo Application is already stopped
 else
-    echo kill $PID
-    kill $PID
+    echo kill ${PID}
+    kill ${PID}
 fi
