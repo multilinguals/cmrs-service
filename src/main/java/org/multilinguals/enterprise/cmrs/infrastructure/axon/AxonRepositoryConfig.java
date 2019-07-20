@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.infrastructure.config;
+package org.multilinguals.enterprise.cmrs.infrastructure.axon;
 
 import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.axonframework.eventsourcing.eventstore.EventStore;
