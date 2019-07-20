@@ -1,0 +1,278 @@
+swagger: "2.0"
+info:
+  description: ""
+  version: "0.1.0"
+  title: "CMRS 接口描述文档"
+  termsOfService: "http://117.78.6.206:9580"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "117.78.6.206:9580"
+basePath: "/"
+tags:
+  - name: "用户认证"
+  - name: "用户维护自己信息"
+  - name: "管理员维护自己信息"
+  - name: "管理员维护用户信息"
+schemes:
+  - http
+security:
+  - CMRSSecurity: []
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /user/sign-in-with-password:
+    post:
+      security: []
+      tags:
+        - "用户认证"
+      summary: "用户使用密码进行登录"
+      parameters:
+        - in: body
+          name: "使用密码登录命令"
+          description: "用户提交的认证信息"
+          required: true
+          schema:
+            $ref: "#/definitions/SignInWithPasswordCommand"
+      responses:
+        200:
+          description: "登录成功"
+          schema:
+            $ref: "#/definitions/LoginSuccess"
+        401:
+          description: "认证失败"
+          schema:
+            $ref: "#/definitions/EX40101"
+  /user/logout:
+    post:
+      tags:
+        - "用户认证"
+      summary: "用户退出登录"
+      responses:
+        204:
+          description: "退出登录成功"
+  /user/get-self-details:
+    get:
+      tags:
+        - "用户维护自己信息"
+      summary: "用户查询自己的详细信息"
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            $ref: "#/definitions/UserDetails"
+  /admin/update-self-password:
+    post:
+      tags:
+        - "管理员维护自己信息"
+      summary: "管理员更新自己的密码"
+      parameters:
+        - in: body
+          name: "管理员更新自己的密码命令"
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateUserPasswordCommand"
+      responses:
+        204:
+          description: "退出登录成功"
+  /admin/get-role-list:
+    get:
+      tags:
+        - "管理员维护用户信息"
+      summary: "管理员获取角色列表"
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "20000"
+              data:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: "#/definitions/RoleDetailsView"
+                  schema:
+                    $ref: "#/definitions/PageInfo"
+  /admin/create-clerk:
+    post:
+      tags:
+        - "管理员维护用户信息"
+      summary: "管理员创建职员接口"
+      parameters:
+        - in: body
+          name: "管理员创建职员命令"
+          required: true
+          schema:
+            $ref: "#/definitions/CreateClerkWithUsernameCommand"
+      responses:
+        200:
+          description: "创建职员成功"
+          schema:
+            $ref: "#/definitions/CreateClerkSuccess"
+securityDefinitions:
+  CMRSSecurity:
+    type: apiKey
+    in: header
+    name: Authorization
+definitions:
+  SignInWithPasswordCommand:
+    type: object
+    properties:
+      idInAccountType:
+        type: string
+        description: "某种账号类型中的唯一标识"
+        example: "admin"
+      accountType:
+        type: integer
+        enum:
+          - 0
+        description: "目前只有一种账号类型：用户名（username），值为0"
+        example: 0
+      password:
+        type: string
+        description: "密码值需要md5"
+        example: "0192023a7bbd73250516f069df18b500"
+    required:
+      - idInAccountType
+      - accountType
+      - password
+  UpdateUserPasswordCommand:
+    type: object
+    properties:
+      userPasswordId:
+        type: string
+        example: "2a98b3d0-44fa-41cc-b077-5bb1123a49b8"
+      newUserPassword:
+        type: string
+        example: "ec4ce68a1b80b8915e2405ac71318fab"
+    required:
+      - userPasswordId
+      - newUserPassword
+  CreateClerkWithUsernameCommand:
+    type: object
+    properties:
+      username:
+        type: string
+        example: "zhangsan"
+      realName:
+        type: string
+        example: "张三"
+      password:
+        type: string
+        example: "babd4a84418fb04015ac773f7459727c"
+    required:
+      - username
+      - realName
+      - password
+  LoginSuccess:
+    type: object
+    properties:
+      code:
+        type: string
+        example: "20000"
+      data:
+        type: object
+        properties:
+          token:
+            type: string
+            example: "2f83252d-ab8b-4568-ad12-7a758f6e9f43"
+          userId:
+            type: string
+            example: "a8d17dcb-49dd-4e68-8c75-db20eb28b258"
+  CreateClerkSuccess:
+    type: object
+    properties:
+      code:
+        type: string
+        example: "20000"
+      data:
+        type: object
+        properties:
+          id:
+            type: string
+            example: "b6bdf1c1-5094-45d8-ad1d-231e0f19b48b"
+  UserDetails:
+    type: object
+    properties:
+      code:
+        type: string
+        example: "20000"
+      data:
+        type: object
+        properties:
+          id:
+            type: string
+            example: "2f83252d-ab8b-4568-ad12-7a758f6e9f43"
+          realName:
+            type: string
+            example: "超级管理员"
+          accountViewList:
+            type: array
+            items:
+              $ref: "#/definitions/AccountView"
+  AccountView:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "7a0376b3219c4d1d5447c70cccde4f9e"
+      idInType:
+        type: string
+        example: "admin"
+      type:
+        type: string
+        example: "USERNAME"
+      createdAt:
+        type: string
+        example: "2019-06-17T23:22:00.255+0000"
+      updatedAt:
+        type: string
+        example: "null"
+  RoleDetailsView:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "100b330ecc4c3aafc54092721999239f"
+      name:
+        type: string
+        example: "ROLE_USER_ADMIN"
+      createdAt:
+        type: string
+        example: "2019-06-24T23:39:18.338+0000"
+      updatedAt:
+        type: string
+        example: null
+  PageInfo:
+    type: object
+    properties:
+      totalElements:
+        type: integer
+        example: 5
+      totalPages:
+        type: integer
+        example: 1
+      number:
+        description: "当前页码"
+        type: integer
+        example: 0
+      size:
+        description: "页面最大记录条数"
+        type: integer
+        example: 20
+  EX40101:
+    type: object
+    properties:
+      code:
+        type: string
+        example: "40101"
+      message:
+        type: string
+        example: "账号或者密码错误，请重新填写"
