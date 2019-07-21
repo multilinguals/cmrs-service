@@ -1,5 +1,6 @@
 package org.multilinguals.enterprise.cmrs.interfaces.query;
 
+import org.multilinguals.enterprise.cmrs.infrastructure.dto.CMRSPage;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.QueryResponse;
 import org.multilinguals.enterprise.cmrs.query.rbac.RoleDetailsView;
 import org.multilinguals.enterprise.cmrs.query.rbac.RoleDetailsViewRepository;
@@ -26,11 +27,11 @@ public class RoleQueryController {
 
     @GetMapping("admin/get-role-list")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public QueryResponse<Page<RoleDetailsView>> adminGetRoleList(@RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
+    public QueryResponse adminGetRoleList(@RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
         Sort sort = new Sort(Sort.Direction.DESC, "name");
         Page<RoleDetailsView> roleDetailsViewPage = this.roleDetailsViewRepository.findAll(PageRequest.of(Integer.valueOf(page), Integer.valueOf(size), sort));
 
-        return new QueryResponse<>(roleDetailsViewPage);
+        return new QueryResponse<>(new CMRSPage<>(roleDetailsViewPage));
     }
 
     @GetMapping("admin/get-all-roles")

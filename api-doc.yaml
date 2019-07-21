@@ -98,7 +98,7 @@ paths:
                     type: array
                     items:
                       $ref: "#/definitions/RoleDetailsView"
-                  schema:
+                  pageInfo:
                     $ref: "#/definitions/PageInfo"
   /admin/create-clerk:
     post:

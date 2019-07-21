@@ -1,6 +1,7 @@
 package org.multilinguals.enterprise.cmrs.interfaces.query;
 
 import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
+import org.multilinguals.enterprise.cmrs.infrastructure.dto.CMRSPage;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.QueryResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsView;
@@ -47,10 +48,10 @@ public class UserQueryController {
      */
     @GetMapping("/admin/get-user-list")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public QueryResponse<Page<UserDetailsView>> queryUserList(@RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
+    public QueryResponse<CMRSPage<UserDetailsView>> queryUserList(@RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Page<UserDetailsView> userDetailsViewPage = this.userDetailsViewRepository.findAll(PageRequest.of(Integer.valueOf(page), Integer.valueOf(size), sort));
-        return new QueryResponse<>(userDetailsViewPage);
+        return new QueryResponse<>(new CMRSPage<>(userDetailsViewPage));
     }
 
     /**
