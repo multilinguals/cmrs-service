@@ -240,7 +240,7 @@ paths:
                   content:
                     type: array
                     items:
-                      $ref: "#/definitions/UserDe"
+                      $ref: "#/definitions/UserDetails"
                   pageInfo:
                     $ref: "#/definitions/PageInfo"
 securityDefinitions:
@@ -395,7 +395,7 @@ definitions:
                   example: "9fdd4a72bdfe15c619db8e526968da25"
                 name:
                   type: string
-                  example: "ROLE_SUPER_ADMIN",
+                  example: "ROLE_SUPER_ADMIN"
                 createdAt:
                   type: string
                   example: "2019-07-12T14:32:41.358+0000"
@@ -411,7 +411,7 @@ definitions:
             example: "e988ad63-5472-4688-b2d8-c67964e6ec77"
           createdAt:
             type: string
-            example: "2019-07-12T14:32:41.358+0000",
+            example: "2019-07-12T14:32:41.358+0000"
           updatedAt:
             type: string
             example: null
