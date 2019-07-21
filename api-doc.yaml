@@ -82,6 +82,15 @@ paths:
       tags:
         - "管理员维护用户信息"
       summary: "管理员获取角色列表"
+      parameters:
+        - name: "page"
+          type: integer
+          in: query
+          description: "页码"
+        - name: "size"
+          type: integer
+          in: query
+          description: "页面最大记录数"
       responses:
         200:
           description: "查询成功"
@@ -100,6 +109,92 @@ paths:
                       $ref: "#/definitions/RoleDetailsView"
                   pageInfo:
                     $ref: "#/definitions/PageInfo"
+  /admin/get-all-roles:
+    get:
+      tags:
+        - "管理员维护用户信息"
+      summary: "管理员查询全部角色"
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "20000"
+              data:
+                type: array
+                items:
+                  $ref: "#/definitions/RoleDetailsView"
+  /admin/assign-role-to-user:
+    post:
+      tags:
+        - "管理员维护用户信息"
+      summary: "管理员为用户分配角色"
+      parameters:
+        - in: body
+          name: "分配角色命令"
+          description: "超级管理员或者用户管理员为用户分配角色"
+          required: true
+          schema:
+            $ref: "#/definitions/AssignRoleToUserCommand"
+      responses:
+        204:
+          description: "分配角色成功"
+        404:
+          description: "指定的用户不存在"
+  /admin/remove-role-from-user:
+    post:
+      tags:
+        - "管理员维护用户信息"
+      summary: "管理员为用户移除角色"
+      parameters:
+        - in: body
+          name: "移除角色命令"
+          description: "超级管理员或者用户管理员为用户移除角色"
+          required: true
+          schema:
+            $ref: "#/definitions/RemoveRoleFromUserCommand"
+      responses:
+        204:
+          description: "移除角色成功"
+        404:
+          description: "指定的用户不存在"
+  /admin/update-user-details:
+    post:
+      tags:
+        - "管理员维护用户信息"
+      summary: "管理员更新用户信息"
+      parameters:
+        - in: body
+          name: "更新用户信息命令"
+          description: "超级管理员或者用户管理员更新用户信息"
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateUserDetailsCommand'
+      responses:
+        204:
+          description: "更新成功"
+        404:
+          description: "指定的用户不存在"
+  /admin/update-user-password:
+    post:
+      tags:
+        - "管理员维护用户信息"
+      summary: "管理员更新用户密码"
+      parameters:
+        - in: body
+          name: "更新用户信息命令"
+          description: "超级管理员或者用户管理员新用户密码"
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateUserPasswordCommand'
+      responses:
+        204:
+          description: "更新成功"
+        404:
+          description: "指定的用户不存在"
   /admin/create-clerk:
     post:
       tags:
@@ -116,6 +211,38 @@ paths:
           description: "创建职员成功"
           schema:
             $ref: "#/definitions/CreateClerkSuccess"
+  /admin/get-user-list:
+    post:
+      tags:
+        - "管理员维护用户信息"
+      summary: "管理员查询用户信息列表接口"
+      parameters:
+        - name: "page"
+          type: integer
+          in: query
+          description: "页码"
+        - name: "size"
+          type: integer
+          in: query
+          description: "页面最大记录数"
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "20000"
+              data:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: "#/definitions/UserDe"
+                  pageInfo:
+                    $ref: "#/definitions/PageInfo"
 securityDefinitions:
   CMRSSecurity:
     type: apiKey
@@ -143,18 +270,6 @@ definitions:
       - idInAccountType
       - accountType
       - password
-  UpdateUserPasswordCommand:
-    type: object
-    properties:
-      userPasswordId:
-        type: string
-        example: "2a98b3d0-44fa-41cc-b077-5bb1123a49b8"
-      newUserPassword:
-        type: string
-        example: "ec4ce68a1b80b8915e2405ac71318fab"
-    required:
-      - userPasswordId
-      - newUserPassword
   CreateClerkWithUsernameCommand:
     type: object
     properties:
@@ -171,6 +286,59 @@ definitions:
       - username
       - realName
       - password
+  AssignRoleToUserCommand:
+    type: object
+    properties:
+      userId:
+        type: string
+        example: "02574b7c-5f69-4a08-8e54-4e46fba25938"
+      roleId:
+        type: string
+        example: "a71ed7a7ee2cf1555a77038538c2c68c"
+    required:
+      - userId
+      - roleId
+  RemoveRoleFromUserCommand:
+    type: object
+    properties:
+      userId:
+        type: string
+        example: "02574b7c-5f69-4a08-8e54-4e46fba25938"
+      roleId:
+        type: string
+        example: "a71ed7a7ee2cf1555a77038538c2c68c"
+    required:
+      - userId
+      - roleId
+  UpdateUserDetailsCommand:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "b6bdf1c1-5094-45d8-ad1d-231e0f19b48b"
+      realName:
+        type: string
+        example: "李四"
+    required:
+      - id
+      - realName
+  UpdateUserPasswordCommand:
+    type: object
+    properties:
+      userPasswordId:
+        type: string
+        example: "fb108ea4-8a43-4d02-83f9-25eae836fe41"
+      userId:
+        type: string
+        example: "817f1cde-cc3b-4ef1-85b3-0d41f3b32260"
+      newUserPassword:
+        type: string
+        description: "密码md5哈希后的字符串"
+        example: "babd4a84418fb04015ac773f7459727c"
+    required:
+      - userPasswordId
+      - userId
+      - newUserPassword
   LoginSuccess:
     type: object
     properties:
@@ -217,6 +385,36 @@ definitions:
             type: array
             items:
               $ref: "#/definitions/AccountView"
+          roleViewList:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+                  example: "9fdd4a72bdfe15c619db8e526968da25"
+                name:
+                  type: string
+                  example: "ROLE_SUPER_ADMIN",
+                createdAt:
+                  type: string
+                  example: "2019-07-12T14:32:41.358+0000"
+          userSessionId:
+            type: string
+            description: "会话ID，和Token相同"
+            example: "cbf6416f-f055-484b-aeda-bb501bde67ee"
+          userSessionExpiredAt:
+            type: string
+            example: "2019-07-21T15:15:33.482+0000"
+          userPasswordId:
+            type: string
+            example: "e988ad63-5472-4688-b2d8-c67964e6ec77"
+          createdAt:
+            type: string
+            example: "2019-07-12T14:32:41.358+0000",
+          updatedAt:
+            type: string
+            example: null
   AccountView:
     type: object
     properties:
@@ -243,6 +441,12 @@ definitions:
         example: "100b330ecc4c3aafc54092721999239f"
       name:
         type: string
+        enum:
+          - "ROLE_SUPER_ADMIN"
+          - "ROLE_USER_ADMIN"
+          - "ROLE_REST_ADMIN"
+          - "ROLE_CLERK"
+          - "ROLE_ORDER_TAKER"
         example: "ROLE_USER_ADMIN"
       createdAt:
         type: string
