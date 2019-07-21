@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 public class RestaurantQueryController {
     private final RestaurantDetailsViewRepository restaurantDetailsViewRepository;
@@ -55,6 +57,13 @@ public class RestaurantQueryController {
         Sort sort = new Sort(Sort.Direction.DESC, "createdAt");
         Page<SingleMenuItemView> menuItemViews = this.singleMenuItemViewRepository.findAll(Example.of(new SingleMenuItemView(restId)), PageRequest.of(Integer.valueOf(page), Integer.valueOf(size), sort));
         return new QueryResponse<>(new CMRSPage<>(menuItemViews));
+    }
+
+    @GetMapping("admin/get-restaurant/{restId}/all-single-menu-items")
+    @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
+    public QueryResponse<List<SingleMenuItemView>> adminGetSingleMenuItemList(@PathVariable String restId) {
+        List<SingleMenuItemView> menuItemViews = this.singleMenuItemViewRepository.findAll(Example.of(new SingleMenuItemView(restId)));
+        return new QueryResponse<>(menuItemViews);
     }
 
     @GetMapping("admin/get-restaurant/{restId}/set-menu-item-list")
