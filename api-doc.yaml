@@ -14,6 +14,8 @@ tags:
   - name: "用户维护自己信息"
   - name: "管理员维护自己信息"
   - name: "管理员维护用户信息"
+  - name: "管理员维护餐厅的基本信息"
+  - name: "管理员维护餐厅的菜单信息"
 schemes:
   - http
 security:
@@ -62,7 +64,13 @@ paths:
         200:
           description: "查询成功"
           schema:
-            $ref: "#/definitions/UserDetails"
+            type: object
+            properties:
+              code:
+                type: string
+                example: "20000"
+              data:
+                $ref: "#/definitions/UserDetails"
   /admin/update-self-password:
     post:
       tags:
@@ -210,9 +218,31 @@ paths:
         200:
           description: "创建职员成功"
           schema:
-            $ref: "#/definitions/CreateClerkSuccess"
+            $ref: "#/definitions/CreateAggregateSuccess"
+  /admin/get-user-details/:id:
+    get:
+      tags:
+        - "管理员维护用户信息"
+      summary: "管理员查询用户详情接口"
+      parameters:
+        - name: "id"
+          in: path
+          required: true
+          type: string
+          description: "要查询的用户ID"
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "20000"
+              data:
+                $ref: '#/definitions/UserDetails'
   /admin/get-user-list:
-    post:
+    get:
       tags:
         - "管理员维护用户信息"
       summary: "管理员查询用户信息列表接口"
@@ -243,6 +273,76 @@ paths:
                       $ref: "#/definitions/UserDetails"
                   pageInfo:
                     $ref: "#/definitions/PageInfo"
+  /admin/create-restaurant:
+    post:
+      tags:
+        - "管理员维护餐厅的基本信息"
+      summary: "管理员创建餐厅接口"
+      parameters:
+        - in: body
+          name: "管理员创建餐厅命令"
+          required: true
+          schema:
+            $ref: "#/definitions/CreateRestaurantCommand"
+      responses:
+        200:
+          description: "创建餐厅成功"
+          schema:
+            $ref: "#/definitions/CreateAggregateSuccess"
+  /admin/get-restaurant-list:
+    get:
+      tags:
+        - "管理员维护餐厅的基本信息"
+      summary: "管理员查询餐厅列表接口"
+      parameters:
+        - name: "page"
+          type: integer
+          in: query
+          description: "页码"
+        - name: "size"
+          type: integer
+          in: query
+          description: "页面最大记录数"
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "20000"
+              data:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: "#/definitions/RestaurantDetails"
+                  pageInfo:
+                    $ref: "#/definitions/PageInfo"
+  /admin/get-restaurant-details/:id:
+    get:
+      tags:
+        - "管理员维护餐厅的基本信息"
+      summary: "餐厅管理员查询餐厅接口"
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: "要查询的餐厅ID"
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "20000"
+              data:
+                $ref: '#/definitions/RestaurantDetails'
 securityDefinitions:
   CMRSSecurity:
     type: apiKey
@@ -339,6 +439,20 @@ definitions:
       - userPasswordId
       - userId
       - newUserPassword
+  CreateRestaurantCommand:
+    type: object
+    properties:
+      name:
+        type: string
+        description: "餐厅名称"
+        example: "四季餐厅"
+      description:
+        type: string
+        description: "餐厅介绍"
+        example: "四季餐厅的介绍"
+    required:
+      - name
+      - description
   LoginSuccess:
     type: object
     properties:
@@ -354,7 +468,7 @@ definitions:
           userId:
             type: string
             example: "a8d17dcb-49dd-4e68-8c75-db20eb28b258"
-  CreateClerkSuccess:
+  CreateAggregateSuccess:
     type: object
     properties:
       code:
@@ -369,52 +483,46 @@ definitions:
   UserDetails:
     type: object
     properties:
-      code:
+      id:
         type: string
-        example: "20000"
-      data:
-        type: object
-        properties:
-          id:
-            type: string
-            example: "2f83252d-ab8b-4568-ad12-7a758f6e9f43"
-          realName:
-            type: string
-            example: "超级管理员"
-          accountViewList:
-            type: array
-            items:
-              $ref: "#/definitions/AccountView"
-          roleViewList:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                  example: "9fdd4a72bdfe15c619db8e526968da25"
-                name:
-                  type: string
-                  example: "ROLE_SUPER_ADMIN"
-                createdAt:
-                  type: string
-                  example: "2019-07-12T14:32:41.358+0000"
-          userSessionId:
-            type: string
-            description: "会话ID，和Token相同"
-            example: "cbf6416f-f055-484b-aeda-bb501bde67ee"
-          userSessionExpiredAt:
-            type: string
-            example: "2019-07-21T15:15:33.482+0000"
-          userPasswordId:
-            type: string
-            example: "e988ad63-5472-4688-b2d8-c67964e6ec77"
-          createdAt:
-            type: string
-            example: "2019-07-12T14:32:41.358+0000"
-          updatedAt:
-            type: string
-            example: null
+        example: "2f83252d-ab8b-4568-ad12-7a758f6e9f43"
+      realName:
+        type: string
+        example: "超级管理员"
+      accountViewList:
+        type: array
+        items:
+          $ref: "#/definitions/AccountView"
+      roleViewList:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              example: "9fdd4a72bdfe15c619db8e526968da25"
+            name:
+              type: string
+              example: "ROLE_SUPER_ADMIN"
+            createdAt:
+              type: string
+              example: "2019-07-12T14:32:41.358+0000"
+      userSessionId:
+        type: string
+        description: "会话ID，和Token相同"
+        example: "cbf6416f-f055-484b-aeda-bb501bde67ee"
+      userSessionExpiredAt:
+        type: string
+        example: "2019-07-21T15:15:33.482+0000"
+      userPasswordId:
+        type: string
+        example: "e988ad63-5472-4688-b2d8-c67964e6ec77"
+      createdAt:
+        type: string
+        example: "2019-07-12T14:32:41.358+0000"
+      updatedAt:
+        type: string
+        example: null
   AccountView:
     type: object
     properties:
@@ -451,6 +559,32 @@ definitions:
       createdAt:
         type: string
         example: "2019-06-24T23:39:18.338+0000"
+      updatedAt:
+        type: string
+        example: null
+  RestaurantDetails:
+    type: object
+    properties:
+      id:
+        type: object
+        example: "566791e4-255a-41f6-b6b3-a8fc85e6f6bd"
+      name:
+        type: object
+        example: "四季餐厅"
+      description:
+        type: object
+        example: "四季餐厅的介绍"
+      creatorId:
+        type: object
+        description: "餐厅创建人的用户ID"
+        example: "e82454f7-2683-4af5-aab5-36490360870c"
+      creatorRealName:
+        type: object
+        description: "餐厅创建人的姓名"
+        example: "张三"
+      createdAt:
+        type: object
+        example: "2019-07-09T14:09:29.997+0000"
       updatedAt:
         type: string
         example: null
