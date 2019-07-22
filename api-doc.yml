@@ -365,8 +365,8 @@ paths:
         - "管理员维护餐厅的菜单信息"
       summary: "创建套餐菜单项接口"
       parameters:
-        - in: body
-          name: "创建单品菜单命令"
+        - name: "创建单品菜单命令"
+          in: body
           required: true
           schema:
             $ref: "#/definitions/CreateSetMenuItemCommand"
@@ -375,6 +375,79 @@ paths:
           description: "创建套餐菜单项成功"
           schema:
             $ref: "#/definitions/CreateAggregateSuccess"
+  /admin/update-restaurant/:id/single-menu-item:
+    post:
+      tags:
+        - "管理员维护餐厅的菜单信息"
+      summary: "更新单品菜单项接口"
+      parameters:
+        - name: "更新单品菜单项命令"
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateSingleMenuItemCommand"
+        - name: "id"
+          in: path
+          required: true
+          type: string
+          description: "菜单项所属菜单餐厅ID"
+      responses:
+        204:
+          description: "更新单品菜单项成功"
+  /user/get-all-dish-type:
+    get:
+      tags:
+        - "管理员维护餐厅的菜单信息"
+      summary: "获取所有菜品接口"
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "20000"
+              data:
+                type: array
+                items:
+                  $ref: "#/definitions/DishType"
+  /user/get-all-taste:
+    get:
+      tags:
+        - "管理员维护餐厅的菜单信息"
+      summary: "获取所有口味接口"
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "20000"
+              data:
+                type: array
+                items:
+                  $ref: "#/definitions/Taste"
+  /user/get-all-menu-item-type:
+    get:
+      tags:
+        - "管理员维护餐厅的菜单信息"
+      summary: "获取所有菜单项接口类型接口"
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "20000"
+              data:
+                type: array
+                items:
+                  $ref: "#/definitions/MenuItemType"
 securityDefinitions:
   CMRSSecurity:
     type: apiKey
@@ -534,6 +607,27 @@ definitions:
       - name
       - price
       - singleItemIdList
+  UpdateSingleMenuItemCommand:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "e13623d6-7308-4a05-8e57-f106ac437262"
+      name:
+        type: string
+        example: "西湖牛肉羹"
+      dishTypeId:
+        type: string
+        example: "1ab7d23f-5857-4d0b-9f19-dbde727c08bf"
+      tasteId:
+        type: string
+        example: "97ff7f12-f28b-416a-9600-f8927b0fb281"
+      price:
+        type: number
+        example 12.5
+      onShelve:
+        type: boolean
+        example: true
   LoginSuccess:
     type: object
     properties:
@@ -686,6 +780,68 @@ definitions:
         description: "页面最大记录条数"
         type: integer
         example: 20
+  DishType:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "ffa92821-51d2-488e-b484-b46dd588cb5c",
+      name:
+        type: string
+        example: "SOUP"
+        description: "菜品类型分为汤（SOUP）、米饭（RICE）、面食（PASTA）、饮料（DRINKS）、菜（DISH）、甜点（DESSERT）"
+        enum:
+          - "SOUP"
+          - "RICE"
+          - "PASTA"
+          - "DRINKS"
+          - "DISH"
+          - "DESSERT"
+      createdAt:
+        type: string
+        example: "2019-07-19T15:05:32.642+0000",
+      updatedAt:
+        type: string
+        example: null
+  MenuItemType:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "ffa92821-51d2-488e-b484-b46dd588cb5c",
+      name:
+        type: string
+        example: "SINGLE"
+        description: "单品（SINGLE）、套餐（SET）"
+        enum:
+          - "SINGLE"
+          - "SET"
+      createdAt:
+        type: string
+        example: "2019-07-19T15:05:32.642+0000",
+      updatedAt:
+        type: string
+        example: null
+  Taste:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "ffa92821-51d2-488e-b484-b46dd588cb5c",
+      name:
+        type: string
+        example: "SWEET"
+        description: "甜（SWEET）、酸（SOUR）、辣（HOT）"
+        enum:
+          - "SWEET"
+          - "SOUR"
+          - "HOT"
+      createdAt:
+        type: string
+        example: "2019-07-19T15:05:32.642+0000",
+      updatedAt:
+        type: string
+        example: null
   EX40101:
     type: object
     properties:
