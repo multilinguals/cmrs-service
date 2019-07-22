@@ -554,6 +554,42 @@ paths:
                       $ref: "#/definitions/SetMunuItemDetails"
                   pageInfo:
                     $ref: "#/definitions/PageInfo"
+  /admin/add-items-to-set-menu-item/:id:
+    post:
+      tags:
+        - "管理员维护餐厅的菜单信息"
+      summary: "为套餐添加单品菜单项接口"
+      parameters:
+        - name: "套餐ID"
+          in: path
+          required: true
+          type: string
+        - name: "为套餐添加单品菜单项命令"
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/AddItemsToSetMenuItemCommand"
+      responses:
+        204:
+          description: "添加成功"
+  /admin/delete-items-from-set-menu-item/:id:
+    post:
+      tags:
+        - "管理员维护餐厅的菜单信息"
+      summary: "为套餐移除单品菜单项接口"
+      parameters:
+        - name: "套餐ID"
+          in: path
+          required: true
+          type: string
+        - name: "为套餐添加单品菜单项命令"
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/RemoveItemsFromSetMenuItemCommand"
+      responses:
+        204:
+          description: "移除成功"
 securityDefinitions:
   CMRSSecurity:
     type: apiKey
@@ -1026,6 +1062,26 @@ definitions:
       updatedAt:
         type: string
         example: null
+  AddItemsToSetMenuItemCommand:
+    type: object
+    properties:
+      itemsId:
+        type: array
+        items:
+          type: string
+          example:
+            - "fe925f17-7746-41fd-b420-1268e60b5910"
+            - "dc80b746-d889-45c9-8c5e-4b35257c871d"
+  RemoveItemsFromSetMenuItemCommand:
+    type: object
+    properties:
+      itemsId:
+        type: array
+        items:
+          type: string
+          example:
+            - "fe925f17-7746-41fd-b420-1268e60b5910"
+            - "dc80b746-d889-45c9-8c5e-4b35257c871d"
   EX40101:
     type: object
     properties:
