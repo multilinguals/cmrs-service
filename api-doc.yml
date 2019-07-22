@@ -582,7 +582,7 @@ paths:
           in: path
           required: true
           type: string
-        - name: "为套餐添加单品菜单项命令"
+        - name: "为套餐移除单品菜单项命令"
           in: body
           required: true
           schema:
@@ -590,6 +590,21 @@ paths:
       responses:
         204:
           description: "移除成功"
+  /admin/delete-menu-item/:id:
+    post:
+      tags:
+        - "管理员维护餐厅的菜单信息"
+      summary: "管理员删除某个菜单项接口"
+      parameters:
+        - name: "菜单项ID"
+          in: path
+          required: true
+          type: string
+      responses:
+        204:
+          description: "移除成功"
+        409:
+          description: "单品存在于套餐无法移除"
 securityDefinitions:
   CMRSSecurity:
     type: apiKey
