@@ -343,6 +343,38 @@ paths:
                 example: "20000"
               data:
                 $ref: '#/definitions/RestaurantDetails'
+  /admin/create-single-menu-item:
+    post:
+      tags:
+        - "管理员维护餐厅的菜单信息"
+      summary: "创建单品菜单项接口"
+      parameters:
+        - in: body
+          name: "创建单品菜单命令"
+          required: true
+          schema:
+            $ref: "#/definitions/CreateSingleMenuItemCommand"
+      responses:
+        200:
+          description: "创建单品菜单项成功"
+          schema:
+            $ref: "#/definitions/CreateAggregateSuccess"
+  /admin/create-set-menu-item:
+    post:
+      tags:
+        - "管理员维护餐厅的菜单信息"
+      summary: "创建套餐菜单项接口"
+      parameters:
+        - in: body
+          name: "创建单品菜单命令"
+          required: true
+          schema:
+            $ref: "#/definitions/CreateSetMenuItemCommand"
+      responses:
+        200:
+          description: "创建套餐菜单项成功"
+          schema:
+            $ref: "#/definitions/CreateAggregateSuccess"
 securityDefinitions:
   CMRSSecurity:
     type: apiKey
@@ -453,6 +485,55 @@ definitions:
     required:
       - name
       - description
+  CreateSingleMenuItemCommand:
+    type: object
+    properties:
+      restaurantId:
+        type: string
+        example: "f52bb20a-45f0-44c1-b424-e2637e2c2d3e"
+      name:
+        type: string
+        example: "萝卜丸子汤"
+      dishTypeId:
+        type: string
+        example: "1ab7d23f-5857-4d0b-9f19-dbde727c08bf"
+      tasteId:
+        type: string
+        example: null
+      price:
+        type: number
+        example: 15.5
+    required:
+      - restaurantId
+      - name
+      - dishTypeId
+      - price
+  CreateSetMenuItemCommand:
+    type: object
+    properties:
+      restaurantId:
+        type: string
+        example: "f52bb20a-45f0-44c1-b424-e2637e2c2d3e"
+      name:
+        type: string
+        example: "商务简餐"
+      price:
+        type: number
+        description: "套餐的定价，一般会比总价低"
+        example: 25.5
+      singleItemIdList:
+        type: array
+        items:
+          type: string
+          description: "套餐包含的单品菜单项的ID列表"
+          example:
+            - "7de43c37-714c-49e7-8a56-a35a29e2e552"
+            - "bcf99f0c-33cd-4219-ab95-0b8b910b1da1"
+    required:
+      - restaurantId
+      - name
+      - price
+      - singleItemIdList
   LoginSuccess:
     type: object
     properties:
