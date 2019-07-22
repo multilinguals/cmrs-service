@@ -448,6 +448,75 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/MenuItemType"
+  /admin/get-restaurant/:id/single-menu-item-list:
+    get:
+      tags:
+        - "管理员维护餐厅的菜单信息"
+      summary: "管理员获取单品菜单项分页列表"
+      parameters:
+        - name: "id"
+          type: string
+          in: path
+          required: true
+          description: "菜单项所属餐厅ID"
+        - name: "page"
+          type: integer
+          in: query
+          description: "页码"
+        - name: "size"
+          type: integer
+          in: query
+          description: "页面最大记录数"
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "20000"
+              data:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items:
+                      $ref: "#/definitions/SingleItemDetails"
+                  pageInfo:
+                    $ref: "#/definitions/PageInfo"
+  /admin/get-restaurant/{id}/all-single-menu-items:
+    get:
+      tags:
+        - "管理员维护餐厅的菜单信息"
+      summary: "管理员获取所有单品菜单项"
+      parameters:
+        - name: "id"
+          type: string
+          in: path
+          required: true
+          description: "菜单项所属餐厅ID"
+        - name: "page"
+          type: integer
+          in: query
+          description: "页码"
+        - name: "size"
+          type: integer
+          in: query
+          description: "页面最大记录数"
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "20000"
+              data:
+                type: array
+                items:
+                  $ref: "#/definitions/SingleItemDetails"
 securityDefinitions:
   CMRSSecurity:
     type: apiKey
@@ -839,6 +908,49 @@ definitions:
       createdAt:
         type: string
         example: "2019-07-19T15:05:32.642+0000"
+      updatedAt:
+        type: string
+        example: null
+  SingleItemDetails:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "dc80b746-d889-45c9-8c5e-4b35257c871d"
+      restaurantId:
+        type: string
+        example: "f52bb20a-45f0-44c1-b424-e2637e2c2d3e"
+      name:
+        type: string
+        example: "番茄蛋汤"
+      menuItemTypeId:
+        type: string
+        example: "f17aa9e0-0115-4bc6-a98e-8ad5500651f8"
+      menuItemName:
+        type: string
+        example: "SINGLE"
+      dishTypeId:
+        type: string
+        example: "1ab7d23f-5857-4d0b-9f19-dbde727c08bf"
+      dishTypeName:
+        type: string
+        example: "SOUP"
+      tasteId:
+        type: string
+        example: "e1c34caf-2b3f-4005-85e3-c4105347728d"
+      tasteName:
+        type: string
+        example: "SOUR"
+      price:
+        type: number
+        example: 10.5
+      onShelve:
+        description: "是否已上架"
+        type: boolean
+        example: false
+      createdAt:
+        type: string
+        example: "2019-07-13T14:41:29.468+0000"
       updatedAt:
         type: string
         example: null
