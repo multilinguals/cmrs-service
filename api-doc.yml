@@ -785,7 +785,7 @@ definitions:
     properties:
       id:
         type: string
-        example: "ffa92821-51d2-488e-b484-b46dd588cb5c",
+        example: "ffa92821-51d2-488e-b484-b46dd588cb5c"
       name:
         type: string
         example: "SOUP"
@@ -799,7 +799,7 @@ definitions:
           - "DESSERT"
       createdAt:
         type: string
-        example: "2019-07-19T15:05:32.642+0000",
+        example: "2019-07-19T15:05:32.642+0000"
       updatedAt:
         type: string
         example: null
@@ -808,7 +808,7 @@ definitions:
     properties:
       id:
         type: string
-        example: "ffa92821-51d2-488e-b484-b46dd588cb5c",
+        example: "ffa92821-51d2-488e-b484-b46dd588cb5c"
       name:
         type: string
         example: "SINGLE"
@@ -818,7 +818,7 @@ definitions:
           - "SET"
       createdAt:
         type: string
-        example: "2019-07-19T15:05:32.642+0000",
+        example: "2019-07-19T15:05:32.642+0000"
       updatedAt:
         type: string
         example: null
@@ -827,7 +827,7 @@ definitions:
     properties:
       id:
         type: string
-        example: "ffa92821-51d2-488e-b484-b46dd588cb5c",
+        example: "ffa92821-51d2-488e-b484-b46dd588cb5c"
       name:
         type: string
         example: "SWEET"
@@ -838,7 +838,7 @@ definitions:
           - "HOT"
       createdAt:
         type: string
-        example: "2019-07-19T15:05:32.642+0000",
+        example: "2019-07-19T15:05:32.642+0000"
       updatedAt:
         type: string
         example: null
