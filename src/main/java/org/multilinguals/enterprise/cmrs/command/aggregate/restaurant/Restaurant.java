@@ -57,7 +57,7 @@ public class Restaurant {
 
     @CommandHandler
     public void handler(AddItemsToSetMenuItemCommand command) {
-        apply(new ItemsAddedToSetMenuItemEvent(command.getId(), command.getSetMenuItemId(), command.getSingleItemsIdList()));
+        apply(new ItemsAddedToSetMenuItemEvent(command.getRestaurantId(), command.getSetMenuItemId(), command.getSingleItemsIdList()));
     }
 
     @EventSourcingHandler

@@ -116,12 +116,10 @@ public class RestaurantCommandController {
         return new CommandResponse<>(new AggregateCreatedDTO<>(menuItemId.getIdentifier()));
     }
 
-    @PostMapping("/admin/add-items-to-set-menu-item/{id}")
+    @PostMapping("/admin/add-items-to-set-menu-item")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
-    public void addItemsToSetMenuItem(@PathVariable String id, @RequestBody AddItemsToSetMenuItemCommand command, HttpServletResponse response) {
-        command.setId(new RestaurantId(id));
+    public void addItemsToSetMenuItem(@RequestBody AddItemsToSetMenuItemCommand command, HttpServletResponse response) {
         this.commandGateway.sendAndWait(command);
-
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 }

@@ -9,24 +9,24 @@ import java.util.List;
 
 public class AddItemsToSetMenuItemCommand extends AbstractCommand {
     @TargetAggregateIdentifier
-    private RestaurantId id;
+    private RestaurantId restaurantId;
 
     private MenuItemId setMenuItemId;
 
     private List<MenuItemId> singleItemsIdList;
 
-    public AddItemsToSetMenuItemCommand(RestaurantId id, MenuItemId setMenuItemId, List<MenuItemId> singleItemsIdList) {
-        this.id = id;
+    public AddItemsToSetMenuItemCommand(RestaurantId restaurantId, MenuItemId setMenuItemId, List<MenuItemId> singleItemsIdList) {
+        this.restaurantId = restaurantId;
         this.setMenuItemId = setMenuItemId;
         this.singleItemsIdList = singleItemsIdList;
     }
 
-    public RestaurantId getId() {
-        return id;
+    public RestaurantId getRestaurantId() {
+        return restaurantId;
     }
 
-    public void setId(RestaurantId id) {
-        this.id = id;
+    public void setRestaurantId(RestaurantId restaurantId) {
+        this.restaurantId = restaurantId;
     }
 
     public MenuItemId getSetMenuItemId() {
