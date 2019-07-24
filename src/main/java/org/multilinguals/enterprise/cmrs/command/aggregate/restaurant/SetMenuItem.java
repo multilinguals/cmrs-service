@@ -16,4 +16,16 @@ public class SetMenuItem extends MenuItem {
     public List<MenuItemId> getSingleMenuItemList() {
         return singleMenuItemList;
     }
+
+    public void addSingleMenuItem(MenuItemId menuItemId) {
+        if (!this.singleMenuItemList.contains(menuItemId)) {
+            this.singleMenuItemList.add(menuItemId);
+        }
+    }
+
+    public void removeSingleMenuItem(MenuItemId menuItemId) {
+        if (!this.singleMenuItemList.contains(menuItemId)) {
+            this.singleMenuItemList.remove(menuItemId);
+        }
+    }
 }

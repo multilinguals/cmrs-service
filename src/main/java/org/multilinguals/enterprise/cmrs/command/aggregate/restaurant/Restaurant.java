@@ -5,14 +5,8 @@ import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateMember;
 import org.axonframework.spring.stereotype.Aggregate;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.CreateRestaurantCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.CreateSetMenuItemCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.CreateSingleMenuItemCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.UpdateSingleMenuItemCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.RestaurantCreatedEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SetMenuItemCreatedEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SingleMenuItemCreatedEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SingleMenuItemUpdatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.*;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.*;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
 import java.util.HashMap;
@@ -59,6 +53,11 @@ public class Restaurant {
         MenuItemId menuItemId = new MenuItemId();
         apply(new SetMenuItemCreatedEvent(menuItemId, command.getRestaurantId(), command.getName(), command.getMenuItemTypeId(), command.getPrice(), command.getSingleItemIdList(), Boolean.FALSE));
         return menuItemId;
+    }
+
+    @CommandHandler
+    public void handler(AddItemsToSetMenuItemCommand command) {
+        apply(new ItemsAddedToSetMenuItemEvent(command.getId(), command.getSetMenuItemId(), command.getSingleItemsIdList()));
     }
 
     @EventSourcingHandler
@@ -112,6 +111,14 @@ public class Restaurant {
         );
 
         this.menu.put(setMenuItem.getId(), setMenuItem);
+    }
+
+    @EventSourcingHandler
+    public void on(ItemsAddedToSetMenuItemEvent event) {
+        SetMenuItem setMenuItem = (SetMenuItem) this.menu.get(event.getSetMenuItemId());
+        for (MenuItemId singleItemId : event.getSingleItemsIdList()) {
+            setMenuItem.addSingleMenuItem(singleItemId);
+        }
     }
 
     public RestaurantId getId() {

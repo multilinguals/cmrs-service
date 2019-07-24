@@ -4,10 +4,7 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.multilinguals.enterprise.cmrs.command.aggregate.menuitemtype.MenuItemTypeId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.MenuItemId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.CreateRestaurantCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.CreateSetMenuItemCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.CreateSingleMenuItemCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.UpdateSingleMenuItemCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.*;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.menutype.DefaultMenuItemType;
 import org.multilinguals.enterprise.cmrs.dto.aggregate.AggregateCreatedDTO;
@@ -117,5 +114,14 @@ public class RestaurantCommandController {
 
         MenuItemId menuItemId = commandGateway.sendAndWait(command);
         return new CommandResponse<>(new AggregateCreatedDTO<>(menuItemId.getIdentifier()));
+    }
+
+    @PostMapping("/admin/add-items-to-set-menu-item/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
+    public void addItemsToSetMenuItem(@PathVariable String id, @RequestBody AddItemsToSetMenuItemCommand command, HttpServletResponse response) {
+        command.setId(new RestaurantId(id));
+        this.commandGateway.sendAndWait(command);
+
+        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 }

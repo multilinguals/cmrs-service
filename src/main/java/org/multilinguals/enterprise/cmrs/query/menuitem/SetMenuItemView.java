@@ -113,6 +113,14 @@ public class SetMenuItemView {
         this.singleMenuItems = singleMenuItems;
     }
 
+    public void addSingleMenuItem(SingleMenuItemView singleMenuItem) {
+        this.singleMenuItems.add(singleMenuItem);
+    }
+
+    public void removeSingleMenuItem(SingleMenuItemView singleMenuItem) {
+        this.singleMenuItems.remove(singleMenuItem);
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }

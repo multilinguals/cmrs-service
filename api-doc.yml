@@ -1080,6 +1080,9 @@ definitions:
   AddItemsToSetMenuItemCommand:
     type: object
     properties:
+      setMenuItemId:
+        type: string
+        example: "8d30e77c-9a00-4b09-9e88-430022b773a9"
       itemsId:
         type: array
         items:
@@ -1090,7 +1093,10 @@ definitions:
   RemoveItemsFromSetMenuItemCommand:
     type: object
     properties:
-      itemsId:
+      setMenuItemId:
+        type: string
+        example: "8d30e77c-9a00-4b09-9e88-430022b773a9"
+      singleItemsIdList:
         type: array
         items:
           type: string
