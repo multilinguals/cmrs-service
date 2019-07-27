@@ -122,4 +122,11 @@ public class RestaurantCommandController {
         this.commandGateway.sendAndWait(command);
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
+
+    @PostMapping("/admin/remove-items-from-set-menu-item")
+    @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
+    public void addItemsToSetMenuItem(@RequestBody RemoveItemsFromMenuItemCommand command, HttpServletResponse response) {
+        this.commandGateway.sendAndWait(command);
+        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+    }
 }

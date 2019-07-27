@@ -2,9 +2,9 @@ package org.multilinguals.enterprise.cmrs.query.menuitem;
 
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
-import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.MenuItemId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.ItemsAddedToSetMenuItemEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.ItemsRemovedFromMenuItemEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SetMenuItemCreatedEvent;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.MenuItemNotExistException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.MenuItemTypeNotExistException;
@@ -60,7 +60,7 @@ public class SetMenuItemViewHandler {
         this.setMenuItemViewRepository.save(setMenuItemView);
     }
 
-    @EventSourcingHandler
+    @EventHandler
     public void on(ItemsAddedToSetMenuItemEvent event, @Timestamp java.time.Instant createdTime) throws MenuItemNotExistException {
         SetMenuItemView setMenuItemView = this.setMenuItemViewRepository.findById(event.getSetMenuItemId().getIdentifier())
                 .orElseThrow(MenuItemNotExistException::new);
@@ -70,6 +70,23 @@ public class SetMenuItemViewHandler {
                     .orElseThrow(MenuItemNotExistException::new);
 
             setMenuItemView.addSingleMenuItem(singleMenuItemView);
+        }
+
+        setMenuItemView.setUpdatedAt(new Date(createdTime.toEpochMilli()));
+
+        this.setMenuItemViewRepository.save(setMenuItemView);
+    }
+
+    @EventHandler
+    public void on(ItemsRemovedFromMenuItemEvent event, @Timestamp java.time.Instant createdTime) throws MenuItemNotExistException {
+        SetMenuItemView setMenuItemView = this.setMenuItemViewRepository.findById(event.getSetMenuItemId().getIdentifier())
+                .orElseThrow(MenuItemNotExistException::new);
+
+        for (MenuItemId id : event.getSingleItemsIdList()) {
+            SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(id.getIdentifier())
+                    .orElseThrow(MenuItemNotExistException::new);
+
+            setMenuItemView.removeSingleMenuItem(singleMenuItemView);
         }
 
         setMenuItemView.setUpdatedAt(new Date(createdTime.toEpochMilli()));

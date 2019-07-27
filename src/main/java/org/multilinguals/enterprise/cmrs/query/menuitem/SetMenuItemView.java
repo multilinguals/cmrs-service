@@ -117,8 +117,12 @@ public class SetMenuItemView {
         this.singleMenuItems.add(singleMenuItem);
     }
 
-    public void removeSingleMenuItem(SingleMenuItemView singleMenuItem) {
-        this.singleMenuItems.remove(singleMenuItem);
+    public void removeSingleMenuItem(SingleMenuItemView ToDeleteItem) {
+        for (SingleMenuItemView singleMenuItemView : this.singleMenuItems) {
+            if (singleMenuItemView.getId().equals(ToDeleteItem.getId())) {
+                this.singleMenuItems.remove(singleMenuItemView);
+            }
+        }
     }
 
     public Date getCreatedAt() {

@@ -568,7 +568,7 @@ paths:
       responses:
         204:
           description: "添加成功"
-  /admin/delete-items-from-set-menu-item:
+  /admin/remove-items-from-set-menu-item:
     post:
       tags:
         - "管理员维护餐厅的菜单信息"
