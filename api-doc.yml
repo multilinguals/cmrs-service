@@ -375,22 +375,27 @@ paths:
           description: "创建套餐菜单项成功"
           schema:
             $ref: "#/definitions/CreateAggregateSuccess"
-  /admin/update-restaurant/:id/single-menu-item:
+  /admin/update-restaurant/:restId/single-menu-item/:itemId:
     post:
       tags:
         - "管理员维护餐厅的菜单信息"
       summary: "更新单品菜单项接口"
       parameters:
+        - name: "restId"
+          in: path
+          required: true
+          type: string
+          description: "菜单项所属菜单餐厅ID"
+        - name: "itemId"
+          in: path
+          required: true
+          type: string
+          description: "菜单项ID"
         - name: "更新单品菜单项命令"
           in: body
           required: true
           schema:
             $ref: "#/definitions/UpdateSingleMenuItemCommand"
-        - name: "id"
-          in: path
-          required: true
-          type: string
-          description: "菜单项所属菜单餐厅ID"
       responses:
         204:
           description: "更新单品菜单项成功"
@@ -783,9 +788,6 @@ definitions:
   UpdateSingleMenuItemCommand:
     type: object
     properties:
-      id:
-        type: string
-        example: "e13623d6-7308-4a05-8e57-f106ac437262"
       name:
         type: string
         example: "西湖牛肉羹"

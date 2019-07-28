@@ -85,22 +85,31 @@ public class RestaurantCommandController {
         return new CommandResponse<>(new AggregateCreatedDTO<>(menuItemId.getIdentifier()));
     }
 
-    @PostMapping("/admin/update-restaurant/{restId}/single-menu-item")
+    @PostMapping("/admin/update-restaurant/{restId}/single-menu-item/{itemId}")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
-    public void updateSingleMenuItem(@PathVariable String restId, @RequestBody UpdateSingleMenuItemCommand command) {
+    public void updateSingleMenuItem(@PathVariable String restId, @PathVariable String itemId, @RequestBody UpdateSingleMenuItemCommand command, HttpServletResponse response) {
         try {
             this.restaurantDetailsViewRepository.findById(restId).orElseThrow(RestaurantNotExistException::new);
-            SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(command.getId().getIdentifier()).orElseThrow(MenuItemNotExistException::new);
+            SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(itemId).orElseThrow(MenuItemNotExistException::new);
 
             if (!restId.equals(singleMenuItemView.getRestaurantId())) {
                 throw new RestaurantNotMatchMenuItemException();
             }
-        } catch (RestaurantNotExistException | MenuItemNotExistException | RestaurantNotMatchMenuItemException ex) {
+
+            MenuItemTypeView menuItemTypeView = this.menuItemTypeViewRepository.findOne(Example.of(new MenuItemTypeView(null, DefaultMenuItemType.SINGLE, null)))
+                    .orElseThrow(MenuItemTypeNotExistException::new);
+
+            if (!singleMenuItemView.getMenuItemTypeId().equals(menuItemTypeView.getId())) {
+                throw new SingleMenuItemRequiredException();
+            }
+        } catch (RestaurantNotExistException | MenuItemNotExistException | RestaurantNotMatchMenuItemException | MenuItemTypeNotExistException | SingleMenuItemRequiredException ex) {
             throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
         }
 
         command.setRestaurantId(new RestaurantId(restId));
+        command.setId(new MenuItemId(itemId));
         commandGateway.sendAndWait(command);
+        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
     @PostMapping("/admin/create-set-menu-item")
