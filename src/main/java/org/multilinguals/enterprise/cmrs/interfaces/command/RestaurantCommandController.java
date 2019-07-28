@@ -12,6 +12,8 @@ import org.multilinguals.enterprise.cmrs.infrastructure.dto.CommandResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.*;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeViewRepository;
+import org.multilinguals.enterprise.cmrs.query.menuitem.SetMenuItemView;
+import org.multilinguals.enterprise.cmrs.query.menuitem.SetMenuItemViewRepository;
 import org.multilinguals.enterprise.cmrs.query.menuitem.SingleMenuItemView;
 import org.multilinguals.enterprise.cmrs.query.menuitem.SingleMenuItemViewRepository;
 import org.multilinguals.enterprise.cmrs.query.menuitemtype.MenuItemTypeView;
@@ -35,6 +37,8 @@ public class RestaurantCommandController {
 
     private SingleMenuItemViewRepository singleMenuItemViewRepository;
 
+    private SetMenuItemViewRepository setMenuItemViewRepository;
+
     private MenuItemTypeViewRepository menuItemTypeViewRepository;
 
     private DishTypeViewRepository dishTypeViewRepository;
@@ -42,9 +46,10 @@ public class RestaurantCommandController {
     private TasteViewRepository tasteViewRepository;
 
     @Autowired
-    public RestaurantCommandController(RestaurantDetailsViewRepository restaurantDetailsViewRepository, SingleMenuItemViewRepository singleMenuItemViewRepository, MenuItemTypeViewRepository menuItemTypeViewRepository, DishTypeViewRepository dishTypeViewRepository, TasteViewRepository tasteViewRepository) {
+    public RestaurantCommandController(RestaurantDetailsViewRepository restaurantDetailsViewRepository, SingleMenuItemViewRepository singleMenuItemViewRepository, SetMenuItemViewRepository setMenuItemViewRepository, MenuItemTypeViewRepository menuItemTypeViewRepository, DishTypeViewRepository dishTypeViewRepository, TasteViewRepository tasteViewRepository) {
         this.restaurantDetailsViewRepository = restaurantDetailsViewRepository;
         this.singleMenuItemViewRepository = singleMenuItemViewRepository;
+        this.setMenuItemViewRepository = setMenuItemViewRepository;
         this.menuItemTypeViewRepository = menuItemTypeViewRepository;
         this.dishTypeViewRepository = dishTypeViewRepository;
         this.tasteViewRepository = tasteViewRepository;
@@ -114,6 +119,34 @@ public class RestaurantCommandController {
 
         MenuItemId menuItemId = commandGateway.sendAndWait(command);
         return new CommandResponse<>(new AggregateCreatedDTO<>(menuItemId.getIdentifier()));
+    }
+
+    @PostMapping("/admin/update-restaurant/{restId}/set-menu-item/{itemId}")
+    @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
+    public void updateSetMenuItem(@PathVariable String restId, @PathVariable String itemId, @RequestBody UpdateSetMenuItemCommand command, HttpServletResponse response) {
+        try {
+            this.restaurantDetailsViewRepository.findById(restId).orElseThrow(RestaurantNotExistException::new);
+            SetMenuItemView setMenuItemView = this.setMenuItemViewRepository.findById(itemId).orElseThrow(MenuItemNotExistException::new);
+
+            if (!restId.equals(setMenuItemView.getRestaurantId())) {
+                throw new RestaurantNotMatchMenuItemException();
+            }
+
+            MenuItemTypeView menuItemTypeView = this.menuItemTypeViewRepository.findOne(Example.of(new MenuItemTypeView(null, DefaultMenuItemType.SET, null)))
+                    .orElseThrow(MenuItemTypeNotExistException::new);
+
+            if (!setMenuItemView.getMenuItemTypeId().equals(menuItemTypeView.getId())) {
+                throw new SetMenuItemRequiredException();
+            }
+        } catch (RestaurantNotExistException | MenuItemNotExistException | RestaurantNotMatchMenuItemException | MenuItemTypeNotExistException | SetMenuItemRequiredException ex) {
+            throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+        }
+
+        command.setRestaurantId(new RestaurantId(restId));
+        command.setId(new MenuItemId(itemId));
+
+        commandGateway.sendAndWait(command);
+        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
     @PostMapping("/admin/add-items-to-set-menu-item")

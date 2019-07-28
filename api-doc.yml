@@ -394,6 +394,30 @@ paths:
       responses:
         204:
           description: "更新单品菜单项成功"
+  /admin/update-restaurant/:restId/set-menu-item/:itemId:
+    post:
+      tags:
+        - "管理员维护餐厅的菜单信息"
+      summary: "更新套餐菜单项接口"
+      parameters:
+        - name: "restId"
+          in: path
+          required: true
+          type: string
+          description: "菜单项所属菜单餐厅ID"
+        - name: "itemId"
+          in: path
+          required: true
+          type: string
+          description: "菜单项ID"
+        - name: "更新套餐菜单项命令"
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateSetMenuItemCommand"
+      responses:
+        204:
+          description: "更新单品菜单项成功"
   /user/get-all-dish-type:
     get:
       tags:
@@ -777,6 +801,18 @@ definitions:
       onShelve:
         type: boolean
         example: true
+  UpdateSetMenuItemCommand:
+    type: object
+    properties:
+      name:
+        type: string
+        example: "情侣套餐"
+      price:
+        type: number
+        example: 15.5
+      onShelve:
+        type: boolean
+        example: false
   LoginSuccess:
     type: object
     properties:

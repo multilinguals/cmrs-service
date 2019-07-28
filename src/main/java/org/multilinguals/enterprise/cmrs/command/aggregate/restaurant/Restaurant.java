@@ -56,6 +56,11 @@ public class Restaurant {
     }
 
     @CommandHandler
+    public void handler(UpdateSetMenuItemCommand command) {
+        apply(new SetMenuItemUpdatedEvent(command.getRestaurantId(), command.getId(), command.getName(), command.getPrice(), command.getOnShelve()));
+    }
+
+    @CommandHandler
     public void handler(AddItemsToSetMenuItemCommand command) {
         apply(new ItemsAddedToSetMenuItemEvent(command.getRestaurantId(), command.getSetMenuItemId(), command.getSingleItemsIdList()));
     }
@@ -116,6 +121,23 @@ public class Restaurant {
         );
 
         this.menu.put(setMenuItem.getId(), setMenuItem);
+    }
+
+    @EventSourcingHandler
+    public void on(SetMenuItemUpdatedEvent event) {
+        SetMenuItem menuItem = (SetMenuItem) this.menu.get(event.getId());
+
+        if (event.getName() != null) {
+            menuItem.setName(event.getName());
+        }
+
+        if (event.getPrice() != null) {
+            menuItem.setPrice(event.getPrice());
+        }
+
+        if (event.getOnShelve() != null) {
+            menuItem.setOnShelve(event.getOnShelve());
+        }
     }
 
     @EventSourcingHandler

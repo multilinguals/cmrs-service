@@ -31,6 +31,12 @@ public interface ErrorCode {
     // 餐厅和菜单项不匹配
     String REST_NOT_MATCH_MENU_ITEM = "40008";
 
+    // 当前菜单项不是单品
+    String SINGLE_ITEM_REQUIRED = "40009";
+
+    // 当前菜单项不是套餐
+    String SET_ITEM_REQUIRED = "40010";
+
     // 用户身份凭证已经存在
     String SIGNED_UP_ACCOUNT = "40901";
 }

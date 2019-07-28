@@ -1,11 +1,13 @@
 package org.multilinguals.enterprise.cmrs.query.menuitem;
 
+import org.apache.commons.lang3.StringUtils;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.MenuItemId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.ItemsAddedToSetMenuItemEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.ItemsRemovedFromMenuItemEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SetMenuItemCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SetMenuItemUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.MenuItemNotExistException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.MenuItemTypeNotExistException;
 import org.multilinguals.enterprise.cmrs.query.menuitemtype.MenuItemTypeView;
@@ -56,6 +58,27 @@ public class SetMenuItemViewHandler {
                 singleMenuItemViews,
                 new Date(createdTime.toEpochMilli())
         );
+
+        this.setMenuItemViewRepository.save(setMenuItemView);
+    }
+
+    @EventHandler
+    public void on(SetMenuItemUpdatedEvent event, @Timestamp java.time.Instant createdTime) throws MenuItemNotExistException {
+        SetMenuItemView setMenuItemView = this.setMenuItemViewRepository.findById(event.getId().getIdentifier())
+                .orElseThrow(MenuItemNotExistException::new);
+        if (StringUtils.isNotEmpty(event.getName())) {
+            setMenuItemView.setName(event.getName());
+        }
+
+        if (event.getPrice() != null) {
+            setMenuItemView.setPrice(event.getPrice());
+        }
+
+        if (event.getOnShelve() != null) {
+            setMenuItemView.setOnShelve(event.getOnShelve());
+        }
+
+        setMenuItemView.setUpdatedAt(new Date(createdTime.toEpochMilli()));
 
         this.setMenuItemViewRepository.save(setMenuItemView);
     }
