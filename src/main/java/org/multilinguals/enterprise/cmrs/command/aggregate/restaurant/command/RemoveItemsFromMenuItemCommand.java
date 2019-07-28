@@ -5,12 +5,14 @@ import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.MenuItemId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class RemoveItemsFromMenuItemCommand extends AbstractCommand {
     @TargetAggregateIdentifier
     private RestaurantId restaurantId;
 
+    @NotNull
     private MenuItemId setMenuItemId;
 
     private List<MenuItemId> singleItemsIdList;

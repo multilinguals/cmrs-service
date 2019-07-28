@@ -158,16 +158,19 @@ public class RestaurantCommandController {
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
-    @PostMapping("/admin/add-items-to-set-menu-item")
+    @PostMapping("/admin/add-items-to-set-menu-item/{setMenuItemId}")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
-    public void addItemsToSetMenuItem(@RequestBody AddItemsToSetMenuItemCommand command, HttpServletResponse response) {
+    public void addItemsToSetMenuItem(@PathVariable String setMenuItemId, @RequestBody AddItemsToSetMenuItemCommand command, HttpServletResponse response) {
+        // TODO 需要校验Item和Set是一个Rest
+        command.setSetMenuItemId(new MenuItemId(setMenuItemId));
         this.commandGateway.sendAndWait(command);
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
-    @PostMapping("/admin/remove-items-from-set-menu-item")
+    @PostMapping("/admin/remove-items-from-set-menu-item/{setMenuItemId}")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
-    public void addItemsToSetMenuItem(@RequestBody RemoveItemsFromMenuItemCommand command, HttpServletResponse response) {
+    public void addItemsToSetMenuItem(@PathVariable String setMenuItemId, @RequestBody RemoveItemsFromMenuItemCommand command, HttpServletResponse response) {
+        command.setSetMenuItemId(new MenuItemId(setMenuItemId));
         this.commandGateway.sendAndWait(command);
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }

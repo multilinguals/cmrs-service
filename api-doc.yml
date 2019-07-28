@@ -583,12 +583,17 @@ paths:
                       $ref: "#/definitions/SetMunuItemDetails"
                   pageInfo:
                     $ref: "#/definitions/PageInfo"
-  /admin/add-items-to-set-menu-item:
+  /admin/add-items-to-set-menu-item/:setMenuItemId:
     post:
       tags:
         - "管理员维护餐厅的菜单信息"
       summary: "为套餐添加单品菜单项接口"
       parameters:
+        - name: "setMenuItemId"
+          type: string
+          in: path
+          required: true
+          description: "套餐菜单项ID"
         - name: "为套餐添加单品菜单项命令"
           in: body
           required: true
@@ -597,12 +602,17 @@ paths:
       responses:
         204:
           description: "添加成功"
-  /admin/remove-items-from-set-menu-item:
+  /admin/remove-items-from-set-menu-item/:setMenuItemId:
     post:
       tags:
         - "管理员维护餐厅的菜单信息"
       summary: "为套餐移除单品菜单项接口"
       parameters:
+        - name: "setMenuItemId"
+          type: string
+          in: path
+          required: true
+          description: "套餐菜单项ID"
         - name: "为套餐移除单品菜单项命令"
           in: body
           required: true
@@ -1110,9 +1120,6 @@ definitions:
   AddItemsToSetMenuItemCommand:
     type: object
     properties:
-      setMenuItemId:
-        type: string
-        example: "8d30e77c-9a00-4b09-9e88-430022b773a9"
       itemsId:
         type: array
         items:
@@ -1123,9 +1130,6 @@ definitions:
   RemoveItemsFromSetMenuItemCommand:
     type: object
     properties:
-      setMenuItemId:
-        type: string
-        example: "8d30e77c-9a00-4b09-9e88-430022b773a9"
       singleItemsIdList:
         type: array
         items:
