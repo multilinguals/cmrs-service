@@ -1,6 +1,5 @@
 package org.multilinguals.enterprise.cmrs.interfaces.query;
 
-import org.multilinguals.enterprise.cmrs.infrastructure.dto.QueryResponse;
 import org.multilinguals.enterprise.cmrs.query.menuitemtype.MenuItemTypeView;
 import org.multilinguals.enterprise.cmrs.query.menuitemtype.MenuItemTypeViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +21,9 @@ public class MenuItemTypeQueryController {
 
     @GetMapping("/get-all-menu-item-type")
     @PreAuthorize("isAuthenticated()")
-    public QueryResponse<List<MenuItemTypeView>> queryAllDishType() {
+    public List<MenuItemTypeView> queryAllDishType() {
         Sort sort = new Sort(Sort.Direction.DESC, "name");
-        List<MenuItemTypeView> menuItemTypeViews = this.menuItemTypeViewRepository.findAll(sort);
 
-        return new QueryResponse<>(menuItemTypeViews);
+        return this.menuItemTypeViewRepository.findAll(sort);
     }
 }

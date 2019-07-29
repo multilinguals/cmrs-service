@@ -1,6 +1,5 @@
 package org.multilinguals.enterprise.cmrs.interfaces.query;
 
-import org.multilinguals.enterprise.cmrs.infrastructure.dto.QueryResponse;
 import org.multilinguals.enterprise.cmrs.query.taste.TasteView;
 import org.multilinguals.enterprise.cmrs.query.taste.TasteViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +21,9 @@ public class TasteQueryController {
 
     @GetMapping("/get-all-taste")
     @PreAuthorize("isAuthenticated()")
-    public QueryResponse<List<TasteView>> queryAllDishType() {
+    public List<TasteView> queryAllDishType() {
         Sort sort = new Sort(Sort.Direction.DESC, "name");
-        List<TasteView> tasteViews = this.tasteViewRepository.findAll(sort);
 
-        return new QueryResponse<>(tasteViews);
+        return this.tasteViewRepository.findAll(sort);
     }
 }

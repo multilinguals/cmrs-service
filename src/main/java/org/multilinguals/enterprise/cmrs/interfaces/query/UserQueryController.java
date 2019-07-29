@@ -2,7 +2,6 @@ package org.multilinguals.enterprise.cmrs.interfaces.query;
 
 import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.CMRSPage;
-import org.multilinguals.enterprise.cmrs.infrastructure.dto.QueryResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsView;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
@@ -33,10 +32,10 @@ public class UserQueryController {
      */
     @GetMapping("/get-self-details")
     @PreAuthorize("isAuthenticated()")
-    public QueryResponse<UserDetailsView> querySelfDetails(@RequestAttribute String reqSenderId) {
+    public UserDetailsView querySelfDetails(@RequestAttribute String reqSenderId) {
         Optional<UserDetailsView> userDetailsView = this.userDetailsViewRepository.findById(reqSenderId);
 
-        return userDetailsView.map(QueryResponse::new).orElseGet(() -> new QueryResponse<>(null));
+        return userDetailsView.orElseGet(() -> null);
     }
 
     /**
@@ -48,10 +47,10 @@ public class UserQueryController {
      */
     @GetMapping("/get-user-list")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public QueryResponse<CMRSPage<UserDetailsView>> queryUserList(@RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
+    public CMRSPage<UserDetailsView> queryUserList(@RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Page<UserDetailsView> userDetailsViewPage = this.userDetailsViewRepository.findAll(PageRequest.of(Integer.valueOf(page), Integer.valueOf(size), sort));
-        return new QueryResponse<>(new CMRSPage<>(userDetailsViewPage));
+        return new CMRSPage<>(userDetailsViewPage);
     }
 
     /**
@@ -62,10 +61,8 @@ public class UserQueryController {
      */
     @GetMapping("/get-user-details/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public QueryResponse<UserDetailsView> queryUserDetails(@PathVariable String id) {
-        UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(id)
+    public UserDetailsView queryUserDetails(@PathVariable String id) {
+        return this.userDetailsViewRepository.findById(id)
                 .orElseThrow(() -> new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, ErrorCode.USER_NOT_EXISTED));
-
-        return new QueryResponse<>(userDetailsView);
     }
 }

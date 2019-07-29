@@ -7,7 +7,7 @@ info:
   license:
     name: "Apache 2.0"
     url: "http://www.apache.org/licenses/LICENSE-2.0.html"
-host: "117.78.6.206:9580"
+host: "139.159.162.133:9580"
 basePath: "/"
 tags:
   - name: "用户认证"
@@ -64,13 +64,7 @@ paths:
         200:
           description: "查询成功"
           schema:
-            type: object
-            properties:
-              code:
-                type: string
-                example: "20000"
-              data:
-                $ref: "#/definitions/UserDetails"
+            $ref: "#/definitions/UserDetails"
   /update-self-password:
     post:
       tags:
@@ -105,18 +99,12 @@ paths:
           schema:
             type: object
             properties:
-              code:
-                type: string
-                example: "20000"
-              data:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: "#/definitions/RoleDetailsView"
-                  pageInfo:
-                    $ref: "#/definitions/PageInfo"
+              content:
+                type: array
+                items:
+                  $ref: "#/definitions/RoleDetailsView"
+              pageInfo:
+                $ref: "#/definitions/PageInfo"
   /get-all-roles:
     get:
       tags:
@@ -126,15 +114,9 @@ paths:
         200:
           description: "查询成功"
           schema:
-            type: object
-            properties:
-              code:
-                type: string
-                example: "20000"
-              data:
-                type: array
-                items:
-                  $ref: "#/definitions/RoleDetailsView"
+            type: array
+            items:
+              $ref: "#/definitions/RoleDetailsView"
   /set-roles-to-user/:userId:
     post:
       tags:
@@ -233,13 +215,7 @@ paths:
         200:
           description: "查询成功"
           schema:
-            type: object
-            properties:
-              code:
-                type: string
-                example: "20000"
-              data:
-                $ref: '#/definitions/UserDetails'
+            $ref: '#/definitions/UserDetails'
   /get-user-list:
     get:
       tags:
@@ -260,18 +236,12 @@ paths:
           schema:
             type: object
             properties:
-              code:
-                type: string
-                example: "20000"
-              data:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: "#/definitions/UserDetails"
-                  pageInfo:
-                    $ref: "#/definitions/PageInfo"
+              content:
+                type: array
+                items:
+                  $ref: "#/definitions/UserDetails"
+              pageInfo:
+                $ref: "#/definitions/PageInfo"
   /create-restaurant:
     post:
       tags:
@@ -308,18 +278,12 @@ paths:
           schema:
             type: object
             properties:
-              code:
-                type: string
-                example: "20000"
-              data:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: "#/definitions/RestaurantDetails"
-                  pageInfo:
-                    $ref: "#/definitions/PageInfo"
+              content:
+                type: array
+                items:
+                  $ref: "#/definitions/RestaurantDetails"
+              pageInfo:
+                $ref: "#/definitions/PageInfo"
   /get-details-of-restaurant/:id:
     get:
       tags:
@@ -335,13 +299,7 @@ paths:
         200:
           description: "查询成功"
           schema:
-            type: object
-            properties:
-              code:
-                type: string
-                example: "20000"
-              data:
-                $ref: '#/definitions/RestaurantDetails'
+            $ref: '#/definitions/RestaurantDetails'
   /create-single-menu-item:
     post:
       tags:
@@ -431,15 +389,9 @@ paths:
         200:
           description: "查询成功"
           schema:
-            type: object
-            properties:
-              code:
-                type: string
-                example: "20000"
-              data:
-                type: array
-                items:
-                  $ref: "#/definitions/DishType"
+            type: array
+            items:
+              $ref: "#/definitions/DishType"
   /get-all-taste:
     get:
       tags:
@@ -449,15 +401,9 @@ paths:
         200:
           description: "查询成功"
           schema:
-            type: object
-            properties:
-              code:
-                type: string
-                example: "20000"
-              data:
-                type: array
-                items:
-                  $ref: "#/definitions/Taste"
+            type: array
+            items:
+              $ref: "#/definitions/Taste"
   /get-all-menu-item-type:
     get:
       tags:
@@ -467,15 +413,9 @@ paths:
         200:
           description: "查询成功"
           schema:
-            type: object
-            properties:
-              code:
-                type: string
-                example: "20000"
-              data:
-                type: array
-                items:
-                  $ref: "#/definitions/MenuItemType"
+            type: array
+            items:
+              $ref: "#/definitions/MenuItemType"
   /get-restaurant/:id/single-menu-item-list:
     get:
       tags:
@@ -501,18 +441,12 @@ paths:
           schema:
             type: object
             properties:
-              code:
-                type: string
-                example: "20000"
-              data:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: "#/definitions/SingleMenuItemDetails"
-                  pageInfo:
-                    $ref: "#/definitions/PageInfo"
+              content:
+                type: array
+                items:
+                  $ref: "#/definitions/SingleMenuItemDetails"
+              pageInfo:
+                $ref: "#/definitions/PageInfo"
   /get-restaurant/:id/all-single-menu-items:
     get:
       tags:
@@ -536,15 +470,9 @@ paths:
         200:
           description: "查询成功"
           schema:
-            type: object
-            properties:
-              code:
-                type: string
-                example: "20000"
-              data:
-                type: array
-                items:
-                  $ref: "#/definitions/SingleMenuItemDetails"
+            type: array
+            items:
+              $ref: "#/definitions/SingleMenuItemDetails"
   /get-restaurant/:id/set-menu-item-list:
     get:
       tags:
@@ -570,18 +498,12 @@ paths:
           schema:
             type: object
             properties:
-              code:
-                type: string
-                example: "20000"
-              data:
-                type: object
-                properties:
-                  content:
-                    type: array
-                    items:
-                      $ref: "#/definitions/SetMunuItemDetails"
-                  pageInfo:
-                    $ref: "#/definitions/PageInfo"
+              content:
+                type: array
+                items:
+                  $ref: "#/definitions/SetMunuItemDetails"
+              pageInfo:
+                $ref: "#/definitions/PageInfo"
   /add-items-to-set-menu-item/:setMenuItemId:
     post:
       tags:
