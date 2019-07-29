@@ -1,10 +1,9 @@
 package org.multilinguals.enterprise.cmrs.infrastructure.dto;
 
-public class ExceptionResponse extends AbstractResponse {
+public class ExceptionResponse {
     private String message;
 
-    public ExceptionResponse(String code, String message) {
-        super(code);
+    public ExceptionResponse(String message) {
         this.message = message;
     }
 

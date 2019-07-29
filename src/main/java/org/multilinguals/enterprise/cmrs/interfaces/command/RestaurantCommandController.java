@@ -8,7 +8,6 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.*;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.menutype.DefaultMenuItemType;
 import org.multilinguals.enterprise.cmrs.dto.aggregate.AggregateCreatedDTO;
-import org.multilinguals.enterprise.cmrs.infrastructure.dto.CommandResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.*;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeViewRepository;
@@ -57,15 +56,15 @@ public class RestaurantCommandController {
 
     @PostMapping("/create-restaurant")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
-    public CommandResponse<AggregateCreatedDTO<String>> createRestaurant(@RequestBody CreateRestaurantCommand command, @RequestAttribute String reqSenderId) {
+    public AggregateCreatedDTO<String> createRestaurant(@RequestBody CreateRestaurantCommand command, @RequestAttribute String reqSenderId) {
         command.setCreatorId(new UserId(reqSenderId));
         RestaurantId restaurantId = commandGateway.sendAndWait(command);
-        return new CommandResponse<>(new AggregateCreatedDTO<>(restaurantId.getIdentifier()));
+        return new AggregateCreatedDTO<>(restaurantId.getIdentifier());
     }
 
     @PostMapping("/create-single-menu-item")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
-    public CommandResponse<AggregateCreatedDTO<String>> createSingleMenuItem(@RequestBody CreateSingleMenuItemCommand command) throws MenuItemTypeNotExistException {
+    public AggregateCreatedDTO<String> createSingleMenuItem(@RequestBody CreateSingleMenuItemCommand command) throws MenuItemTypeNotExistException {
         try {
             this.restaurantDetailsViewRepository.findById(command.getRestaurantId().getIdentifier()).orElseThrow(RestaurantNotExistException::new);
             this.dishTypeViewRepository.findById(command.getDishTypeId().getIdentifier()).orElseThrow(DishTypeNotExistException::new);
@@ -82,7 +81,7 @@ public class RestaurantCommandController {
         command.setMenuItemTypeId(new MenuItemTypeId(menuItemTypeView.getId()));
 
         MenuItemId menuItemId = commandGateway.sendAndWait(command);
-        return new CommandResponse<>(new AggregateCreatedDTO<>(menuItemId.getIdentifier()));
+        return new AggregateCreatedDTO<>(menuItemId.getIdentifier());
     }
 
     @PostMapping("/update-restaurant/{restId}/single-menu-item/{itemId}")
@@ -114,7 +113,7 @@ public class RestaurantCommandController {
 
     @PostMapping("/create-set-menu-item")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
-    public CommandResponse<AggregateCreatedDTO<String>> createSetMenuItem(@RequestBody CreateSetMenuItemCommand command) throws MenuItemTypeNotExistException {
+    public AggregateCreatedDTO<String> createSetMenuItem(@RequestBody CreateSetMenuItemCommand command) throws MenuItemTypeNotExistException {
         try {
             this.restaurantDetailsViewRepository.findById(command.getRestaurantId().getIdentifier()).orElseThrow(RestaurantNotExistException::new);
         } catch (RestaurantNotExistException ex) {
@@ -127,7 +126,7 @@ public class RestaurantCommandController {
         command.setMenuItemTypeId(new MenuItemTypeId(menuItemTypeView.getId()));
 
         MenuItemId menuItemId = commandGateway.sendAndWait(command);
-        return new CommandResponse<>(new AggregateCreatedDTO<>(menuItemId.getIdentifier()));
+        return new AggregateCreatedDTO<>(menuItemId.getIdentifier());
     }
 
     @PostMapping("/update-restaurant/{restId}/set-menu-item/{itemId}")

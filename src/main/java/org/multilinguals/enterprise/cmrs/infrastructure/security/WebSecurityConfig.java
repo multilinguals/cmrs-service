@@ -1,5 +1,6 @@
 package org.multilinguals.enterprise.cmrs.infrastructure.security;
 
+import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -15,6 +16,9 @@ import javax.annotation.Resource;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private UserDetailsViewRepository userDetailsViewRepository;
+
+    @Resource
+    private I18Translator i18Translator;
 
     private static final String[] AUTH_WHITELIST = {
             "/sign-up-username",
@@ -35,9 +39,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // 允许所有的OPTIONS通过
                 .anyRequest().authenticated()
                 .and()
-                .addFilter(new RequestValidationFilter(authenticationManager(), userDetailsViewRepository))
+                .addFilter(new RequestValidationFilter(authenticationManager(), this.userDetailsViewRepository))
                 .exceptionHandling()
-                .authenticationEntryPoint(new AuthenticationExceptionEntryPoint())
-                .accessDeniedHandler(new CmrsAccessDeniedHandler());
+                .authenticationEntryPoint(new AuthenticationExceptionEntryPoint(this.i18Translator))
+                .accessDeniedHandler(new CmrsAccessDeniedHandler(this.i18Translator));
     }
 }

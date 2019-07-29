@@ -10,7 +10,6 @@ import org.multilinguals.enterprise.cmrs.command.handler.signin.SignInWithPasswo
 import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
 import org.multilinguals.enterprise.cmrs.dto.authorization.UserSignInDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.data.Tuple2;
-import org.multilinguals.enterprise.cmrs.infrastructure.dto.CommandResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserPasswordInvalidException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,10 +33,10 @@ public class AuthorizationCommandController {
      */
     @PostMapping("/sign-in-with-password")
     @PreAuthorize("permitAll()")
-    public CommandResponse<UserSignInDTO> handle(@RequestBody SignInWithPasswordCommand command) {
+    public UserSignInDTO handle(@RequestBody SignInWithPasswordCommand command) {
         try {
             Tuple2<UserSessionId, UserId> result = commandGateway.sendAndWait(command);
-            return new CommandResponse<>(new UserSignInDTO(result.getT1().getIdentifier(), result.getT2().getIdentifier()));
+            return new UserSignInDTO(result.getT1().getIdentifier(), result.getT2().getIdentifier());
         } catch (AggregateNotFoundException ex) {
             throw new CMRSHTTPException(HttpServletResponse.SC_UNAUTHORIZED, ErrorCode.ACCOUNT_PASSWORD_INVALID);
         } catch (CommandExecutionException ex) {

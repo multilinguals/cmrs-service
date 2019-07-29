@@ -12,7 +12,6 @@ import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateClerkWithU
 import org.multilinguals.enterprise.cmrs.constant.result.CommonResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
 import org.multilinguals.enterprise.cmrs.dto.aggregate.AggregateCreatedDTO;
-import org.multilinguals.enterprise.cmrs.infrastructure.dto.CommandResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.RoleNotExistException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotExistException;
@@ -31,10 +30,10 @@ public class UserCommandController {
 
     @PostMapping("/create-clerk")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public CommandResponse<AggregateCreatedDTO<String>> createUser(@RequestBody CreateClerkWithUsernameCommand command) {
+    public AggregateCreatedDTO<String> createUser(@RequestBody CreateClerkWithUsernameCommand command) {
         try {
             UserId userId = commandGateway.sendAndWait(command);
-            return new CommandResponse<>(new AggregateCreatedDTO<>(userId.getIdentifier()));
+            return new AggregateCreatedDTO<>(userId.getIdentifier());
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof AccountSignedUpException) {
                 throw new CMRSHTTPException(HttpServletResponse.SC_CONFLICT, ErrorCode.SIGNED_UP_ACCOUNT);
