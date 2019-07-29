@@ -36,7 +36,7 @@ public class RestaurantQueryController {
         this.setMenuItemViewRepository = setMenuItemViewRepository;
     }
 
-    @GetMapping("admin/get-restaurant-list")
+    @GetMapping("/get-restaurant-list")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public QueryResponse<CMRSPage<RestaurantDetailsView>> adminGetRestList(@RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
         Sort sort = new Sort(Sort.Direction.DESC, "createdAt");
@@ -44,14 +44,14 @@ public class RestaurantQueryController {
         return new QueryResponse<>(new CMRSPage<>(restaurantDetailsViews));
     }
 
-    @GetMapping("admin/get-restaurant-details/{id}")
+    @GetMapping("/get-restaurant-details/{id}")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public QueryResponse<RestaurantDetailsView> adminGetRestDetails(@PathVariable String id) {
         RestaurantDetailsView restaurantDetailsView = this.restaurantDetailsViewRepository.findById(id).orElse(null);
         return new QueryResponse<>(restaurantDetailsView);
     }
 
-    @GetMapping("admin/get-restaurant/{restId}/single-menu-item-list")
+    @GetMapping("/get-restaurant/{restId}/single-menu-item-list")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public QueryResponse<CMRSPage<SingleMenuItemView>> adminGetSingleMenuItemList(@PathVariable String restId, @RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
         Sort sort = new Sort(Sort.Direction.DESC, "createdAt");
@@ -59,14 +59,14 @@ public class RestaurantQueryController {
         return new QueryResponse<>(new CMRSPage<>(menuItemViews));
     }
 
-    @GetMapping("admin/get-restaurant/{restId}/all-single-menu-items")
+    @GetMapping("/get-restaurant/{restId}/all-single-menu-items")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public QueryResponse<List<SingleMenuItemView>> adminGetSingleMenuItemList(@PathVariable String restId) {
         List<SingleMenuItemView> menuItemViews = this.singleMenuItemViewRepository.findAll(Example.of(new SingleMenuItemView(restId)));
         return new QueryResponse<>(menuItemViews);
     }
 
-    @GetMapping("admin/get-restaurant/{restId}/set-menu-item-list")
+    @GetMapping("/get-restaurant/{restId}/set-menu-item-list")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public QueryResponse<CMRSPage<SetMenuItemView>> adminGetSetMenuItemList(@PathVariable String restId, @RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
         Sort sort = new Sort(Sort.Direction.DESC, "createdAt");

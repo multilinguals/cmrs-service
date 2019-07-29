@@ -20,7 +20,7 @@ public class DishTypeQueryController {
         this.dishTypeViewRepository = dishTypeViewRepository;
     }
 
-    @GetMapping("/user/get-all-dish-type")
+    @GetMapping("/get-all-dish-type")
     @PreAuthorize("isAuthenticated()")
     public QueryResponse<List<DishTypeView>> queryAllDishType() {
         Sort sort = new Sort(Sort.Direction.DESC, "name");

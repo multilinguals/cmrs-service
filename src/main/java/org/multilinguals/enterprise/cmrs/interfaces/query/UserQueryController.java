@@ -31,7 +31,7 @@ public class UserQueryController {
      * @param reqSenderId 请求发起人的用户ID
      * @return 详细信息
      */
-    @GetMapping("/user/get-self-details")
+    @GetMapping("/get-self-details")
     @PreAuthorize("isAuthenticated()")
     public QueryResponse<UserDetailsView> querySelfDetails(@RequestAttribute String reqSenderId) {
         Optional<UserDetailsView> userDetailsView = this.userDetailsViewRepository.findById(reqSenderId);
@@ -46,7 +46,7 @@ public class UserQueryController {
      * @param size 页面大小
      * @return 用户列表
      */
-    @GetMapping("/admin/get-user-list")
+    @GetMapping("/get-user-list")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
     public QueryResponse<CMRSPage<UserDetailsView>> queryUserList(@RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
@@ -60,7 +60,7 @@ public class UserQueryController {
      * @param id 用户id
      * @return 用户详情
      */
-    @GetMapping("/admin/get-user-details/{id}")
+    @GetMapping("/get-user-details/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
     public QueryResponse<UserDetailsView> queryUserDetails(@PathVariable String id) {
         UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(id)

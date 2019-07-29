@@ -20,7 +20,7 @@ public class MenuItemTypeQueryController {
         this.menuItemTypeViewRepository = menuItemTypeViewRepository;
     }
 
-    @GetMapping("/user/get-all-menu-item-type")
+    @GetMapping("/get-all-menu-item-type")
     @PreAuthorize("isAuthenticated()")
     public QueryResponse<List<MenuItemTypeView>> queryAllDishType() {
         Sort sort = new Sort(Sort.Direction.DESC, "name");

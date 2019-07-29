@@ -55,7 +55,7 @@ public class RestaurantCommandController {
         this.tasteViewRepository = tasteViewRepository;
     }
 
-    @PostMapping("/admin/create-restaurant")
+    @PostMapping("/create-restaurant")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public CommandResponse<AggregateCreatedDTO<String>> createRestaurant(@RequestBody CreateRestaurantCommand command, @RequestAttribute String reqSenderId) {
         command.setCreatorId(new UserId(reqSenderId));
@@ -63,7 +63,7 @@ public class RestaurantCommandController {
         return new CommandResponse<>(new AggregateCreatedDTO<>(restaurantId.getIdentifier()));
     }
 
-    @PostMapping("/admin/create-single-menu-item")
+    @PostMapping("/create-single-menu-item")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public CommandResponse<AggregateCreatedDTO<String>> createSingleMenuItem(@RequestBody CreateSingleMenuItemCommand command) throws MenuItemTypeNotExistException {
         try {
@@ -85,7 +85,7 @@ public class RestaurantCommandController {
         return new CommandResponse<>(new AggregateCreatedDTO<>(menuItemId.getIdentifier()));
     }
 
-    @PostMapping("/admin/update-restaurant/{restId}/single-menu-item/{itemId}")
+    @PostMapping("/update-restaurant/{restId}/single-menu-item/{itemId}")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public void updateSingleMenuItem(@PathVariable String restId, @PathVariable String itemId, @RequestBody UpdateSingleMenuItemCommand command, HttpServletResponse response) {
         try {
@@ -112,7 +112,7 @@ public class RestaurantCommandController {
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
-    @PostMapping("/admin/create-set-menu-item")
+    @PostMapping("/create-set-menu-item")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public CommandResponse<AggregateCreatedDTO<String>> createSetMenuItem(@RequestBody CreateSetMenuItemCommand command) throws MenuItemTypeNotExistException {
         try {
@@ -130,7 +130,7 @@ public class RestaurantCommandController {
         return new CommandResponse<>(new AggregateCreatedDTO<>(menuItemId.getIdentifier()));
     }
 
-    @PostMapping("/admin/update-restaurant/{restId}/set-menu-item/{itemId}")
+    @PostMapping("/update-restaurant/{restId}/set-menu-item/{itemId}")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public void updateSetMenuItem(@PathVariable String restId, @PathVariable String itemId, @RequestBody UpdateSetMenuItemCommand command, HttpServletResponse response) {
         try {
@@ -158,7 +158,7 @@ public class RestaurantCommandController {
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
-    @PostMapping("/admin/add-items-to-set-menu-item/{setMenuItemId}")
+    @PostMapping("/add-items-to-set-menu-item/{setMenuItemId}")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public void addItemsToSetMenuItem(@PathVariable String setMenuItemId, @RequestBody AddItemsToSetMenuItemCommand command, HttpServletResponse response) {
         // TODO 需要校验Item和Set是一个Rest
@@ -167,7 +167,7 @@ public class RestaurantCommandController {
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
-    @PostMapping("/admin/remove-items-from-set-menu-item/{setMenuItemId}")
+    @PostMapping("/remove-items-from-set-menu-item/{setMenuItemId}")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public void addItemsToSetMenuItem(@PathVariable String setMenuItemId, @RequestBody RemoveItemsFromMenuItemCommand command, HttpServletResponse response) {
         command.setSetMenuItemId(new MenuItemId(setMenuItemId));

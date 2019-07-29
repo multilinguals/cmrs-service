@@ -198,7 +198,7 @@ paths:
           description: "更新成功"
         404:
           description: "指定的用户不存在"
-  /admin/create-clerk:
+  /create-clerk:
     post:
       tags:
         - "管理员维护用户信息"
@@ -214,7 +214,7 @@ paths:
           description: "创建职员成功"
           schema:
             $ref: "#/definitions/CreateAggregateSuccess"
-  /admin/get-user-details/:id:
+  /get-user-details/:id:
     get:
       tags:
         - "管理员维护用户信息"
@@ -236,7 +236,7 @@ paths:
                 example: "20000"
               data:
                 $ref: '#/definitions/UserDetails'
-  /admin/get-user-list:
+  /get-user-list:
     get:
       tags:
         - "管理员维护用户信息"
@@ -268,7 +268,7 @@ paths:
                       $ref: "#/definitions/UserDetails"
                   pageInfo:
                     $ref: "#/definitions/PageInfo"
-  /admin/create-restaurant:
+  /create-restaurant:
     post:
       tags:
         - "管理员维护餐厅的基本信息"
@@ -284,7 +284,7 @@ paths:
           description: "创建餐厅成功"
           schema:
             $ref: "#/definitions/CreateAggregateSuccess"
-  /admin/get-restaurant-list:
+  /get-restaurant-list:
     get:
       tags:
         - "管理员维护餐厅的基本信息"
@@ -316,7 +316,7 @@ paths:
                       $ref: "#/definitions/RestaurantDetails"
                   pageInfo:
                     $ref: "#/definitions/PageInfo"
-  /admin/get-restaurant-details/:id:
+  /get-restaurant-details/:id:
     get:
       tags:
         - "管理员维护餐厅的基本信息"
@@ -338,7 +338,7 @@ paths:
                 example: "20000"
               data:
                 $ref: '#/definitions/RestaurantDetails'
-  /admin/create-single-menu-item:
+  /create-single-menu-item:
     post:
       tags:
         - "管理员维护餐厅的菜单信息"
@@ -354,7 +354,7 @@ paths:
           description: "创建单品菜单项成功"
           schema:
             $ref: "#/definitions/CreateAggregateSuccess"
-  /admin/create-set-menu-item:
+  /create-set-menu-item:
     post:
       tags:
         - "管理员维护餐厅的菜单信息"
@@ -370,7 +370,7 @@ paths:
           description: "创建套餐菜单项成功"
           schema:
             $ref: "#/definitions/CreateAggregateSuccess"
-  /admin/update-restaurant/:restId/single-menu-item/:itemId:
+  /update-restaurant/:restId/single-menu-item/:itemId:
     post:
       tags:
         - "管理员维护餐厅的菜单信息"
@@ -394,7 +394,7 @@ paths:
       responses:
         204:
           description: "更新单品菜单项成功"
-  /admin/update-restaurant/:restId/set-menu-item/:itemId:
+  /update-restaurant/:restId/set-menu-item/:itemId:
     post:
       tags:
         - "管理员维护餐厅的菜单信息"
@@ -418,7 +418,7 @@ paths:
       responses:
         204:
           description: "更新单品菜单项成功"
-  /user/get-all-dish-type:
+  /get-all-dish-type:
     get:
       tags:
         - "管理员维护餐厅的菜单信息"
@@ -436,7 +436,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/DishType"
-  /user/get-all-taste:
+  /get-all-taste:
     get:
       tags:
         - "管理员维护餐厅的菜单信息"
@@ -454,7 +454,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/Taste"
-  /user/get-all-menu-item-type:
+  /get-all-menu-item-type:
     get:
       tags:
         - "管理员维护餐厅的菜单信息"
@@ -472,7 +472,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/MenuItemType"
-  /admin/get-restaurant/:id/single-menu-item-list:
+  /get-restaurant/:id/single-menu-item-list:
     get:
       tags:
         - "管理员维护餐厅的菜单信息"
@@ -509,7 +509,7 @@ paths:
                       $ref: "#/definitions/SingleMenuItemDetails"
                   pageInfo:
                     $ref: "#/definitions/PageInfo"
-  /admin/get-restaurant/{id}/all-single-menu-items:
+  /get-restaurant/{id}/all-single-menu-items:
     get:
       tags:
         - "管理员维护餐厅的菜单信息"
@@ -541,7 +541,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/SingleMenuItemDetails"
-  /admin/get-restaurant/:id/set-menu-item-list:
+  /get-restaurant/:id/set-menu-item-list:
     get:
       tags:
         - "管理员维护餐厅的菜单信息"
@@ -578,7 +578,7 @@ paths:
                       $ref: "#/definitions/SetMunuItemDetails"
                   pageInfo:
                     $ref: "#/definitions/PageInfo"
-  /admin/add-items-to-set-menu-item/:setMenuItemId:
+  /add-items-to-set-menu-item/:setMenuItemId:
     post:
       tags:
         - "管理员维护餐厅的菜单信息"
@@ -597,7 +597,7 @@ paths:
       responses:
         204:
           description: "添加成功"
-  /admin/remove-items-from-set-menu-item/:setMenuItemId:
+  /remove-items-from-set-menu-item/:setMenuItemId:
     post:
       tags:
         - "管理员维护餐厅的菜单信息"
@@ -616,7 +616,7 @@ paths:
       responses:
         204:
           description: "移除成功"
-  /admin/delete-menu-item/:id:
+  /delete-menu-item/:id:
     post:
       tags:
         - "管理员维护餐厅的菜单信息"

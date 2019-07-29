@@ -33,6 +33,7 @@ public class AuthorizationCommandController {
      * @param command 密码登录命令
      */
     @PostMapping("/sign-in-with-password")
+    @PreAuthorize("permitAll()")
     public CommandResponse<UserSignInDTO> handle(@RequestBody SignInWithPasswordCommand command) {
         try {
             Tuple2<UserSessionId, UserId> result = commandGateway.sendAndWait(command);

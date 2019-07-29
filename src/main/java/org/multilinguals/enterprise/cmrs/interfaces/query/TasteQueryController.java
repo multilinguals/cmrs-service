@@ -20,7 +20,7 @@ public class TasteQueryController {
         this.tasteViewRepository = tasteViewRepository;
     }
 
-    @GetMapping("/user/get-all-taste")
+    @GetMapping("/get-all-taste")
     @PreAuthorize("isAuthenticated()")
     public QueryResponse<List<TasteView>> queryAllDishType() {
         Sort sort = new Sort(Sort.Direction.DESC, "name");

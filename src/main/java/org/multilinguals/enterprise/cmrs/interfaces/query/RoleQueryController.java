@@ -25,7 +25,7 @@ public class RoleQueryController {
         this.roleDetailsViewRepository = roleDetailsViewRepository;
     }
 
-    @GetMapping("admin/get-role-list")
+    @GetMapping("/get-role-list")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
     public QueryResponse adminGetRoleList(@RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
         Sort sort = new Sort(Sort.Direction.DESC, "name");
@@ -34,7 +34,7 @@ public class RoleQueryController {
         return new QueryResponse<>(new CMRSPage<>(roleDetailsViewPage));
     }
 
-    @GetMapping("admin/get-all-roles")
+    @GetMapping("/get-all-roles")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
     public QueryResponse<List<RoleDetailsView>> adminGetRoleList() {
         Sort sort = new Sort(Sort.Direction.DESC, "name");

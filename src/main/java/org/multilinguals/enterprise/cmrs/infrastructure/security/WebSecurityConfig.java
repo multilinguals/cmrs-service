@@ -16,11 +16,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Resource
     private UserDetailsViewRepository userDetailsViewRepository;
 
-    private static final String[] AUTH_WHITELIST = {
-            "/sign-up-username",
-            "/sign-in-with-password"
-    };
-
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.headers().cacheControl().disable() //禁用缓存
@@ -30,8 +25,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 基于token，所以不需要session
                 .and()
                 .authorizeRequests()
-                .antMatchers(AUTH_WHITELIST)
-                .permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // 允许所有的OPTIONS通过
                 .anyRequest().authenticated()
                 .and()
