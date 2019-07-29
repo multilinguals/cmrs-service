@@ -143,7 +143,7 @@ paths:
       parameters:
         - name: "userId"
           type: string
-          in: query
+          in: path
           required: true
         - in: body
           name: "设置角色命令"
@@ -156,7 +156,7 @@ paths:
           description: "分配角色成功"
         404:
           description: "指定的用户不存在"
-  /admin/update-user-details:
+  /update-user-details:
     post:
       tags:
         - "管理员维护用户信息"
@@ -173,12 +173,20 @@ paths:
           description: "更新成功"
         404:
           description: "指定的用户不存在"
-  /admin/update-user-password:
+  /update-user/:userId/password/:passwordId:
     post:
       tags:
         - "管理员维护用户信息"
       summary: "管理员更新用户密码"
       parameters:
+        - name: "userId"
+          type: string
+          in: path
+          required: true
+        - name: "userPasswordId"
+          type: string
+          in: path
+          required: true
         - in: body
           name: "更新用户信息命令"
           description: "超级管理员或者用户管理员新用户密码"
@@ -694,19 +702,11 @@ definitions:
   UpdateUserPasswordCommand:
     type: object
     properties:
-      userPasswordId:
-        type: string
-        example: "fb108ea4-8a43-4d02-83f9-25eae836fe41"
-      userId:
-        type: string
-        example: "817f1cde-cc3b-4ef1-85b3-0d41f3b32260"
       newUserPassword:
         type: string
         description: "密码md5哈希后的字符串"
         example: "babd4a84418fb04015ac773f7459727c"
     required:
-      - userPasswordId
-      - userId
       - newUserPassword
   CreateRestaurantCommand:
     type: object

@@ -3,10 +3,11 @@ package org.multilinguals.enterprise.cmrs.interfaces.command;
 import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.command.AggregateNotFoundException;
+import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPasswordId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.UpdateUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUserDetailsCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.SetRolesToUserCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUserDetailsCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateClerkWithUsernameCommand;
 import org.multilinguals.enterprise.cmrs.constant.result.CommonResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
@@ -53,10 +54,12 @@ public class UserCommandController {
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
-    @PostMapping("/update-user-password")
+    @PostMapping("/update-user/{userId}/password/{passwordId}")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public void updateUserPassword(@RequestBody UpdateUserPasswordCommand command, HttpServletResponse response) {
+    public void updateUserPassword(@PathVariable String userId, @PathVariable String passwordId, @RequestBody UpdateUserPasswordCommand command, HttpServletResponse response) {
         try {
+            command.setUserId(new UserId(userId));
+            command.setUserPasswordId(new UserPasswordId(passwordId));
             commandGateway.sendAndWait(command);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (AggregateNotFoundException ex) {
