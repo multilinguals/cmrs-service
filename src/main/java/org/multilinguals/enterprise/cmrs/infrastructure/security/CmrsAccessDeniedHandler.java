@@ -1,6 +1,7 @@
 package org.multilinguals.enterprise.cmrs.infrastructure.security;
 
 import com.alibaba.fastjson.JSON;
+import org.multilinguals.enterprise.cmrs.constant.http.HeaderFields;
 import org.multilinguals.enterprise.cmrs.constant.result.CommonResultCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.dto.ExceptionResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
@@ -22,6 +23,8 @@ public class CmrsAccessDeniedHandler implements AccessDeniedHandler {
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException {
         e.printStackTrace();
         httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        httpServletResponse.addHeader("Content-Type", "application/json;charset=UTF-8");
+        httpServletResponse.addHeader(HeaderFields.BIZ_CODE, CommonResultCode.FORBIDDEN);
         httpServletResponse.getWriter().write(JSON.toJSONString(new ExceptionResponse(i18Translator.localize(CommonResultCode.FORBIDDEN))));
     }
 }

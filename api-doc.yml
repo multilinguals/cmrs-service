@@ -42,8 +42,12 @@ paths:
         200:
           description: "登录成功"
           schema:
-            $ref: "#/definitions/LoginSuccess"
+            $ref: "#/definitions/UserSignInDTO"
         401:
+          headers:
+            X-BIZ-CODE:
+              type: string
+              description: "40101"
           description: "认证失败"
           schema:
             $ref: "#/definitions/EX40101"
@@ -727,21 +731,15 @@ definitions:
       onShelve:
         type: boolean
         example: false
-  LoginSuccess:
+  UserSignInDTO:
     type: object
     properties:
-      code:
+      token:
         type: string
-        example: "20000"
-      data:
-        type: object
-        properties:
-          token:
-            type: string
-            example: "2f83252d-ab8b-4568-ad12-7a758f6e9f43"
-          userId:
-            type: string
-            example: "a8d17dcb-49dd-4e68-8c75-db20eb28b258"
+        example: "2f83252d-ab8b-4568-ad12-7a758f6e9f43"
+      userId:
+        type: string
+        example: "a8d17dcb-49dd-4e68-8c75-db20eb28b258"
   CreateAggregateSuccess:
     type: object
     properties:
@@ -1042,9 +1040,6 @@ definitions:
   EX40101:
     type: object
     properties:
-      code:
-        type: string
-        example: "40101"
       message:
         type: string
         example: "账号或者密码错误，请重新填写"
