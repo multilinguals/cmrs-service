@@ -320,7 +320,7 @@ paths:
                       $ref: "#/definitions/RestaurantDetails"
                   pageInfo:
                     $ref: "#/definitions/PageInfo"
-  /get-restaurant-details/:id:
+  /get-details-of-restaurant/:id:
     get:
       tags:
         - "管理员维护餐厅的基本信息"
@@ -513,7 +513,7 @@ paths:
                       $ref: "#/definitions/SingleMenuItemDetails"
                   pageInfo:
                     $ref: "#/definitions/PageInfo"
-  /get-restaurant/{id}/all-single-menu-items:
+  /get-restaurant/:id/all-single-menu-items:
     get:
       tags:
         - "管理员维护餐厅的菜单信息"

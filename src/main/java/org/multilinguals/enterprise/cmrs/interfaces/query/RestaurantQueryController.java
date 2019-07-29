@@ -44,7 +44,7 @@ public class RestaurantQueryController {
         return new QueryResponse<>(new CMRSPage<>(restaurantDetailsViews));
     }
 
-    @GetMapping("/get-restaurant-details/{id}")
+    @GetMapping("/get-details-of-restaurant/{id}")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public QueryResponse<RestaurantDetailsView> adminGetRestDetails(@PathVariable String id) {
         RestaurantDetailsView restaurantDetailsView = this.restaurantDetailsViewRepository.findById(id).orElse(null);
