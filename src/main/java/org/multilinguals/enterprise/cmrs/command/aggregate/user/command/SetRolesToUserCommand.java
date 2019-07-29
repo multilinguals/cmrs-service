@@ -5,25 +5,32 @@ import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.RoleId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
-import javax.validation.constraints.NotNull;
+import java.util.List;
 
-public class RemoveRoleFromUserCommand extends AbstractCommand {
+public class SetRolesToUserCommand extends AbstractCommand {
     @TargetAggregateIdentifier
     private UserId userId;
 
-    @NotNull
-    private RoleId roleId;
+    private List<RoleId> roleIdList;
 
-    public RemoveRoleFromUserCommand(UserId userId, @NotNull RoleId roleId) {
+    public SetRolesToUserCommand(UserId userId, List<RoleId> roleIdList) {
         this.userId = userId;
-        this.roleId = roleId;
+        this.roleIdList = roleIdList;
     }
 
     public UserId getUserId() {
         return userId;
     }
 
-    public RoleId getRoleId() {
-        return roleId;
+    public void setUserId(UserId userId) {
+        this.userId = userId;
+    }
+
+    public List<RoleId> getRoleIdList() {
+        return roleIdList;
+    }
+
+    public void setRoleIdList(List<RoleId> roleIdList) {
+        this.roleIdList = roleIdList;
     }
 }

@@ -5,22 +5,32 @@ import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.RoleId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
-public class RoleRemovedFromUserEvent extends AbstractEvent {
+import java.util.List;
+
+public class RolesSetToUserEvent extends AbstractEvent {
     @TargetAggregateIdentifier
     private UserId userId;
 
-    private RoleId roleId;
+    private List<RoleId> roleIdList;
 
-    public RoleRemovedFromUserEvent(UserId userId, RoleId roleId) {
+    public RolesSetToUserEvent(UserId userId, List<RoleId> roleIdList) {
         this.userId = userId;
-        this.roleId = roleId;
+        this.roleIdList = roleIdList;
     }
 
     public UserId getUserId() {
         return userId;
     }
 
-    public RoleId getRoleId() {
-        return roleId;
+    public void setUserId(UserId userId) {
+        this.userId = userId;
+    }
+
+    public List<RoleId> getRoleIdList() {
+        return roleIdList;
+    }
+
+    public void setRoleIdList(List<RoleId> roleIdList) {
+        this.roleIdList = roleIdList;
     }
 }

@@ -25,7 +25,7 @@ consumes:
 produces:
   - application/json
 paths:
-  /user/sign-in-with-password:
+  /sign-in-with-password:
     post:
       security: []
       tags:
@@ -47,7 +47,7 @@ paths:
           description: "认证失败"
           schema:
             $ref: "#/definitions/EX40101"
-  /user/logout:
+  /logout:
     post:
       tags:
         - "用户认证"
@@ -55,7 +55,7 @@ paths:
       responses:
         204:
           description: "退出登录成功"
-  /user/get-self-details:
+  /get-self-details:
     get:
       tags:
         - "用户维护自己信息"
@@ -71,7 +71,7 @@ paths:
                 example: "20000"
               data:
                 $ref: "#/definitions/UserDetails"
-  /admin/update-self-password:
+  /update-self-password:
     post:
       tags:
         - "管理员维护自己信息"
@@ -85,7 +85,7 @@ paths:
       responses:
         204:
           description: "退出登录成功"
-  /admin/get-role-list:
+  /get-role-list:
     get:
       tags:
         - "管理员维护用户信息"
@@ -117,7 +117,7 @@ paths:
                       $ref: "#/definitions/RoleDetailsView"
                   pageInfo:
                     $ref: "#/definitions/PageInfo"
-  /admin/get-all-roles:
+  /get-all-roles:
     get:
       tags:
         - "管理员维护用户信息"
@@ -135,38 +135,25 @@ paths:
                 type: array
                 items:
                   $ref: "#/definitions/RoleDetailsView"
-  /admin/assign-role-to-user:
+  /set-roles-to-user/:userId:
     post:
       tags:
         - "管理员维护用户信息"
-      summary: "管理员为用户分配角色"
+      summary: "管理员为用户设置角色"
       parameters:
+        - name: "userId"
+          type: string
+          in: query
+          required: true
         - in: body
-          name: "分配角色命令"
-          description: "超级管理员或者用户管理员为用户分配角色"
+          name: "设置角色命令"
+          description: "超级管理员或者用户管理员为用户设置角色"
           required: true
           schema:
-            $ref: "#/definitions/AssignRoleToUserCommand"
+            $ref: "#/definitions/SetRolesToUserCommand"
       responses:
         204:
           description: "分配角色成功"
-        404:
-          description: "指定的用户不存在"
-  /admin/remove-role-from-user:
-    post:
-      tags:
-        - "管理员维护用户信息"
-      summary: "管理员为用户移除角色"
-      parameters:
-        - in: body
-          name: "移除角色命令"
-          description: "超级管理员或者用户管理员为用户移除角色"
-          required: true
-          schema:
-            $ref: "#/definitions/RemoveRoleFromUserCommand"
-      responses:
-        204:
-          description: "移除角色成功"
         404:
           description: "指定的用户不存在"
   /admin/update-user-details:
@@ -679,27 +666,16 @@ definitions:
       - username
       - realName
       - password
-  AssignRoleToUserCommand:
+  SetRolesToUserCommand:
     type: object
     properties:
-      userId:
-        type: string
-        example: "02574b7c-5f69-4a08-8e54-4e46fba25938"
-      roleId:
-        type: string
-        example: "a71ed7a7ee2cf1555a77038538c2c68c"
-    required:
-      - userId
-      - roleId
-  RemoveRoleFromUserCommand:
-    type: object
-    properties:
-      userId:
-        type: string
-        example: "02574b7c-5f69-4a08-8e54-4e46fba25938"
-      roleId:
-        type: string
-        example: "a71ed7a7ee2cf1555a77038538c2c68c"
+      roleIdList:
+        type: array
+        items:
+          type: string
+          example:
+            - "a71ed7a7ee2cf1555a77038538c2c68c"
+            - "t54327a7ee2cf1555a77038538c2c68c"
     required:
       - userId
       - roleId

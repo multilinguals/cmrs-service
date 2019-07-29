@@ -32,7 +32,7 @@ public class AuthorizationCommandController {
      *
      * @param command 密码登录命令
      */
-    @PostMapping("/user/sign-in-with-password")
+    @PostMapping("/sign-in-with-password")
     public CommandResponse<UserSignInDTO> handle(@RequestBody SignInWithPasswordCommand command) {
         try {
             Tuple2<UserSessionId, UserId> result = commandGateway.sendAndWait(command);
@@ -48,7 +48,7 @@ public class AuthorizationCommandController {
         }
     }
 
-    @PostMapping("/user/logout")
+    @PostMapping("/logout")
     @PreAuthorize("isAuthenticated()")
     public void handle(@RequestAttribute("sessionId") String sessionId, HttpServletResponse response) {
         try {

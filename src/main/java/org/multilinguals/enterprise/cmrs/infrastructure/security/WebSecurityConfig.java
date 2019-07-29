@@ -1,8 +1,5 @@
 package org.multilinguals.enterprise.cmrs.infrastructure.security;
 
-import org.multilinguals.enterprise.cmrs.infrastructure.security.AuthenticationExceptionEntryPoint;
-import org.multilinguals.enterprise.cmrs.infrastructure.security.CmrsAccessDeniedHandler;
-import org.multilinguals.enterprise.cmrs.infrastructure.security.RequestValidationFilter;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -20,8 +17,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsViewRepository userDetailsViewRepository;
 
     private static final String[] AUTH_WHITELIST = {
-            "/user/sign-up-username",
-            "/user/sign-in-with-password"
+            "/sign-up-username",
+            "/sign-in-with-password"
     };
 
     @Override

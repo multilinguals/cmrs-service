@@ -2,26 +2,33 @@ package org.multilinguals.enterprise.cmrs.query.user;
 
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
-import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.RoleBoundToUserEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.RoleRemovedFromUserEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.AbstractAggregateIdentifier;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.RolesSetToUserEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserDetailsUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.event.UserSessionCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.event.UserSessionDeletedEvent;
+import org.multilinguals.enterprise.cmrs.query.rbac.RoleDetailsView;
+import org.multilinguals.enterprise.cmrs.query.rbac.RoleDetailsViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class UserDetailsViewEventHandler {
 
     private UserDetailsViewRepository userDetailsViewRepository;
 
+    private RoleDetailsViewRepository roleDetailsViewRepository;
+
     @Autowired
-    public UserDetailsViewEventHandler(UserDetailsViewRepository userDetailsViewRepository) {
+    public UserDetailsViewEventHandler(UserDetailsViewRepository userDetailsViewRepository, RoleDetailsViewRepository roleDetailsViewRepository) {
         this.userDetailsViewRepository = userDetailsViewRepository;
+        this.roleDetailsViewRepository = roleDetailsViewRepository;
     }
 
     /**
@@ -57,23 +64,23 @@ public class UserDetailsViewEventHandler {
     }
 
     @EventHandler
-    public void on(RoleBoundToUserEvent event, @Timestamp java.time.Instant createdTime) throws ChangeSetPersister.NotFoundException {
+    public void on(RolesSetToUserEvent event, @Timestamp java.time.Instant createdTime) throws ChangeSetPersister.NotFoundException {
         UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getUserId().getIdentifier())
                 .map(user -> {
-                    user.setRole(new Role(event.getRoleId().getIdentifier(), event.getRoleId().getName(), new Date(createdTime.toEpochMilli())));
-                    user.setUpdatedAt(new Date(createdTime.toEpochMilli()));
-                    return user;
-                })
-                .orElseThrow(ChangeSetPersister.NotFoundException::new);
+                    List<String> roleIdStringList = new ArrayList<>();
 
-        this.userDetailsViewRepository.save(userDetailsView);
-    }
+                    for (AbstractAggregateIdentifier identifier : event.getRoleIdList()) {
+                        roleIdStringList.add(identifier.getIdentifier());
+                    }
 
-    @EventHandler
-    public void on(RoleRemovedFromUserEvent event, @Timestamp java.time.Instant createdTime) throws ChangeSetPersister.NotFoundException {
-        UserDetailsView userDetailsView = this.userDetailsViewRepository.findById(event.getUserId().getIdentifier())
-                .map(user -> {
-                    user.removeRole(event.getRoleId().getIdentifier());
+                    Iterable<RoleDetailsView> roleDetailsViews = this.roleDetailsViewRepository.findAllById(roleIdStringList);
+
+                    user.getRoleViewList().clear();
+
+                    for (RoleDetailsView roleDetailsView : roleDetailsViews) {
+                        user.setRole(new Role(roleDetailsView.getId(), roleDetailsView.getName(), new Date(createdTime.toEpochMilli())));
+                    }
+
                     user.setUpdatedAt(new Date(createdTime.toEpochMilli()));
                     return user;
                 })

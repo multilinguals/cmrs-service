@@ -5,9 +5,8 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.command.AggregateNotFoundException;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.UpdateUserPasswordCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.RemoveRoleFromUserCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUserDetailsCommand;
-import org.multilinguals.enterprise.cmrs.command.handler.role.AssignRoleToUserCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.SetRolesToUserCommand;
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateClerkWithUsernameCommand;
 import org.multilinguals.enterprise.cmrs.constant.result.CommonResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
@@ -19,10 +18,7 @@ import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.User
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotMatchPasswordException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -32,7 +28,7 @@ public class UserCommandController {
     @Resource
     private CommandGateway commandGateway;
 
-    @PostMapping("/admin/create-clerk")
+    @PostMapping("/create-clerk")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
     public CommandResponse<AggregateCreatedDTO<String>> createUser(@RequestBody CreateClerkWithUsernameCommand command) {
         try {
@@ -50,14 +46,14 @@ public class UserCommandController {
     /**
      * @param command 更新用户详情
      */
-    @PostMapping("/admin/update-user-details")
+    @PostMapping("/update-user-details")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
     public void updateUserDetails(@RequestBody UpdateUserDetailsCommand command, HttpServletResponse response) {
         commandGateway.sendAndWait(command);
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
-    @PostMapping("/admin/update-user-password")
+    @PostMapping("/update-user-password")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
     public void updateUserPassword(@RequestBody UpdateUserPasswordCommand command, HttpServletResponse response) {
         try {
@@ -74,7 +70,7 @@ public class UserCommandController {
         }
     }
 
-    @PostMapping("/admin/update-self-password")
+    @PostMapping("/update-self-password")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
     public void updateSelfPassword(@RequestBody UpdateUserPasswordCommand command, @RequestAttribute String reqSenderId, HttpServletResponse response) {
         try {
@@ -92,27 +88,17 @@ public class UserCommandController {
         }
     }
 
-    @PostMapping("/admin/assign-role-to-user")
+    @PostMapping("/set-roles-to-user/{userId}")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public void assignRoleToUser(@RequestBody AssignRoleToUserCommand command, HttpServletResponse response) {
+    public void assignRoleToUser(@RequestBody SetRolesToUserCommand command, @PathVariable String userId, HttpServletResponse response) {
         try {
+            command.setUserId(new UserId(userId));
             commandGateway.sendAndWait(command);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof RoleNotExistException || ex.getCause() instanceof UserNotExistException) {
                 throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getCause().getMessage());
             }
-        }
-    }
-
-    @PostMapping("/admin/remove-role-from-user")
-    @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public void assignRoleToUser(@RequestBody RemoveRoleFromUserCommand command, HttpServletResponse response) {
-        try {
-            commandGateway.sendAndWait(command);
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        } catch (AggregateNotFoundException ex) {
-            throw new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, ErrorCode.USER_NOT_EXISTED);
         }
     }
 }

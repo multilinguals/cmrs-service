@@ -7,12 +7,10 @@ import org.axonframework.spring.stereotype.Aggregate;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.AccountId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPasswordId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.RoleId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.BindRoleToUserCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.CreateUserCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.RemoveRoleFromUserCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.SetRolesToUserCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUserDetailsCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.RoleBoundToUserEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.RoleRemovedFromUserEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.RolesSetToUserEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.event.UserDetailsUpdatedEvent;
 
@@ -50,18 +48,8 @@ public class User {
     }
 
     @CommandHandler
-    public void handle(BindRoleToUserCommand command) {
-        if (!this.hasRole(command.getRoleId())) {
-            apply(new RoleBoundToUserEvent(command.getUserId(), command.getRoleId()));
-        }
-    }
-
-    @CommandHandler
-    public void handle(RemoveRoleFromUserCommand command) {
-        if (this.hasRole(command.getRoleId())) {
-            this.roleIdList.remove(command.getRoleId());
-            apply(new RoleRemovedFromUserEvent(command.getUserId(), command.getRoleId()));
-        }
+    public void handle(SetRolesToUserCommand command) {
+        apply(new RolesSetToUserEvent(command.getUserId(), command.getRoleIdList()));
     }
 
     @EventSourcingHandler
@@ -87,17 +75,9 @@ public class User {
     }
 
     @EventSourcingHandler
-    public void on(RoleBoundToUserEvent event) {
-        this.roleIdList.add(event.getRoleId());
-    }
-
-    @EventSourcingHandler
-    public void on(RoleRemovedFromUserEvent event) {
-        this.roleIdList.remove(event.getRoleId());
-    }
-
-    public Boolean hasRole(RoleId roleId) {
-        return this.roleIdList.contains(roleId);
+    public void on(RolesSetToUserEvent event) {
+        this.roleIdList.clear();
+        this.roleIdList = event.getRoleIdList();
     }
 
     public UserId getId() {
