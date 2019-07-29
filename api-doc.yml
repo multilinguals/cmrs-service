@@ -156,12 +156,16 @@ paths:
           description: "分配角色成功"
         404:
           description: "指定的用户不存在"
-  /update-user-details:
+  /update-details-of-user/:userId:
     post:
       tags:
         - "管理员维护用户信息"
       summary: "管理员更新用户信息"
       parameters:
+        - name: "userId"
+          type: string
+          required: true
+          in: path
         - in: body
           name: "更新用户信息命令"
           description: "超级管理员或者用户管理员更新用户信息"

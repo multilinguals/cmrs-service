@@ -19,7 +19,15 @@ public class UpdateUserDetailsCommand extends AbstractCommand {
         return id;
     }
 
+    public void setId(UserId id) {
+        this.id = id;
+    }
+
     public String getRealName() {
         return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 }

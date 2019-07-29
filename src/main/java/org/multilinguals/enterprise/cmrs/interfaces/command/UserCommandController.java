@@ -47,9 +47,10 @@ public class UserCommandController {
     /**
      * @param command 更新用户详情
      */
-    @PostMapping("/update-user-details")
+    @PostMapping("/update-details-of-user/{userId}")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public void updateUserDetails(@RequestBody UpdateUserDetailsCommand command, HttpServletResponse response) {
+    public void updateUserDetails(@PathVariable String userId, @RequestBody UpdateUserDetailsCommand command, HttpServletResponse response) {
+        command.setId(new UserId(userId));
         commandGateway.sendAndWait(command);
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
