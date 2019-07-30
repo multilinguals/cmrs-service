@@ -140,8 +140,14 @@ paths:
       responses:
         204:
           description: "分配角色成功"
-        404:
-          description: "指定的用户不存在"
+        400:
+          headers:
+            X-BIZ-CODE:
+              type: string
+              description: "40001"
+          description: "指定用户不存在"
+          schema:
+            $ref: "#/definitions/EX40001"
   /update-details-of-user/:userId:
     post:
       tags:
@@ -1037,9 +1043,105 @@ definitions:
           example:
             - "fe925f17-7746-41fd-b420-1268e60b5910"
             - "dc80b746-d889-45c9-8c5e-4b35257c871d"
+  EX40000:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "请求信息有误"
+  EX40001:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "指定的用户不存在"
+  EX40002:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "指定的角色不存在"
+  EX40003:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "指定的餐厅不存在"
+  EX40004:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "指定的菜单项类型不存在"
+  EX40005:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "指定的菜品类型不存在"
+  EX40006:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "指定的口味类型不存在"
+  EX40007:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "指定的菜单项不存在"
+  EX40008:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "餐厅和菜单项不匹配"
+  EX40009:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "当前菜单项不是单品"
+  EX40010:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "当前菜单项不是套餐"
+  EX40300:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "没有权限访问"
   EX40101:
     type: object
     properties:
       message:
         type: string
         example: "账号或者密码错误，请重新填写"
+  EX40102:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "授权过期，请重新登录"
+  EX40400:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "未找到要访问的资源"
+  EX40901:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "用户账号已经存在"
+  EX50000:
+    type: object
+    properties:
+      message:
+        type: string
+        example: "服务器发生异常，请联系开发人员"

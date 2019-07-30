@@ -17,6 +17,8 @@ import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.Role
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotExistException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotMatchPasswordException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
+import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +29,13 @@ import javax.servlet.http.HttpServletResponse;
 public class UserCommandController {
     @Resource
     private CommandGateway commandGateway;
+
+    private UserDetailsViewRepository userDetailsViewRepository;
+
+    @Autowired
+    public UserCommandController(UserDetailsViewRepository userDetailsViewRepository) {
+        this.userDetailsViewRepository = userDetailsViewRepository;
+    }
 
     @PostMapping("/create-clerk")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
@@ -95,9 +104,12 @@ public class UserCommandController {
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
     public void assignRoleToUser(@RequestBody SetRolesToUserCommand command, @PathVariable String userId, HttpServletResponse response) {
         try {
+            this.userDetailsViewRepository.findById(userId).orElseThrow(UserNotExistException::new);
             command.setUserId(new UserId(userId));
             commandGateway.sendAndWait(command);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (UserNotExistException ex) {
+            throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof RoleNotExistException || ex.getCause() instanceof UserNotExistException) {
                 throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getCause().getMessage());
