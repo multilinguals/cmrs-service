@@ -37,6 +37,9 @@ public interface ErrorCode {
     // 当前菜单项不是套餐
     String SET_ITEM_REQUIRED = "40010";
 
+    // 用户ID和密码ID不匹配
+    String UserNotMatchPassword = "40011";
+
     // 用户身份凭证已经存在
     String SIGNED_UP_ACCOUNT = "40901";
 }

@@ -144,8 +144,7 @@ paths:
           headers:
             X-BIZ-CODE:
               type: string
-              description: "40001"
-          description: "指定用户不存在"
+          description: "请求数据异常"
           schema:
             $ref: "#/definitions/EX40001"
   /update-details-of-user/:userId:

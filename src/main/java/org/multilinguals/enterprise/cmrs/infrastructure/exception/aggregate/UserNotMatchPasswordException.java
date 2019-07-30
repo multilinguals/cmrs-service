@@ -4,6 +4,6 @@ import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
 
 public class UserNotMatchPasswordException extends Exception {
     public UserNotMatchPasswordException() {
-        super(ErrorCode.ACCOUNT_PASSWORD_INVALID);
+        super(ErrorCode.UserNotMatchPassword);
     }
 }

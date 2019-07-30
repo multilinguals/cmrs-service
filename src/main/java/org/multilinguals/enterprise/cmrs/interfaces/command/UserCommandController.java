@@ -67,12 +67,13 @@ public class UserCommandController {
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
     public void updateUserPassword(@PathVariable String userId, @PathVariable String passwordId, @RequestBody UpdateUserPasswordCommand command, HttpServletResponse response) {
         try {
+            this.userDetailsViewRepository.findById(userId).orElseThrow(UserNotExistException::new);
             command.setUserId(new UserId(userId));
             command.setUserPasswordId(new UserPasswordId(passwordId));
             commandGateway.sendAndWait(command);
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        } catch (AggregateNotFoundException ex) {
-            throw new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, CommonResultCode.NOT_FOUND);
+        } catch (UserNotExistException ex) {
+            throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof UserNotMatchPasswordException) {
                 throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getCause().getMessage());
