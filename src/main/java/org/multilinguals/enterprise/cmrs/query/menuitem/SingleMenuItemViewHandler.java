@@ -3,6 +3,7 @@ package org.multilinguals.enterprise.cmrs.query.menuitem;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SingleMenuItemCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SingleMenuItemDeletedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SingleMenuItemUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.DishTypeNotExistException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.MenuItemNotExistException;
@@ -101,5 +102,11 @@ public class SingleMenuItemViewHandler {
         singleMenuItemView.setUpdatedAt(new Date(updatedTime.toEpochMilli()));
 
         this.singleMenuItemViewRepository.save(singleMenuItemView);
+    }
+
+    @EventHandler
+    public void on(SingleMenuItemDeletedEvent event) {
+        this.singleMenuItemViewRepository.findById(event.getMenuItemId().getIdentifier())
+                .ifPresent(singleMenuItemView -> this.singleMenuItemViewRepository.delete(singleMenuItemView));
     }
 }

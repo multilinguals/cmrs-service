@@ -37,6 +37,11 @@ public class SetMenuItemView {
         this.restaurantId = restaurantId;
     }
 
+    public SetMenuItemView(String id, String restaurantId) {
+        this.id = id;
+        this.restaurantId = restaurantId;
+    }
+
     public SetMenuItemView(String id, String restaurantId, String name, String menuItemTypeId, String menuItemTypeName, BigDecimal price, Boolean onShelve, List<SingleMenuItemView> singleMenuItems, Date createdAt) {
         this.id = id;
         this.restaurantId = restaurantId;

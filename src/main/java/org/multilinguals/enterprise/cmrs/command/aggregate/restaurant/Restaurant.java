@@ -70,6 +70,16 @@ public class Restaurant {
         apply(new ItemsRemovedFromMenuItemEvent(command.getRestaurantId(), command.getSetMenuItemId(), command.getSingleItemsIdList()));
     }
 
+    @CommandHandler
+    public void handler(DeleteSingleMenuItemCommand command) {
+        apply(new SingleMenuItemDeletedEvent(command.getRestaurantId(), command.getMenuItemId()));
+    }
+
+    @CommandHandler
+    public void handler(DeleteSetMenuItemCommand command) {
+        apply(new SetMenuItemDeletedEvent(command.getRestaurantId(), command.getMenuItemId()));
+    }
+
     @EventSourcingHandler
     public void on(RestaurantCreatedEvent event) {
         this.id = event.getId();
@@ -154,6 +164,16 @@ public class Restaurant {
         for (MenuItemId singleItemId : event.getSingleItemsIdList()) {
             setMenuItem.removeSingleMenuItem(singleItemId);
         }
+    }
+
+    @EventSourcingHandler
+    public void on(SingleMenuItemDeletedEvent event) {
+        this.menu.remove(event.getMenuItemId());
+    }
+
+    @EventSourcingHandler
+    public void on(SetMenuItemDeletedEvent event) {
+        this.menu.remove(event.getMenuItemId());
     }
 
     public RestaurantId getId() {

@@ -40,6 +40,11 @@ public class SingleMenuItemView {
         this.restaurantId = restaurantId;
     }
 
+    public SingleMenuItemView(String id, String restaurantId) {
+        this.id = id;
+        this.restaurantId = restaurantId;
+    }
+
     public SingleMenuItemView(String id, String restaurantId, String name, String menuItemTypeId, String menuItemTypeName, String dishTypeId, String dishTypeName, BigDecimal price, Boolean onShelve, Date createdAt) {
         this.id = id;
         this.restaurantId = restaurantId;

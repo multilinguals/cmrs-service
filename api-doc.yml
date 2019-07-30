@@ -551,21 +551,60 @@ paths:
       responses:
         204:
           description: "移除成功"
-  /delete-menu-item/:id:
+  /delete-single-menu-item/:menuItemId/of-restaurant/:restId:
     post:
       tags:
         - "管理员维护餐厅的菜单信息"
-      summary: "管理员删除某个菜单项接口"
+      summary: "管理员删除某个餐厅的某个单品接口"
       parameters:
-        - name: "菜单项ID"
+        - name: "menuItemId"
           in: path
           required: true
           type: string
+          description: "单品菜单项ID"
+        - name: "restId"
+          in: path
+          required: true
+          type: string
+          description: "餐厅ID"
       responses:
         204:
-          description: "移除成功"
-        409:
-          description: "单品存在于套餐无法移除"
+          description: "删除成功"
+        400:
+          headers:
+            X-BIZ-CODE:
+              type: string
+              description: "40007"
+          description: "请求格式有误"
+          schema:
+            $ref: "#/definitions/EX40007"
+  /delete-set-menu-item/:menuItemId/of-restaurant/:restId:
+    post:
+      tags:
+        - "管理员维护餐厅的菜单信息"
+      summary: "管理员删除某个餐厅的某个套餐接口"
+      parameters:
+        - name: "menuItemId"
+          in: path
+          required: true
+          type: string
+          description: "套餐菜单项ID"
+        - name: "restId"
+          in: path
+          required: true
+          type: string
+          description: "餐厅ID"
+      responses:
+        204:
+          description: "删除成功"
+        400:
+          headers:
+            X-BIZ-CODE:
+              type: string
+              description: "40007"
+          description: "请求格式有误"
+          schema:
+            $ref: "#/definitions/EX40007"
 securityDefinitions:
   CMRSSecurity:
     type: apiKey

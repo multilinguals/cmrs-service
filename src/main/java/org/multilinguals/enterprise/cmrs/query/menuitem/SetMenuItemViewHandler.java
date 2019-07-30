@@ -4,10 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.MenuItemId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.ItemsAddedToSetMenuItemEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.ItemsRemovedFromMenuItemEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SetMenuItemCreatedEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SetMenuItemUpdatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.*;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.MenuItemNotExistException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.MenuItemTypeNotExistException;
 import org.multilinguals.enterprise.cmrs.query.menuitemtype.MenuItemTypeView;
@@ -115,5 +112,11 @@ public class SetMenuItemViewHandler {
         setMenuItemView.setUpdatedAt(new Date(createdTime.toEpochMilli()));
 
         this.setMenuItemViewRepository.save(setMenuItemView);
+    }
+
+    @EventHandler
+    public void on(SetMenuItemDeletedEvent event) {
+        this.setMenuItemViewRepository.findById(event.getMenuItemId().getIdentifier())
+                .ifPresent(setMenuItemView -> this.setMenuItemViewRepository.delete(setMenuItemView));
     }
 }

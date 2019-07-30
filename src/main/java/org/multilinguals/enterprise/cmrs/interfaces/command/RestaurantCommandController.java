@@ -168,9 +168,37 @@ public class RestaurantCommandController {
 
     @PostMapping("/remove-items-from-set-menu-item/{setMenuItemId}")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
-    public void addItemsToSetMenuItem(@PathVariable String setMenuItemId, @RequestBody RemoveItemsFromMenuItemCommand command, HttpServletResponse response) {
+    public void removeItemsFromSetMenuItem(@PathVariable String setMenuItemId, @RequestBody RemoveItemsFromMenuItemCommand command, HttpServletResponse response) {
         command.setSetMenuItemId(new MenuItemId(setMenuItemId));
         this.commandGateway.sendAndWait(command);
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+    }
+
+    @PostMapping("/delete-single-menu-item/{menuItemId}/of-restaurant/{restId}")
+    @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
+    public void deleteSingleMenuItem(@PathVariable String menuItemId, @PathVariable String restId, HttpServletResponse response) {
+        try {
+            this.singleMenuItemViewRepository.findOne(Example.of(new SingleMenuItemView(menuItemId, restId))).orElseThrow(MenuItemNotExistException::new);
+
+            this.commandGateway.sendAndWait(new DeleteSingleMenuItemCommand(new RestaurantId(restId), new MenuItemId(menuItemId)));
+
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (MenuItemNotExistException ex) {
+            throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+        }
+    }
+
+    @PostMapping("/delete-set-menu-item/{menuItemId}/of-restaurant/{restId}")
+    @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
+    public void deleteSetMenuItem(@PathVariable String menuItemId, @PathVariable String restId, HttpServletResponse response) {
+        try {
+            this.setMenuItemViewRepository.findOne(Example.of(new SetMenuItemView(menuItemId, restId))).orElseThrow(MenuItemNotExistException::new);
+
+            this.commandGateway.sendAndWait(new DeleteSetMenuItemCommand(new RestaurantId(restId), new MenuItemId(menuItemId)));
+
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (MenuItemNotExistException ex) {
+            throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+        }
     }
 }
