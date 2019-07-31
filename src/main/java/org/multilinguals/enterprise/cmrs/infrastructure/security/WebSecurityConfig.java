@@ -39,6 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll() // 允许所有的OPTIONS通过
                 .anyRequest().authenticated()
                 .and()
+                .logout().disable()
                 .addFilter(new RequestValidationFilter(authenticationManager(), this.userDetailsViewRepository))
                 .exceptionHandling()
                 .authenticationEntryPoint(new AuthenticationExceptionEntryPoint(this.i18Translator))
