@@ -62,6 +62,19 @@ public class RestaurantCommandController {
         return new AggregateCreatedDTO<>(restaurantId.getIdentifier());
     }
 
+    @PostMapping("/update-details-of-restaurant/{restId}")
+    @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
+    public void createRestaurant(@PathVariable String restId, @RequestBody UpdateRestaurantDetailsCommand command, HttpServletResponse response) {
+        try {
+            this.restaurantDetailsViewRepository.findById(restId).orElseThrow(RestaurantNotExistException::new);
+            command.setId(new RestaurantId(restId));
+            commandGateway.sendAndWait(command);
+            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+        } catch (RestaurantNotExistException ex) {
+            throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+        }
+    }
+
     @PostMapping("/create-single-menu-item")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public AggregateCreatedDTO<String> createSingleMenuItem(@RequestBody CreateSingleMenuItemCommand command) throws MenuItemTypeNotExistException {

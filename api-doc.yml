@@ -267,6 +267,25 @@ paths:
           description: "创建餐厅成功"
           schema:
             $ref: "#/definitions/CreateAggregateSuccess"
+  /update-details-of-restaurant/:restId:
+    post:
+      tags:
+        - "管理员维护餐厅的基本信息"
+      summary: "管理员更新餐厅接口"
+      parameters:
+        - name: "restId"
+          type: string
+          in: path
+          required: true
+          description: "餐厅ID"
+        - name: "管理员更新餐厅命令"
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateRestaurantCommand"
+      responses:
+        204:
+          description: "更新成功"
   /get-restaurant-list:
     get:
       tags:
@@ -696,6 +715,17 @@ definitions:
     required:
       - name
       - description
+  UpdateRestaurantCommand:
+    type: object
+    properties:
+      name:
+        type: string
+        description: "餐厅名称"
+        example: "四季餐厅"
+      description:
+        type: string
+        description: "餐厅介绍"
+        example: "四季餐厅的介绍"
   CreateSingleMenuItemCommand:
     type: object
     properties:

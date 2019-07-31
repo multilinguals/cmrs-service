@@ -3,6 +3,7 @@ package org.multilinguals.enterprise.cmrs.query.restaurant;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.RestaurantCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.RestaurantDetailsUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsView;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,5 +40,19 @@ public class RestaurantDetailsViewHandler {
         );
 
         this.restaurantDetailsViewRepository.save(restaurantDetailsView);
+    }
+
+    @EventHandler
+    public void on(RestaurantDetailsUpdatedEvent event, @Timestamp java.time.Instant createdTime) {
+        this.restaurantDetailsViewRepository.findById(event.getId().getIdentifier()).ifPresent(restaurantDetailsView -> {
+            restaurantDetailsView.setName(event.getName());
+            if (event.getDescription() != null) {
+                restaurantDetailsView.setDescription(event.getDescription());
+            }
+
+            restaurantDetailsView.setUpdatedAt(new Date(createdTime.toEpochMilli()));
+
+            this.restaurantDetailsViewRepository.save(restaurantDetailsView);
+        });
     }
 }

@@ -37,6 +37,11 @@ public class Restaurant {
     }
 
     @CommandHandler
+    public void handler(UpdateRestaurantDetailsCommand command) {
+        apply(new RestaurantDetailsUpdatedEvent(command.getId(), command.getName(), command.getDescription()));
+    }
+
+    @CommandHandler
     public MenuItemId handler(CreateSingleMenuItemCommand command) {
         MenuItemId menuItemId = new MenuItemId();
         apply(new SingleMenuItemCreatedEvent(menuItemId, this.id, command.getName(), command.getMenuItemTypeId(), command.getDishTypeId(), command.getTasteId(), command.getPrice()));
@@ -86,6 +91,14 @@ public class Restaurant {
         this.name = event.getName();
         this.description = event.getDescription();
         this.creatorId = event.getCreatorId();
+    }
+
+    @EventSourcingHandler
+    public void on(RestaurantDetailsUpdatedEvent event) {
+        this.name = event.getName();
+        if (event.getDescription() != null) {
+            this.description = event.getDescription();
+        }
     }
 
     @EventSourcingHandler
