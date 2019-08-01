@@ -1,14 +1,11 @@
 package org.multilinguals.enterprise.cmrs.query.menuitem;
 
-import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
-import org.multilinguals.enterprise.cmrs.infrastructure.persistence.Localizable;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class SingleMenuItemView implements Localizable {
+public class SingleMenuItemView {
     @Id
     private String id;
 
@@ -20,22 +17,13 @@ public class SingleMenuItemView implements Localizable {
 
     private String menuItemTypeName;
 
-    @Transient
-    private String localMenuItemTypeName;
-
     private String dishTypeId;
 
     private String dishTypeName;
 
-    @Transient
-    private String localDishTypeName;
-
     private String tasteId;
 
     private String tasteName;
-
-    @Transient
-    private String localTasteName;
 
     private BigDecimal price;
 
@@ -68,13 +56,6 @@ public class SingleMenuItemView implements Localizable {
         this.price = price;
         this.onShelve = onShelve;
         this.createdAt = createdAt;
-    }
-
-    @Override
-    public void localize(I18Translator i18Translator) {
-        this.localMenuItemTypeName = i18Translator.localize("MENU_ITEM_TYPE_" + this.menuItemTypeName);
-        this.localDishTypeName = i18Translator.localize("DISH_TYPE_" + this.dishTypeName);
-        this.localTasteName = i18Translator.localize("TASTE_" + this.tasteName);
     }
 
     public String getId() {
@@ -117,14 +98,6 @@ public class SingleMenuItemView implements Localizable {
         this.menuItemTypeName = menuItemTypeName;
     }
 
-    public String getLocalMenuItemTypeName() {
-        return localMenuItemTypeName;
-    }
-
-    public void setLocalMenuItemTypeName(String localMenuItemTypeName) {
-        this.localMenuItemTypeName = localMenuItemTypeName;
-    }
-
     public String getDishTypeId() {
         return dishTypeId;
     }
@@ -141,14 +114,6 @@ public class SingleMenuItemView implements Localizable {
         this.dishTypeName = dishTypeName;
     }
 
-    public String getLocalDishTypeName() {
-        return localDishTypeName;
-    }
-
-    public void setLocalDishTypeName(String localDishTypeName) {
-        this.localDishTypeName = localDishTypeName;
-    }
-
     public String getTasteId() {
         return tasteId;
     }
@@ -163,14 +128,6 @@ public class SingleMenuItemView implements Localizable {
 
     public void setTasteName(String tasteName) {
         this.tasteName = tasteName;
-    }
-
-    public String getLocalTasteName() {
-        return localTasteName;
-    }
-
-    public void setLocalTasteName(String localTasteName) {
-        this.localTasteName = localTasteName;
     }
 
     public BigDecimal getPrice() {

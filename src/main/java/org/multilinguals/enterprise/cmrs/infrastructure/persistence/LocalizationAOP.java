@@ -15,7 +15,7 @@ public class LocalizationAOP {
     @Resource
     private I18Translator i18Translator;
 
-    @Pointcut("execution(* org..*Repository.find*(..)) || execution(* org..*Executor.find*(..))")
+    @Pointcut("execution(* *..*Repository.find*(..))")
     public void pointcut() {
     }
 
