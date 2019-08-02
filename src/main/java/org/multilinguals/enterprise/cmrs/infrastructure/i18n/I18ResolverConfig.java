@@ -28,7 +28,7 @@ public class I18ResolverConfig extends AcceptHeaderLocaleResolver implements Web
     @Bean
     public ResourceBundleMessageSource messageSource() {
         ResourceBundleMessageSource rs = new ResourceBundleMessageSource();
-        rs.setBasename("messages");
+        rs.setBasenames("messages", "labels");
         rs.setDefaultEncoding("UTF-8");
         rs.setUseCodeAsDefaultMessage(true);
         return rs;
