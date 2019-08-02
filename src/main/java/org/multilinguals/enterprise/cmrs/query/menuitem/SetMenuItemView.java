@@ -1,5 +1,7 @@
 package org.multilinguals.enterprise.cmrs.query.menuitem;
 
+import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
+import org.multilinguals.enterprise.cmrs.infrastructure.persistence.Localizable;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
@@ -7,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-public class SetMenuItemView {
+public class SetMenuItemView implements Localizable {
     @Id
     private String id;
 
@@ -52,6 +54,13 @@ public class SetMenuItemView {
         this.onShelve = onShelve;
         this.singleMenuItems = singleMenuItems;
         this.createdAt = createdAt;
+    }
+
+    @Override
+    public void localize(I18Translator i18Translator) {
+        for (SingleMenuItemView item : this.singleMenuItems) {
+            item.localize(i18Translator);
+        }
     }
 
     public String getId() {

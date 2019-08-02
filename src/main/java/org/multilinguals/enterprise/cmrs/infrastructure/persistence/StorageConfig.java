@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.infrastructure.axon;
+package org.multilinguals.enterprise.cmrs.infrastructure.persistence;
 
 import com.mongodb.MongoClient;
 import org.axonframework.commandhandling.SimpleCommandBus;
@@ -7,8 +7,6 @@ import org.axonframework.extensions.mongo.DefaultMongoTemplate;
 import org.axonframework.extensions.mongo.MongoTemplate;
 import org.axonframework.extensions.mongo.eventhandling.saga.repository.MongoSagaStore;
 import org.axonframework.extensions.mongo.eventsourcing.eventstore.MongoEventStorageEngine;
-import org.axonframework.extensions.mongo.eventsourcing.eventstore.StorageStrategy;
-import org.axonframework.extensions.mongo.eventsourcing.eventstore.documentperevent.DocumentPerEventStorageStrategy;
 import org.axonframework.messaging.interceptors.BeanValidationInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

@@ -74,7 +74,9 @@ public class SingleMenuItemView implements Localizable {
     public void localize(I18Translator i18Translator) {
         this.localMenuItemTypeName = i18Translator.localize("MENU_ITEM_TYPE_" + this.menuItemTypeName);
         this.localDishTypeName = i18Translator.localize("DISH_TYPE_" + this.dishTypeName);
-        this.localTasteName = i18Translator.localize("TASTE_" + this.tasteName);
+        if (this.localTasteName != null) {
+            i18Translator.localize("TASTE_" + this.tasteName);
+        }
     }
 
     public String getId() {
