@@ -1,20 +1,14 @@
 package org.multilinguals.enterprise.cmrs.query.taste;
 
-import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
-import org.multilinguals.enterprise.cmrs.infrastructure.persistence.Localizable;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 
 import java.util.Date;
 
-public class TasteView implements Localizable {
+public class TasteView {
     @Id
     private String id;
 
     private String name;
-
-    @Transient
-    private String localName;
 
     private Date createdAt;
 
@@ -24,11 +18,6 @@ public class TasteView implements Localizable {
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;
-    }
-
-    @Override
-    public void localize(I18Translator i18Translator) {
-        this.localName = i18Translator.localize("TASTE_" + this.getName());
     }
 
     public String getId() {
@@ -45,14 +34,6 @@ public class TasteView implements Localizable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getLocalName() {
-        return localName;
-    }
-
-    public void setLocalName(String localName) {
-        this.localName = localName;
     }
 
     public Date getCreatedAt() {
