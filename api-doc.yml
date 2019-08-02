@@ -902,6 +902,9 @@ definitions:
           - "ROLE_CLERK"
           - "ROLE_ORDER_TAKER"
         example: "ROLE_USER_ADMIN"
+      localName:
+        type: string
+        example: "用户管理员"
       createdAt:
         type: string
         example: "2019-06-24T23:39:18.338+0000"
@@ -968,6 +971,9 @@ definitions:
           - "DRINKS"
           - "DISH"
           - "DESSERT"
+      localName:
+        type: string
+        example: "汤"
       createdAt:
         type: string
         example: "2019-07-19T15:05:32.642+0000"
@@ -987,6 +993,9 @@ definitions:
         enum:
           - "SINGLE"
           - "SET"
+      localName:
+        type: string
+        example: "单品"
       createdAt:
         type: string
         example: "2019-07-19T15:05:32.642+0000"
@@ -1007,6 +1016,9 @@ definitions:
           - "SWEET"
           - "SOUR"
           - "HOT"
+      localName:
+        type: string
+        example: "甜"
       createdAt:
         type: string
         example: "2019-07-19T15:05:32.642+0000"
@@ -1028,21 +1040,30 @@ definitions:
       menuItemTypeId:
         type: string
         example: "f17aa9e0-0115-4bc6-a98e-8ad5500651f8"
-      menuItemName:
+      menuItemTypeName:
         type: string
         example: "SINGLE"
+      localMenuItemTypeName:
+        type: string
+        example: "单品"
       dishTypeId:
         type: string
         example: "1ab7d23f-5857-4d0b-9f19-dbde727c08bf"
       dishTypeName:
         type: string
         example: "SOUP"
+      localDishTypeName:
+        type: string
+        example: "汤"
       tasteId:
         type: string
         example: "e1c34caf-2b3f-4005-85e3-c4105347728d"
       tasteName:
         type: string
         example: "SOUR"
+      localTasteName:
+        type: string
+        example: "酸"
       price:
         type: number
         example: 10.5
