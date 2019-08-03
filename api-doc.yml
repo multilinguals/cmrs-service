@@ -762,19 +762,22 @@ definitions:
         type: number
         description: "套餐的定价，一般会比总价低"
         example: 25.5
-      singleItemIdList:
+      subItems:
         type: array
         items:
-          type: string
-          description: "套餐包含的单品菜单项的ID列表"
-          example:
-            - "7de43c37-714c-49e7-8a56-a35a29e2e552"
-            - "bcf99f0c-33cd-4219-ab95-0b8b910b1da1"
+          type: object
+          properties:
+            singleMenuItemId:
+              type: string
+              example: "7de43c37-714c-49e7-8a56-a35a29e2e552"
+            quantity:
+              type: integer
+              example: 2
     required:
       - restaurantId
       - name
       - price
-      - singleItemIdList
+      - subItems
   UpdateSingleMenuItemCommand:
     type: object
     properties:

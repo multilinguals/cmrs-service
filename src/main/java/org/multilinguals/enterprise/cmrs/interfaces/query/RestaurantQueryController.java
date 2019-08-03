@@ -39,7 +39,7 @@ public class RestaurantQueryController {
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public CMRSPage<RestaurantDetailsView> adminGetRestList(@RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
         Sort sort = new Sort(Sort.Direction.DESC, "createdAt");
-        Page<RestaurantDetailsView> restaurantDetailsViews = this.restaurantDetailsViewRepository.findAll(PageRequest.of(Integer.valueOf(page), Integer.valueOf(size), sort));
+        Page<RestaurantDetailsView> restaurantDetailsViews = this.restaurantDetailsViewRepository.findAll(PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), sort));
         return new CMRSPage<>(restaurantDetailsViews);
     }
 
@@ -53,7 +53,7 @@ public class RestaurantQueryController {
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public CMRSPage<SingleMenuItemView> adminGetSingleMenuItemList(@PathVariable String restId, @RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
         Sort sort = new Sort(Sort.Direction.DESC, "createdAt");
-        Page<SingleMenuItemView> menuItemViews = this.singleMenuItemViewRepository.findAll(Example.of(new SingleMenuItemView(restId)), PageRequest.of(Integer.valueOf(page), Integer.valueOf(size), sort));
+        Page<SingleMenuItemView> menuItemViews = this.singleMenuItemViewRepository.findAll(Example.of(new SingleMenuItemView(restId)), PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), sort));
         return new CMRSPage<>(menuItemViews);
     }
 
@@ -67,7 +67,7 @@ public class RestaurantQueryController {
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
     public CMRSPage<SetMenuItemView> adminGetSetMenuItemList(@PathVariable String restId, @RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
         Sort sort = new Sort(Sort.Direction.DESC, "createdAt");
-        Page<SetMenuItemView> menuItemViews = this.setMenuItemViewRepository.findAll(Example.of(new SetMenuItemView(restId)), PageRequest.of(Integer.valueOf(page), Integer.valueOf(size), sort));
+        Page<SetMenuItemView> menuItemViews = this.setMenuItemViewRepository.findAll(Example.of(new SetMenuItemView(restId)), PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), sort));
         return new CMRSPage<>(menuItemViews);
     }
 }

@@ -3,7 +3,6 @@ package org.multilinguals.enterprise.cmrs.query.menuitem;
 import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
 import org.multilinguals.enterprise.cmrs.infrastructure.persistence.Localizable;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -25,8 +24,7 @@ public class SetMenuItemView implements Localizable {
 
     private Boolean onShelve;
 
-    @DBRef
-    private List<SingleMenuItemView> singleMenuItems;
+    private List<SetSubItemView> subItemViews;
 
     private Date createdAt;
 
@@ -44,7 +42,7 @@ public class SetMenuItemView implements Localizable {
         this.restaurantId = restaurantId;
     }
 
-    public SetMenuItemView(String id, String restaurantId, String name, String menuItemTypeId, String menuItemTypeName, BigDecimal price, Boolean onShelve, List<SingleMenuItemView> singleMenuItems, Date createdAt) {
+    public SetMenuItemView(String id, String restaurantId, String name, String menuItemTypeId, String menuItemTypeName, BigDecimal price, Boolean onShelve, List<SetSubItemView> subItemViews, Date createdAt) {
         this.id = id;
         this.restaurantId = restaurantId;
         this.name = name;
@@ -52,14 +50,14 @@ public class SetMenuItemView implements Localizable {
         this.menuItemTypeName = menuItemTypeName;
         this.price = price;
         this.onShelve = onShelve;
-        this.singleMenuItems = singleMenuItems;
+        this.subItemViews = subItemViews;
         this.createdAt = createdAt;
     }
 
     @Override
     public void localize(I18Translator i18Translator) {
-        for (SingleMenuItemView item : this.singleMenuItems) {
-            item.localize(i18Translator);
+        for (SetSubItemView subItem : this.subItemViews) {
+            subItem.getSingleMenuItemView().localize(i18Translator);
         }
     }
 
@@ -119,22 +117,22 @@ public class SetMenuItemView implements Localizable {
         this.onShelve = onShelve;
     }
 
-    public Iterable<SingleMenuItemView> getSingleMenuItems() {
-        return singleMenuItems;
+    public Iterable<SetSubItemView> getSubItemViews() {
+        return subItemViews;
     }
 
-    public void setSingleMenuItems(List<SingleMenuItemView> singleMenuItems) {
-        this.singleMenuItems = singleMenuItems;
+    public void setSubItemViews(List<SetSubItemView> subItemViews) {
+        this.subItemViews = subItemViews;
     }
 
-    public void addSingleMenuItem(SingleMenuItemView singleMenuItem) {
-        this.singleMenuItems.add(singleMenuItem);
+    public void addSingleMenuItem(SetSubItemView singleMenuItem) {
+        this.subItemViews.add(singleMenuItem);
     }
 
-    public void removeSingleMenuItem(SingleMenuItemView ToDeleteItem) {
-        for (SingleMenuItemView singleMenuItemView : this.singleMenuItems) {
+    public void removeSingleMenuItem(SetSubItemView ToDeleteItem) {
+        for (SetSubItemView singleMenuItemView : this.subItemViews) {
             if (singleMenuItemView.getId().equals(ToDeleteItem.getId())) {
-                this.singleMenuItems.remove(singleMenuItemView);
+                this.subItemViews.remove(singleMenuItemView);
             }
         }
     }

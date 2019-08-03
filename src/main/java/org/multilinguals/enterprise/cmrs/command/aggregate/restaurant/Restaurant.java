@@ -10,6 +10,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.*;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
@@ -56,7 +57,13 @@ public class Restaurant {
     @CommandHandler
     public MenuItemId handler(CreateSetMenuItemCommand command) {
         MenuItemId menuItemId = new MenuItemId();
-        apply(new SetMenuItemCreatedEvent(menuItemId, command.getRestaurantId(), command.getName(), command.getMenuItemTypeId(), command.getPrice(), command.getSingleItemIdList(), Boolean.FALSE));
+
+        List<SetSubItem> subItems = command.getSubItems();
+        for (SetSubItem subItem : subItems) {
+            subItem.setId(new SetSubItemId());
+        }
+
+        apply(new SetMenuItemCreatedEvent(menuItemId, command.getRestaurantId(), command.getName(), command.getMenuItemTypeId(), command.getPrice(), subItems, Boolean.FALSE));
         return menuItemId;
     }
 
@@ -139,8 +146,8 @@ public class Restaurant {
                 event.getName(),
                 event.getMenuItemTypeId(),
                 event.getPrice(),
-                Boolean.FALSE,
-                event.getSingleMenuItemIdList()
+                event.getOnShelve(),
+                event.getSubItems()
         );
 
         this.menu.put(setMenuItem.getId(), setMenuItem);
@@ -167,7 +174,7 @@ public class Restaurant {
     public void on(ItemsAddedToSetMenuItemEvent event) {
         SetMenuItem setMenuItem = (SetMenuItem) this.menu.get(event.getSetMenuItemId());
         for (MenuItemId singleItemId : event.getSingleItemsIdList()) {
-            setMenuItem.addSingleMenuItem(singleItemId);
+            // setMenuItem.addSingleMenuItem(singleItemId);
         }
     }
 
@@ -175,7 +182,7 @@ public class Restaurant {
     public void on(ItemsRemovedFromMenuItemEvent event) {
         SetMenuItem setMenuItem = (SetMenuItem) this.menu.get(event.getSetMenuItemId());
         for (MenuItemId singleItemId : event.getSingleItemsIdList()) {
-            setMenuItem.removeSingleMenuItem(singleItemId);
+            // setMenuItem.removeSingleMenuItem(singleItemId);
         }
     }
 

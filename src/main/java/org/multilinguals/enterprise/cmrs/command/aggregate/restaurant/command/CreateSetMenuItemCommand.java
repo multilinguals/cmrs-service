@@ -3,8 +3,8 @@ package org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.menuitemtype.MenuItemTypeId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.MenuItemId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.SetSubItem;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -23,14 +23,14 @@ public class CreateSetMenuItemCommand extends AbstractCommand {
     private BigDecimal price;
 
     @NotNull
-    private List<MenuItemId> singleItemIdList;
+    private List<SetSubItem> subItems;
 
-    public CreateSetMenuItemCommand(RestaurantId restaurantId, MenuItemTypeId menuItemTypeId, @NotNull String name, @NotNull BigDecimal price, @NotNull List<MenuItemId> singleItemIdList) {
+    public CreateSetMenuItemCommand(RestaurantId restaurantId, MenuItemTypeId menuItemTypeId, @NotNull String name, @NotNull BigDecimal price, @NotNull List<SetSubItem> subItems) {
         this.restaurantId = restaurantId;
         this.menuItemTypeId = menuItemTypeId;
         this.name = name;
         this.price = price;
-        this.singleItemIdList = singleItemIdList;
+        this.subItems = subItems;
     }
 
     public RestaurantId getRestaurantId() {
@@ -65,11 +65,11 @@ public class CreateSetMenuItemCommand extends AbstractCommand {
         this.price = price;
     }
 
-    public List<MenuItemId> getSingleItemIdList() {
-        return singleItemIdList;
+    public List<SetSubItem> getSubItems() {
+        return subItems;
     }
 
-    public void setSingleItemIdList(List<MenuItemId> singleItemIdList) {
-        this.singleItemIdList = singleItemIdList;
+    public void setSubItems(List<SetSubItem> subItems) {
+        this.subItems = subItems;
     }
 }

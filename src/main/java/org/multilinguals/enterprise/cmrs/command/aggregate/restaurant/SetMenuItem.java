@@ -6,26 +6,18 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public class SetMenuItem extends MenuItem {
-    private List<MenuItemId> singleMenuItemList;
+    private List<SetSubItem> subItems;
 
-    public SetMenuItem(MenuItemId id, String name, MenuItemTypeId menuItemTypeId, BigDecimal price, Boolean onShelve, List<MenuItemId> singleMenuItemList) {
+    public SetMenuItem(MenuItemId id, String name, MenuItemTypeId menuItemTypeId, BigDecimal price, Boolean onShelve, List<SetSubItem> subItems) {
         super(id, name, menuItemTypeId, price, onShelve);
-        this.singleMenuItemList = singleMenuItemList;
+        this.subItems = subItems;
     }
 
-    public List<MenuItemId> getSingleMenuItemList() {
-        return singleMenuItemList;
+    public List<SetSubItem> getSubItems() {
+        return subItems;
     }
 
-    public void addSingleMenuItem(MenuItemId menuItemId) {
-        if (!this.singleMenuItemList.contains(menuItemId)) {
-            this.singleMenuItemList.add(menuItemId);
-        }
-    }
-
-    public void removeSingleMenuItem(MenuItemId menuItemId) {
-        if (!this.singleMenuItemList.contains(menuItemId)) {
-            this.singleMenuItemList.remove(menuItemId);
-        }
+    public void setSubItems(List<SetSubItem> subItems) {
+        this.subItems = subItems;
     }
 }

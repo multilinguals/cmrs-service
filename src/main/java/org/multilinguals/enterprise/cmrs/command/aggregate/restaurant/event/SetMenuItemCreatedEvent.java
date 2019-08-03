@@ -5,6 +5,7 @@ import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.menuitemtype.MenuItemTypeId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.MenuItemId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.SetSubItem;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -21,17 +22,17 @@ public class SetMenuItemCreatedEvent extends AbstractEvent {
 
     private BigDecimal price;
 
-    private List<MenuItemId> singleMenuItemIdList;
+    private List<SetSubItem> subItems;
 
     private Boolean onShelve;
 
-    public SetMenuItemCreatedEvent(MenuItemId id, RestaurantId restaurantId, String name, MenuItemTypeId menuItemTypeId, BigDecimal price, List<MenuItemId> singleMenuItemIdList, Boolean onShelve) {
+    public SetMenuItemCreatedEvent(MenuItemId id, RestaurantId restaurantId, String name, MenuItemTypeId menuItemTypeId, BigDecimal price, List<SetSubItem> subItems, Boolean onShelve) {
         this.id = id;
         this.restaurantId = restaurantId;
         this.name = name;
         this.menuItemTypeId = menuItemTypeId;
         this.price = price;
-        this.singleMenuItemIdList = singleMenuItemIdList;
+        this.subItems = subItems;
         this.onShelve = onShelve;
     }
 
@@ -55,8 +56,8 @@ public class SetMenuItemCreatedEvent extends AbstractEvent {
         return price;
     }
 
-    public List<MenuItemId> getSingleMenuItemIdList() {
-        return singleMenuItemIdList;
+    public List<SetSubItem> getSubItems() {
+        return subItems;
     }
 
     public Boolean getOnShelve() {
