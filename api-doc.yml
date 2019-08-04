@@ -551,25 +551,6 @@ paths:
       responses:
         204:
           description: "添加成功"
-  /remove-items-from-set-menu-item/:setMenuItemId:
-    post:
-      tags:
-        - "管理员维护餐厅的菜单信息"
-      summary: "为套餐移除单品菜单项接口"
-      parameters:
-        - name: "setMenuItemId"
-          type: string
-          in: path
-          required: true
-          description: "套餐菜单项ID"
-        - name: "为套餐移除单品菜单项命令"
-          in: body
-          required: true
-          schema:
-            $ref: "#/definitions/RemoveItemsFromSetMenuItemCommand"
-      responses:
-        204:
-          description: "移除成功"
   /delete-single-menu-item/:menuItemId/of-restaurant/:restId:
     post:
       tags:
@@ -808,6 +789,17 @@ definitions:
       onShelve:
         type: boolean
         example: false
+      subItems:
+        type: array
+        items:
+          type: object
+          properties:
+            singleMenuItemId:
+              type: string
+              example: "97ff7f12-f28b-416a-9600-f8927b0fb281"
+            quantity:
+              type: integer
+              example: 1
   UserSignInDTO:
     type: object
     properties:
