@@ -20,4 +20,19 @@ public class SetMenuItem extends MenuItem {
     public void setSubItems(List<SetSubItem> subItems) {
         this.subItems = subItems;
     }
+
+
+    public void addSubItem(SetSubItem subItem) {
+        if (!this.subItems.contains(subItem)) {
+            this.subItems.add(subItem);
+        }
+    }
+
+    public void removeSubItem(SetSubItemId subItemId) {
+        for (SetSubItem subItem : this.getSubItems()) {
+            if (subItemId.equals(subItem.getId())) {
+                this.subItems.remove(subItem);
+            }
+        }
+    }
 }

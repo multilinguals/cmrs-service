@@ -4,7 +4,9 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.MenuItemId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.SetSubItemId;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public class ItemsRemovedFromMenuItemEvent extends AbstractEvent {
@@ -13,12 +15,15 @@ public class ItemsRemovedFromMenuItemEvent extends AbstractEvent {
 
     private MenuItemId setMenuItemId;
 
-    private List<MenuItemId> singleItemsIdList;
+    private BigDecimal price;
 
-    public ItemsRemovedFromMenuItemEvent(RestaurantId id, MenuItemId setMenuItemId, List<MenuItemId> singleItemsIdList) {
+    private List<SetSubItemId> subItemIdList;
+
+    public ItemsRemovedFromMenuItemEvent(RestaurantId id, MenuItemId setMenuItemId, BigDecimal price, List<SetSubItemId> subItemIdList) {
         this.id = id;
         this.setMenuItemId = setMenuItemId;
-        this.singleItemsIdList = singleItemsIdList;
+        this.price = price;
+        this.subItemIdList = subItemIdList;
     }
 
     public RestaurantId getId() {
@@ -37,11 +42,19 @@ public class ItemsRemovedFromMenuItemEvent extends AbstractEvent {
         this.setMenuItemId = setMenuItemId;
     }
 
-    public List<MenuItemId> getSingleItemsIdList() {
-        return singleItemsIdList;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public void setSingleItemsIdList(List<MenuItemId> singleItemsIdList) {
-        this.singleItemsIdList = singleItemsIdList;
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public List<SetSubItemId> getSubItemIdList() {
+        return subItemIdList;
+    }
+
+    public void setSubItemIdList(List<SetSubItemId> subItemIdList) {
+        this.subItemIdList = subItemIdList;
     }
 }

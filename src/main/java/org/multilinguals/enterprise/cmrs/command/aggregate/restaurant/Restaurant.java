@@ -74,12 +74,19 @@ public class Restaurant {
 
     @CommandHandler
     public void handler(AddItemsToSetMenuItemCommand command) {
-        apply(new ItemsAddedToSetMenuItemEvent(command.getRestaurantId(), command.getSetMenuItemId(), command.getSingleItemsIdList()));
+        List<SetSubItem> subItems = command.getSubItems();
+
+        for (SetSubItem subItem : subItems) {
+            subItem.setId(new SetSubItemId());
+            subItem.setSingleMenuItemId(subItem.getSingleMenuItemId());
+        }
+
+        apply(new ItemsAddedToSetMenuItemEvent(command.getRestaurantId(), command.getSetMenuItemId(), command.getPrice(), subItems));
     }
 
     @CommandHandler
     public void handler(RemoveItemsFromMenuItemCommand command) {
-        apply(new ItemsRemovedFromMenuItemEvent(command.getRestaurantId(), command.getSetMenuItemId(), command.getSingleItemsIdList()));
+        apply(new ItemsRemovedFromMenuItemEvent(command.getRestaurantId(), command.getSetMenuItemId(), command.getPrice(), command.getSubItemIdList()));
     }
 
     @CommandHandler
@@ -173,16 +180,22 @@ public class Restaurant {
     @EventSourcingHandler
     public void on(ItemsAddedToSetMenuItemEvent event) {
         SetMenuItem setMenuItem = (SetMenuItem) this.menu.get(event.getSetMenuItemId());
-        for (MenuItemId singleItemId : event.getSingleItemsIdList()) {
-            // setMenuItem.addSingleMenuItem(singleItemId);
+
+        setMenuItem.setPrice(event.getPrice());
+
+        for (SetSubItem subItem : event.getSubItems()) {
+            setMenuItem.addSubItem(subItem);
         }
     }
 
     @EventSourcingHandler
     public void on(ItemsRemovedFromMenuItemEvent event) {
         SetMenuItem setMenuItem = (SetMenuItem) this.menu.get(event.getSetMenuItemId());
-        for (MenuItemId singleItemId : event.getSingleItemsIdList()) {
-            // setMenuItem.removeSingleMenuItem(singleItemId);
+
+        setMenuItem.setPrice(event.getPrice());
+
+        for (SetSubItemId subItem : event.getSubItemIdList()) {
+            setMenuItem.removeSubItem(subItem);
         }
     }
 

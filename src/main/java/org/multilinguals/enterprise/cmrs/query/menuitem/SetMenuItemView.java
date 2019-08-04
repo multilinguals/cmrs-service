@@ -125,13 +125,13 @@ public class SetMenuItemView implements Localizable {
         this.subItemViews = subItemViews;
     }
 
-    public void addSingleMenuItem(SetSubItemView singleMenuItem) {
-        this.subItemViews.add(singleMenuItem);
+    public void addSubItem(SetSubItemView toAddItem) {
+        this.subItemViews.add(toAddItem);
     }
 
-    public void removeSingleMenuItem(SetSubItemView ToDeleteItem) {
+    public void removeSubItem(String subItemId) {
         for (SetSubItemView singleMenuItemView : this.subItemViews) {
-            if (singleMenuItemView.getId().equals(ToDeleteItem.getId())) {
+            if (subItemId.equals(singleMenuItemView.getId())) {
                 this.subItemViews.remove(singleMenuItemView);
             }
         }

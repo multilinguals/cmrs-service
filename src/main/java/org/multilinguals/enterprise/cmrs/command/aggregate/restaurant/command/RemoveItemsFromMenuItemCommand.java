@@ -4,8 +4,10 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.MenuItemId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.SetSubItemId;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.List;
 
 public class RemoveItemsFromMenuItemCommand extends AbstractCommand {
@@ -15,12 +17,15 @@ public class RemoveItemsFromMenuItemCommand extends AbstractCommand {
     @NotNull
     private MenuItemId setMenuItemId;
 
-    private List<MenuItemId> singleItemsIdList;
+    private BigDecimal price;
 
-    public RemoveItemsFromMenuItemCommand(RestaurantId restaurantId, MenuItemId setMenuItemId, List<MenuItemId> singleItemsIdList) {
+    private List<SetSubItemId> subItemIdList;
+
+    public RemoveItemsFromMenuItemCommand(RestaurantId restaurantId, @NotNull MenuItemId setMenuItemId, BigDecimal price, List<SetSubItemId> subItemIdList) {
         this.restaurantId = restaurantId;
         this.setMenuItemId = setMenuItemId;
-        this.singleItemsIdList = singleItemsIdList;
+        this.price = price;
+        this.subItemIdList = subItemIdList;
     }
 
     public RestaurantId getRestaurantId() {
@@ -39,11 +44,19 @@ public class RemoveItemsFromMenuItemCommand extends AbstractCommand {
         this.setMenuItemId = setMenuItemId;
     }
 
-    public List<MenuItemId> getSingleItemsIdList() {
-        return singleItemsIdList;
+    public BigDecimal getPrice() {
+        return price;
     }
 
-    public void setSingleItemsIdList(List<MenuItemId> singleItemsIdList) {
-        this.singleItemsIdList = singleItemsIdList;
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public List<SetSubItemId> getSubItemIdList() {
+        return subItemIdList;
+    }
+
+    public void setSubItemIdList(List<SetSubItemId> subItemIdList) {
+        this.subItemIdList = subItemIdList;
     }
 }
