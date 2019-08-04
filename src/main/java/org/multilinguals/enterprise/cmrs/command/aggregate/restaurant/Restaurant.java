@@ -69,7 +69,15 @@ public class Restaurant {
 
     @CommandHandler
     public void handler(UpdateSetMenuItemCommand command) {
-        apply(new SetMenuItemUpdatedEvent(command.getRestaurantId(), command.getId(), command.getName(), command.getPrice(), command.getOnShelve()));
+        List<SetSubItem> toUpdateSubItems = command.getSubItems();
+
+        for (SetSubItem subItem : toUpdateSubItems) {
+            if (subItem.getId() == null) {
+                subItem.setId(new SetSubItemId());
+            }
+        }
+
+        apply(new SetMenuItemUpdatedEvent(command.getRestaurantId(), command.getId(), command.getName(), command.getPrice(), command.getOnShelve(), toUpdateSubItems));
     }
 
     @CommandHandler
@@ -174,6 +182,11 @@ public class Restaurant {
 
         if (event.getOnShelve() != null) {
             menuItem.setOnShelve(event.getOnShelve());
+        }
+
+        if (event.getSubItems() != null && event.getSubItems().size() > 0) {
+            menuItem.getSubItems().clear();
+            menuItem.setSubItems(event.getSubItems());
         }
     }
 

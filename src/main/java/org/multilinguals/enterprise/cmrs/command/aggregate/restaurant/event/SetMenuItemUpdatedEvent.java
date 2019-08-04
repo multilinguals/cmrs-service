@@ -4,9 +4,11 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.MenuItemId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.SetSubItem;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.List;
 
 public class SetMenuItemUpdatedEvent extends AbstractEvent {
     @TargetAggregateIdentifier
@@ -21,12 +23,15 @@ public class SetMenuItemUpdatedEvent extends AbstractEvent {
 
     private Boolean onShelve;
 
-    public SetMenuItemUpdatedEvent(RestaurantId restaurantId, @NotNull MenuItemId id, String name, BigDecimal price, Boolean onShelve) {
+    private List<SetSubItem> subItems;
+
+    public SetMenuItemUpdatedEvent(RestaurantId restaurantId, @NotNull MenuItemId id, String name, BigDecimal price, Boolean onShelve, List<SetSubItem> subItems) {
         this.restaurantId = restaurantId;
         this.id = id;
         this.name = name;
         this.price = price;
         this.onShelve = onShelve;
+        this.subItems = subItems;
     }
 
     public RestaurantId getRestaurantId() {
@@ -67,5 +72,13 @@ public class SetMenuItemUpdatedEvent extends AbstractEvent {
 
     public void setOnShelve(Boolean onShelve) {
         this.onShelve = onShelve;
+    }
+
+    public List<SetSubItem> getSubItems() {
+        return subItems;
+    }
+
+    public void setSubItems(List<SetSubItem> subItems) {
+        this.subItems = subItems;
     }
 }

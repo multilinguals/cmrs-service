@@ -29,10 +29,6 @@ public class SetMenuItem extends MenuItem {
     }
 
     public void removeSubItem(SetSubItemId subItemId) {
-        for (SetSubItem subItem : this.getSubItems()) {
-            if (subItemId.equals(subItem.getId())) {
-                this.subItems.remove(subItem);
-            }
-        }
+        this.subItems.removeIf(setSubItem -> subItemId.equals(setSubItem.getId()));
     }
 }

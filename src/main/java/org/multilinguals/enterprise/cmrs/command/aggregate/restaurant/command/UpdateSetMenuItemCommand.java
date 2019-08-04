@@ -4,9 +4,11 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.MenuItemId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.SetSubItem;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.List;
 
 public class UpdateSetMenuItemCommand extends AbstractCommand {
     @TargetAggregateIdentifier
@@ -21,12 +23,15 @@ public class UpdateSetMenuItemCommand extends AbstractCommand {
 
     private Boolean onShelve;
 
-    public UpdateSetMenuItemCommand(RestaurantId restaurantId, @NotNull MenuItemId id, String name, BigDecimal price, Boolean onShelve) {
+    private List<SetSubItem> subItems;
+
+    public UpdateSetMenuItemCommand(RestaurantId restaurantId, @NotNull MenuItemId id, String name, BigDecimal price, Boolean onShelve, List<SetSubItem> subItems) {
         this.restaurantId = restaurantId;
         this.id = id;
         this.name = name;
         this.price = price;
         this.onShelve = onShelve;
+        this.subItems = subItems;
     }
 
     public RestaurantId getRestaurantId() {
@@ -67,5 +72,13 @@ public class UpdateSetMenuItemCommand extends AbstractCommand {
 
     public void setOnShelve(Boolean onShelve) {
         this.onShelve = onShelve;
+    }
+
+    public List<SetSubItem> getSubItems() {
+        return subItems;
+    }
+
+    public void setSubItems(List<SetSubItem> subItems) {
+        this.subItems = subItems;
     }
 }

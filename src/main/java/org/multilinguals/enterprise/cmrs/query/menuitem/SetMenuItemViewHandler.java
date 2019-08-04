@@ -73,6 +73,14 @@ public class SetMenuItemViewHandler {
             setMenuItemView.setOnShelve(event.getOnShelve());
         }
 
+        List<SetSubItemView> setSubItemViews = setMenuItemView.getSubItemViews();
+        setSubItemViews.clear();
+
+        for (SetSubItem subItem : event.getSubItems()) {
+            SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(subItem.getSingleMenuItemId().getIdentifier()).orElseThrow(MenuItemNotExistException::new);
+            setMenuItemView.addSubItem(new SetSubItemView(subItem.getId().getIdentifier(), subItem.getQuantity(), singleMenuItemView, new Date(createdTime.toEpochMilli())));
+        }
+
         setMenuItemView.setUpdatedAt(new Date(createdTime.toEpochMilli()));
 
         this.setMenuItemViewRepository.save(setMenuItemView);

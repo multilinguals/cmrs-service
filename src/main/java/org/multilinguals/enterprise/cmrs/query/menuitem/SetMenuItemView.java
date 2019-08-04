@@ -117,7 +117,7 @@ public class SetMenuItemView implements Localizable {
         this.onShelve = onShelve;
     }
 
-    public Iterable<SetSubItemView> getSubItemViews() {
+    public List<SetSubItemView> getSubItemViews() {
         return subItemViews;
     }
 
