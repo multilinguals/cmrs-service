@@ -3,7 +3,7 @@ package org.multilinguals.enterprise.cmrs.interfaces.dto;
 import javax.validation.constraints.NotNull;
 
 public class SignInWithPasswordDTO {
-    @NotNull(message = "")
+    @NotNull(message = "{account.id.NotNull}")
     private String idInAccountType;
 
     @NotNull(message = "{account.type.NotNull}")

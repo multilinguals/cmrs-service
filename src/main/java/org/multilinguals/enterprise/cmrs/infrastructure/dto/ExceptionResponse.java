@@ -1,13 +1,17 @@
 package org.multilinguals.enterprise.cmrs.infrastructure.dto;
 
 public class ExceptionResponse {
-    private String message;
+    private String messageType;
 
-    public ExceptionResponse(String message) {
-        this.message = message;
+    public ExceptionResponse(String messageType) {
+        this.messageType = messageType;
     }
 
-    public String getMessage() {
-        return message;
+    public String getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(String messageType) {
+        this.messageType = messageType;
     }
 }
