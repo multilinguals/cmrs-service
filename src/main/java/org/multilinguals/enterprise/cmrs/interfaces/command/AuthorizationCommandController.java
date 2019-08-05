@@ -14,12 +14,10 @@ import org.multilinguals.enterprise.cmrs.infrastructure.data.Tuple2;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserPasswordInvalidException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.SignInWithPasswordDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -54,12 +52,12 @@ public class AuthorizationCommandController {
 
     @PostMapping("/logout")
     @PreAuthorize("isAuthenticated()")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void handle(@RequestAttribute("sessionId") String sessionId, HttpServletResponse response) {
         try {
             commandGateway.sendAndWait(new DeleteUserSessionCommand(new UserSessionId(sessionId)));
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (AggregateNotFoundException ex) {
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            response.setStatus(HttpStatus.NO_CONTENT.value());
         }
     }
 }
