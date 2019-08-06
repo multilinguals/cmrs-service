@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.infrastructure.dto;
+package org.multilinguals.enterprise.cmrs.interfaces.dto.common;
 
 public class ExceptionResponse {
     private String messageType;

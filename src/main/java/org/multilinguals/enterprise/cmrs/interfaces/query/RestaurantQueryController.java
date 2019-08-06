@@ -1,6 +1,6 @@
 package org.multilinguals.enterprise.cmrs.interfaces.query;
 
-import org.multilinguals.enterprise.cmrs.infrastructure.dto.CMRSPage;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.common.CMRSPage;
 import org.multilinguals.enterprise.cmrs.query.menuitem.SetMenuItemView;
 import org.multilinguals.enterprise.cmrs.query.menuitem.SetMenuItemViewRepository;
 import org.multilinguals.enterprise.cmrs.query.menuitem.SingleMenuItemView;

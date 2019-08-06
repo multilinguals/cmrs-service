@@ -7,7 +7,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.Restaurant
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.*;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.menutype.DefaultMenuItemType;
-import org.multilinguals.enterprise.cmrs.dto.aggregate.AggregateCreatedDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.common.AggregateCreatedDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.*;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeViewRepository;

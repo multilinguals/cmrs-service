@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.infrastructure.dto.constant;
+package org.multilinguals.enterprise.cmrs.interfaces.constant;
 
 public interface MessageType {
     String BiZ = "biz";

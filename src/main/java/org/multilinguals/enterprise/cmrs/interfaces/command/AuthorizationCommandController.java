@@ -9,7 +9,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.command.D
 import org.multilinguals.enterprise.cmrs.command.handler.signin.SignInWithPasswordCommand;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.account.AccountType;
 import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
-import org.multilinguals.enterprise.cmrs.dto.authorization.UserSignInDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.UserSignInDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.data.Tuple2;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserPasswordInvalidException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;

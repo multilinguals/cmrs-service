@@ -11,7 +11,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUs
 import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateClerkWithUsernameCommand;
 import org.multilinguals.enterprise.cmrs.constant.result.CommonResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
-import org.multilinguals.enterprise.cmrs.dto.aggregate.AggregateCreatedDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.common.AggregateCreatedDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.RoleNotExistException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotExistException;

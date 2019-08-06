@@ -1,6 +1,6 @@
-package org.multilinguals.enterprise.cmrs.infrastructure.dto;
+package org.multilinguals.enterprise.cmrs.interfaces.dto.common;
 
-import org.multilinguals.enterprise.cmrs.infrastructure.dto.constant.MessageType;
+import org.multilinguals.enterprise.cmrs.interfaces.constant.MessageType;
 
 import java.util.HashMap;
 import java.util.Map;

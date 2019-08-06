@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.infrastructure.dto;
+package org.multilinguals.enterprise.cmrs.interfaces.dto.common;
 
 import org.springframework.data.domain.Page;
 

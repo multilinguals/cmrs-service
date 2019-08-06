@@ -3,7 +3,7 @@ package org.multilinguals.enterprise.cmrs.infrastructure.security;
 import com.alibaba.fastjson.JSON;
 import org.multilinguals.enterprise.cmrs.constant.http.HeaderFields;
 import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
-import org.multilinguals.enterprise.cmrs.infrastructure.dto.BizExceptionResponse;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.common.BizExceptionResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

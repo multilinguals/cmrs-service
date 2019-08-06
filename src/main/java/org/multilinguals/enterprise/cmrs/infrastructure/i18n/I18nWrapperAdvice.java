@@ -1,6 +1,6 @@
 package org.multilinguals.enterprise.cmrs.infrastructure.i18n;
 
-import org.multilinguals.enterprise.cmrs.infrastructure.dto.CMRSPage;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.common.CMRSPage;
 import org.multilinguals.enterprise.cmrs.infrastructure.persistence.Localizable;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;

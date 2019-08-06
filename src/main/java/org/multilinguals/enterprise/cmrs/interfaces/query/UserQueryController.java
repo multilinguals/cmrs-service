@@ -1,7 +1,7 @@
 package org.multilinguals.enterprise.cmrs.interfaces.query;
 
 import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
-import org.multilinguals.enterprise.cmrs.infrastructure.dto.CMRSPage;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.common.CMRSPage;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsView;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;

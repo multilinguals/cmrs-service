@@ -1,6 +1,6 @@
 package org.multilinguals.enterprise.cmrs.interfaces.query;
 
-import org.multilinguals.enterprise.cmrs.infrastructure.dto.CMRSPage;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.common.CMRSPage;
 import org.multilinguals.enterprise.cmrs.query.rbac.RoleDetailsView;
 import org.multilinguals.enterprise.cmrs.query.rbac.RoleDetailsViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
