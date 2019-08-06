@@ -8,7 +8,8 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.Upda
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.SetRolesToUserCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.command.UpdateUserDetailsCommand;
-import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateClerkWithUsernameCommand;
+import org.multilinguals.enterprise.cmrs.command.handler.signup.CreateUserWithUsernameCommand;
+import org.multilinguals.enterprise.cmrs.constant.aggregate.role.DefaultRoleName;
 import org.multilinguals.enterprise.cmrs.constant.result.CommonResultCode;
 import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
@@ -16,7 +17,7 @@ import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.Role
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotExistException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotMatchPasswordException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.CreateClerkByUsernameDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.SignUpByUsernameDTO;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.common.AggregateCreatedDTO;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,9 +41,11 @@ public class UserCommandController {
 
     @PostMapping("/create-clerk")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public AggregateCreatedDTO<String> createUser(@RequestBody CreateClerkByUsernameDTO dto) {
+    public AggregateCreatedDTO<String> createUser(@RequestBody SignUpByUsernameDTO dto) {
         try {
-            UserId userId = commandGateway.sendAndWait(new CreateClerkWithUsernameCommand(dto.getUsername(), dto.getRealName(), dto.getPassword()));
+            UserId userId = commandGateway.sendAndWait(new CreateUserWithUsernameCommand(
+                    dto.getUsername(), dto.getRealName(), dto.getPassword(), DefaultRoleName.CLERK)
+            );
             return new AggregateCreatedDTO<>(userId.getIdentifier());
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof AccountSignedUpException) {

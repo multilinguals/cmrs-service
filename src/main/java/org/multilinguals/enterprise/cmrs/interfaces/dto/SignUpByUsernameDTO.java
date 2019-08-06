@@ -2,7 +2,7 @@ package org.multilinguals.enterprise.cmrs.interfaces.dto;
 
 import javax.validation.constraints.NotEmpty;
 
-public class CreateClerkByUsernameDTO {
+public class SignUpByUsernameDTO {
     @NotEmpty(message = "{username.NotEmpty}")
     private String username;
 
@@ -12,7 +12,7 @@ public class CreateClerkByUsernameDTO {
     @NotEmpty(message = "{password.value.NotEmpty}")
     private String password;
 
-    public CreateClerkByUsernameDTO(String username, String realName, String password) {
+    public SignUpByUsernameDTO(String username, String realName, String password) {
         this.username = username;
         this.realName = realName;
         this.password = password;
