@@ -1,15 +1,16 @@
 package org.multilinguals.enterprise.cmrs.interfaces.dto;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class SignInWithPasswordDTO {
-    @NotNull(message = "{account.id.NotNull}")
+    @NotEmpty(message = "{account.id.NotEmpty}")
     private String idInAccountType;
 
-    @NotNull(message = "{account.type.NotNull}")
+    @NotNull(message = "{account.type.NotEmpty}")
     private Integer accountType;
 
-    @NotNull
+    @NotEmpty(message = "{password.value.NotEmpty}")
     private String password;
 
     public SignInWithPasswordDTO(@NotNull String idInAccountType, @NotNull Integer accountType, @NotNull String password) {
