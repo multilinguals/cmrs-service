@@ -17,10 +17,14 @@ import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.Role
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotExistException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotMatchPasswordException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.UpdateSelfPasswordDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.UpdateUserPasswordDTO;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.SignUpByUsernameDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.UpdateUserDetailsDTO;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.common.AggregateCreatedDTO;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,75 +53,79 @@ public class UserCommandController {
             return new AggregateCreatedDTO<>(userId.getIdentifier());
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof AccountSignedUpException) {
-                throw new CMRSHTTPException(HttpServletResponse.SC_CONFLICT, ErrorCode.SIGNED_UP_ACCOUNT);
+                throw new CMRSHTTPException(HttpStatus.CONFLICT.value(), ErrorCode.SIGNED_UP_ACCOUNT);
             } else {
                 throw ex;
             }
         }
     }
 
-    /**
-     * @param command 更新用户详情
-     */
     @PostMapping("/update-details-of-user/{userId}")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public void updateUserDetails(@PathVariable String userId, @RequestBody UpdateUserDetailsCommand command, HttpServletResponse response) {
-        command.setId(new UserId(userId));
-        commandGateway.sendAndWait(command);
-        response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateUserDetails(@PathVariable String userId, @RequestBody UpdateUserDetailsDTO dto) {
+        try {
+            commandGateway.sendAndWait(new UpdateUserDetailsCommand(new UserId(userId), dto.getRealName()));
+        } catch (AggregateNotFoundException ex) {
+            throw new CMRSHTTPException(HttpStatus.NOT_FOUND.value(), CommonResultCode.NOT_FOUND);
+        }
     }
 
     @PostMapping("/update-user/{userId}/password/{passwordId}")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public void updateUserPassword(@PathVariable String userId, @PathVariable String passwordId, @RequestBody UpdateUserPasswordCommand command, HttpServletResponse response) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateUserPassword(@PathVariable String userId, @PathVariable String passwordId, @RequestBody UpdateUserPasswordDTO dto) {
         try {
-            this.userDetailsViewRepository.findById(userId).orElseThrow(UserNotExistException::new);
-            command.setUserId(new UserId(userId));
-            command.setUserPasswordId(new UserPasswordId(passwordId));
-            commandGateway.sendAndWait(command);
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        } catch (UserNotExistException ex) {
-            throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+            commandGateway.sendAndWait(new UpdateUserPasswordCommand(new UserPasswordId(passwordId), new UserId(userId), dto.getNewUserPassword()));
+        } catch (AggregateNotFoundException ex) {
+            throw new CMRSHTTPException(HttpStatus.NOT_FOUND.value(), CommonResultCode.NOT_FOUND);
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof UserNotMatchPasswordException) {
-                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getCause().getMessage());
+                throw new CMRSHTTPException(HttpStatus.BAD_REQUEST.value(), ex.getCause().getMessage());
             } else {
-                throw new CMRSHTTPException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, CommonResultCode.UNKNOWN_EXCEPTION);
+                throw new CMRSHTTPException(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonResultCode.UNKNOWN_EXCEPTION);
             }
         }
     }
 
     @PostMapping("/update-self-password")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public void updateSelfPassword(@RequestBody UpdateUserPasswordCommand command, @RequestAttribute String reqSenderId, HttpServletResponse response) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateSelfPassword(@RequestBody UpdateSelfPasswordDTO dto, @RequestAttribute String reqSenderId) {
         try {
-            command.setUserId(new UserId(reqSenderId));
-            commandGateway.sendAndWait(command);
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
+            commandGateway.sendAndWait(
+                    new UpdateUserPasswordCommand(
+                            new UserPasswordId(dto.getUserPasswordId()),
+                            new UserId(reqSenderId),
+                            dto.getNewUserPassword()
+                    )
+            );
         } catch (AggregateNotFoundException ex) {
-            throw new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, CommonResultCode.NOT_FOUND);
+            throw new CMRSHTTPException(HttpStatus.NOT_FOUND.value(), CommonResultCode.NOT_FOUND);
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof UserNotMatchPasswordException) {
-                throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getCause().getMessage());
+                throw new CMRSHTTPException(HttpStatus.BAD_REQUEST.value(), ex.getCause().getMessage());
             } else {
-                throw new CMRSHTTPException(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, CommonResultCode.UNKNOWN_EXCEPTION);
+                throw ex;
             }
         }
     }
 
     @PostMapping("/set-roles-to-user/{userId}")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void assignRoleToUser(@RequestBody SetRolesToUserCommand command, @PathVariable String userId, HttpServletResponse response) {
         try {
             this.userDetailsViewRepository.findById(userId).orElseThrow(UserNotExistException::new);
             command.setUserId(new UserId(userId));
             commandGateway.sendAndWait(command);
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (UserNotExistException ex) {
             throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof RoleNotExistException || ex.getCause() instanceof UserNotExistException) {
                 throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getCause().getMessage());
+            } else {
+                throw ex;
             }
         }
     }

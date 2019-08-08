@@ -9,11 +9,11 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.usersession.command.D
 import org.multilinguals.enterprise.cmrs.command.handler.signin.SignInWithPasswordCommand;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.account.AccountType;
 import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.UserSignInDTO;
 import org.multilinguals.enterprise.cmrs.infrastructure.data.Tuple2;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserPasswordInvalidException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.SignInWithPasswordDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.UserSignInDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -43,7 +43,7 @@ public class AuthorizationCommandController {
             throw new CMRSHTTPException(HttpServletResponse.SC_UNAUTHORIZED, ErrorCode.ACCOUNT_PASSWORD_INVALID);
         } catch (CommandExecutionException ex) {
             if (ex.getCause() instanceof UserPasswordInvalidException) {
-                throw new CMRSHTTPException(HttpServletResponse.SC_UNAUTHORIZED, ex.getCause().getMessage());
+                throw new CMRSHTTPException(HttpStatus.UNAUTHORIZED.value(), ex.getCause().getMessage());
             } else {
                 throw ex;
             }
