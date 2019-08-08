@@ -17,6 +17,7 @@ public class CreateSingleMenuItemCommand extends AbstractCommand {
     @NotNull
     private String name;
 
+    @NotNull
     private MenuItemTypeId menuItemTypeId;
 
     @NotNull

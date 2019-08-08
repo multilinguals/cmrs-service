@@ -1,15 +1,22 @@
 package org.multilinguals.enterprise.cmrs.interfaces.command;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.modelling.command.AggregateNotFoundException;
+import org.multilinguals.enterprise.cmrs.command.aggregate.dishtype.DishTypeId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.menuitemtype.MenuItemTypeId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.MenuItemId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.*;
+import org.multilinguals.enterprise.cmrs.command.aggregate.taste.TasteId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.menutype.DefaultMenuItemType;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.common.AggregateCreatedDTO;
+import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.*;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.CreateRestaurantDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.CreateSingleMenuItemDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.UpdateRestaurantDetailsDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.common.AggregateCreatedDTO;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeViewRepository;
 import org.multilinguals.enterprise.cmrs.query.menuitem.SetMenuItemView;
 import org.multilinguals.enterprise.cmrs.query.menuitem.SetMenuItemViewRepository;
@@ -21,7 +28,9 @@ import org.multilinguals.enterprise.cmrs.query.restaurant.RestaurantDetailsViewR
 import org.multilinguals.enterprise.cmrs.query.taste.TasteViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -56,44 +65,48 @@ public class RestaurantCommandController {
 
     @PostMapping("/create-restaurant")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
-    public AggregateCreatedDTO<String> createRestaurant(@RequestBody CreateRestaurantCommand command, @RequestAttribute String reqSenderId) {
-        command.setCreatorId(new UserId(reqSenderId));
-        RestaurantId restaurantId = commandGateway.sendAndWait(command);
+    public AggregateCreatedDTO<String> createRestaurant(@RequestBody @Validated CreateRestaurantDTO dto, @RequestAttribute String reqSenderId) {
+        RestaurantId restaurantId = commandGateway.sendAndWait(new CreateRestaurantCommand(dto.getName(), dto.getDescription(), new UserId(reqSenderId)));
         return new AggregateCreatedDTO<>(restaurantId.getIdentifier());
     }
 
     @PostMapping("/update-details-of-restaurant/{restId}")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
-    public void createRestaurant(@PathVariable String restId, @RequestBody UpdateRestaurantDetailsCommand command, HttpServletResponse response) {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void createRestaurant(@PathVariable String restId, @RequestBody @Validated UpdateRestaurantDetailsDTO dto) {
         try {
-            this.restaurantDetailsViewRepository.findById(restId).orElseThrow(RestaurantNotExistException::new);
-            command.setId(new RestaurantId(restId));
-            commandGateway.sendAndWait(command);
-            response.setStatus(HttpServletResponse.SC_NO_CONTENT);
-        } catch (RestaurantNotExistException ex) {
-            throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+            commandGateway.sendAndWait(new UpdateRestaurantDetailsCommand(new RestaurantId(restId), dto.getName(), dto.getDescription()));
+        } catch (AggregateNotFoundException ex) {
+            throw new CMRSHTTPException(HttpStatus.NOT_FOUND.value(), ErrorCode.RESTAURANT_NOT_EXISTED);
         }
     }
 
     @PostMapping("/create-single-menu-item")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
-    public AggregateCreatedDTO<String> createSingleMenuItem(@RequestBody CreateSingleMenuItemCommand command) throws MenuItemTypeNotExistException {
+    public AggregateCreatedDTO<String> createSingleMenuItem(@RequestBody @Validated CreateSingleMenuItemDTO dto) throws MenuItemTypeNotExistException {
         try {
-            this.restaurantDetailsViewRepository.findById(command.getRestaurantId().getIdentifier()).orElseThrow(RestaurantNotExistException::new);
-            this.dishTypeViewRepository.findById(command.getDishTypeId().getIdentifier()).orElseThrow(DishTypeNotExistException::new);
-            if (command.getTasteId() != null) {
-                this.tasteViewRepository.findById(command.getTasteId().getIdentifier()).orElseThrow(TasteNotExistException::new);
+            this.restaurantDetailsViewRepository.findById(dto.getRestaurantId()).orElseThrow(RestaurantNotExistException::new);
+            this.dishTypeViewRepository.findById(dto.getDishTypeId()).orElseThrow(DishTypeNotExistException::new);
+            if (dto.getTasteId() != null) {
+                this.tasteViewRepository.findById(dto.getTasteId()).orElseThrow(TasteNotExistException::new);
             }
         } catch (RestaurantNotExistException | DishTypeNotExistException | TasteNotExistException ex) {
-            throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
+            throw new CMRSHTTPException(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
         }
 
         MenuItemTypeView menuItemTypeView = this.menuItemTypeViewRepository.findOne(Example.of(new MenuItemTypeView(null, DefaultMenuItemType.SINGLE, null)))
                 .orElseThrow(MenuItemTypeNotExistException::new);
 
-        command.setMenuItemTypeId(new MenuItemTypeId(menuItemTypeView.getId()));
+        TasteId tasteId = dto.getTasteId() != null ? new TasteId(dto.getTasteId()) : null;
 
-        MenuItemId menuItemId = commandGateway.sendAndWait(command);
+        MenuItemId menuItemId = commandGateway.sendAndWait(new CreateSingleMenuItemCommand(
+                new RestaurantId(dto.getRestaurantId()),
+                dto.getName(),
+                new MenuItemTypeId(menuItemTypeView.getId()),
+                new DishTypeId(dto.getDishTypeId()),
+                tasteId,
+                dto.getPrice()
+        ));
         return new AggregateCreatedDTO<>(menuItemId.getIdentifier());
     }
 

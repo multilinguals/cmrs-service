@@ -4,10 +4,13 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
 
+import javax.validation.constraints.NotEmpty;
+
 public class UpdateRestaurantDetailsCommand extends AbstractCommand {
     @TargetAggregateIdentifier
     private RestaurantId id;
 
+    @NotEmpty
     private String name;
 
     private String description;
