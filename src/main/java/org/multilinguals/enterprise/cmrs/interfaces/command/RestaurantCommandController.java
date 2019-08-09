@@ -16,6 +16,7 @@ import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPE
 import org.multilinguals.enterprise.cmrs.interfaces.dto.CreateRestaurantDTO;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.CreateSingleMenuItemDTO;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.UpdateRestaurantDetailsDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.UpdateSingleMenuItemDTO;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.common.AggregateCreatedDTO;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeViewRepository;
 import org.multilinguals.enterprise.cmrs.query.menuitem.SetMenuItemView;
@@ -112,9 +113,11 @@ public class RestaurantCommandController {
 
     @PostMapping("/update-restaurant/{restId}/single-menu-item/{itemId}")
     @PreAuthorize("hasAnyRole('ROLE_REST_ADMIN')")
-    public void updateSingleMenuItem(@PathVariable String restId, @PathVariable String itemId, @RequestBody UpdateSingleMenuItemCommand command, HttpServletResponse response) {
+    public void updateSingleMenuItem(@PathVariable String restId, @PathVariable String itemId, @RequestBody @Validated UpdateSingleMenuItemDTO dto, HttpServletResponse response) {
         try {
             this.restaurantDetailsViewRepository.findById(restId).orElseThrow(RestaurantNotExistException::new);
+            this.dishTypeViewRepository.findById(dto.getDishTypeId()).orElseThrow(DishTypeNotExistException::new);
+
             SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(itemId).orElseThrow(MenuItemNotExistException::new);
 
             if (!restId.equals(singleMenuItemView.getRestaurantId())) {
@@ -127,13 +130,18 @@ public class RestaurantCommandController {
             if (!singleMenuItemView.getMenuItemTypeId().equals(menuItemTypeView.getId())) {
                 throw new SingleMenuItemRequiredException();
             }
-        } catch (RestaurantNotExistException | MenuItemNotExistException | RestaurantNotMatchMenuItemException | MenuItemTypeNotExistException | SingleMenuItemRequiredException ex) {
+        } catch (RestaurantNotExistException | MenuItemNotExistException | DishTypeNotExistException | RestaurantNotMatchMenuItemException | MenuItemTypeNotExistException | SingleMenuItemRequiredException ex) {
             throw new CMRSHTTPException(HttpServletResponse.SC_BAD_REQUEST, ex.getMessage());
         }
 
-        command.setRestaurantId(new RestaurantId(restId));
-        command.setId(new MenuItemId(itemId));
-        commandGateway.sendAndWait(command);
+        commandGateway.sendAndWait(new UpdateSingleMenuItemCommand(
+                new RestaurantId(restId),
+                new MenuItemId(itemId),
+                dto.getName(),
+                dto.getDishTypeId() != null ? new DishTypeId(dto.getDishTypeId()) : null,
+                dto.getTasteId() != null ? new TasteId(dto.getTasteId()) : null,
+                dto.getPrice(),
+                dto.getOnShelve()));
         response.setStatus(HttpServletResponse.SC_NO_CONTENT);
     }
 
