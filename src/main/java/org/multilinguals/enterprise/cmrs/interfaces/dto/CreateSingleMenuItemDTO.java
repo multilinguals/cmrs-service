@@ -1,6 +1,7 @@
 package org.multilinguals.enterprise.cmrs.interfaces.dto;
 
-import javax.validation.constraints.Max;
+import org.hibernate.validator.constraints.Length;
+
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -10,7 +11,7 @@ public class CreateSingleMenuItemDTO {
     private String restaurantId;
 
     @NotEmpty
-    @Max(value = 5)
+    @Length(max = 10)
     private String name;
 
     @NotEmpty
