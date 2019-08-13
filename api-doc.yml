@@ -657,7 +657,15 @@ paths:
         - "用户查看点餐团成员列表"
       summary: "用户查看点参团信息接口"
       parameters:
-        -
+        - name: id
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            $ref: "#/definitions/MRGroupMemberPageDTO"
 securityDefinitions:
   CMRSSecurity:
     type: apiKey
@@ -1219,11 +1227,28 @@ definitions:
           properties:
             id:
               type: string
-            name:
+            realName:
               type: string
             joinedAt:
               type: string
               description: "加入时间"
+  MRGroupMemberPageDTO:
+    type: object
+    properties:
+      content:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            realName:
+              type: string
+            joinedAt:
+              type: string
+              description: "加入时间"
+      pageInfo:
+        $ref: "#/definitions/PageInfo"
   EX40000:
     type: object
     properties:
