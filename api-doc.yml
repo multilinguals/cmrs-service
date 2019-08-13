@@ -626,7 +626,7 @@ paths:
         - "点餐员维护点餐团信息"
       summary: "点餐员创建点参团接口"
       parameters:
-        - name: "点参团创建信息"
+        - name: "点参团的创建信息"
           in: body
           required: true
           schema:
@@ -639,7 +639,7 @@ paths:
   /get-details-of-mr-group/:id:
     get:
       tags:
-        - "用户查看点餐团信息"
+        - "点餐员维护点餐团信息"
       summary: "用户查看点参团信息接口"
       parameters:
         - name: id
@@ -651,11 +651,42 @@ paths:
           description: "查询成功"
           schema:
             $ref: "#/definitions/MealReservationGroupDetailsDTO"
+  /update-details-of-mr-group/:id:
+    get:
+      tags:
+        - "点餐员维护点餐团信息"
+      summary: "点餐员更新点参团信息接口"
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: "点参团的更新信息"
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateMealReservationGroupDTO"
+      responses:
+        204:
+          description: "更新成功"
+  /delete-mr-group/:id:
+    get:
+      tags:
+        - "点餐员维护点餐团信息"
+      summary: "点餐员删除点参团接口"
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+      responses:
+        204:
+          description: "删除成功"
   /get-members-of-mr-group/:id:
     get:
       tags:
-        - "用户查看点餐团成员列表"
-      summary: "用户查看点参团信息接口"
+        - "点餐员维护点餐团信息"
+      summary: "用户查看点参团成员列表接口"
       parameters:
         - name: id
           in: path
@@ -666,6 +697,63 @@ paths:
           description: "查询成功"
           schema:
             $ref: "#/definitions/MRGroupMemberPageDTO"
+  /find-user:
+    get:
+      tags:
+        - "通用"
+      parameters:
+        - name: userId
+          type: string
+          in: query
+        - name: realName
+          type: string
+          minLength: 2
+          in: query
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            $ref: "#/definitions/FindUserResultDTO"
+  /add-members-to-mr-group/:id:
+    post:
+      tags:
+        - "点餐员维护点餐团信息"
+      summary: "点餐员添加点参团成员"
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+        - name: memberIdList
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              memberIdList:
+                type: array
+                items:
+                  type: string
+      responses:
+        204:
+          description: "添加成功"
+  /remove-member/:memberId/from-mr-group/:groupId:
+    post:
+      tags:
+        - "点餐员维护点餐团信息"
+      summary: "点餐员从点参团移除某个成员接口"
+      parameters:
+        - name: memberId
+          in: path
+          type: string
+          required: true
+        - name: groupId
+          in: path
+          type: string
+          required: true
+      responses:
+        204:
+          description: "移除成功"
 securityDefinitions:
   CMRSSecurity:
     type: apiKey
@@ -1208,12 +1296,14 @@ definitions:
         minLength: 4
         maxLength: 8
         example: "我的点参团"
-      members:
-        type: array
-        items:
-          type: string
-          example:
-            - "dc80b746-d889-45c9-8c5e-4b35257c871d"
+  UpdateMealReservationGroupDTO:
+    type: object
+    properties:
+      name:
+        type: string
+        minLength: 4
+        maxLength: 8
+        example: "我的点参团"
   MealReservationGroupDetailsDTO:
     type: object
     properties:
@@ -1249,6 +1339,16 @@ definitions:
               description: "加入时间"
       pageInfo:
         $ref: "#/definitions/PageInfo"
+  FindUserResultDTO:
+    type: array
+    maxItems: 5
+    items:
+      type: object
+      properties:
+        id:
+          type: string
+        realName:
+          type: string
   EX40000:
     type: object
     properties:
