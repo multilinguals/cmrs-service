@@ -1,12 +1,15 @@
 package org.multilinguals.enterprise.cmrs.interfaces.dto;
 
+import org.hibernate.validator.constraints.Length;
+
 import javax.validation.constraints.NotEmpty;
 
 public class UpdateUserDetailsDTO {
-    @NotEmpty(message = "user.id.NotEmpty")
+    @NotEmpty()
     private String id;
 
-    @NotEmpty(message = "user.realName.NotEmpty")
+    @NotEmpty()
+    @Length(min = 2, max = 10)
     private String realName;
 
     public UpdateUserDetailsDTO() {

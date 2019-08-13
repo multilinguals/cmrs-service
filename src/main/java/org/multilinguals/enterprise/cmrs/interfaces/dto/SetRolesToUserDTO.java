@@ -6,7 +6,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 public class SetRolesToUserDTO {
-    @NotEmpty(message = "{user.roles.NotEmpty}")
+    @NotEmpty()
     private List<RoleId> roleIdList;
 
     public SetRolesToUserDTO() {

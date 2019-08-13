@@ -4,13 +4,13 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 public class SignInWithPasswordDTO {
-    @NotEmpty(message = "{account.id.NotEmpty}")
+    @NotEmpty()
     private String idInAccountType;
 
-    @NotNull(message = "{account.type.NotEmpty}")
+    @NotNull()
     private Integer accountType;
 
-    @NotEmpty(message = "{password.value.NotEmpty}")
+    @NotEmpty()
     private String password;
 
     public SignInWithPasswordDTO(@NotNull String idInAccountType, @NotNull Integer accountType, @NotNull String password) {

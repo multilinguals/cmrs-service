@@ -3,10 +3,10 @@ package org.multilinguals.enterprise.cmrs.interfaces.dto;
 import javax.validation.constraints.NotEmpty;
 
 public class UpdateSelfPasswordDTO {
-    @NotEmpty(message = "password.id.NotEmpty")
+    @NotEmpty()
     private String userPasswordId;
 
-    @NotEmpty(message = "password.value.NotEmpty")
+    @NotEmpty()
     private String newUserPassword;
 
     public UpdateSelfPasswordDTO() {

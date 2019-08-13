@@ -16,6 +16,7 @@ tags:
   - name: "管理员维护用户信息"
   - name: "管理员维护餐厅的基本信息"
   - name: "管理员维护餐厅的菜单信息"
+  - name: "点餐员维护点餐团信息"
 schemes:
   - http
 security:
@@ -208,7 +209,7 @@ paths:
         200:
           description: "创建职员成功"
           schema:
-            $ref: "#/definitions/CreateAggregateSuccess"
+            $ref: "#/definitions/AggregateCreatedDTO"
   /get-user-details/:id:
     get:
       tags:
@@ -266,7 +267,7 @@ paths:
         200:
           description: "创建餐厅成功"
           schema:
-            $ref: "#/definitions/CreateAggregateSuccess"
+            $ref: "#/definitions/AggregateCreatedDTO"
   /update-details-of-restaurant/:restId:
     post:
       tags:
@@ -343,7 +344,7 @@ paths:
         200:
           description: "创建单品菜单项成功"
           schema:
-            $ref: "#/definitions/CreateAggregateSuccess"
+            $ref: "#/definitions/AggregateCreatedDTO"
   /create-set-menu-item:
     post:
       tags:
@@ -359,7 +360,7 @@ paths:
         200:
           description: "创建套餐菜单项成功"
           schema:
-            $ref: "#/definitions/CreateAggregateSuccess"
+            $ref: "#/definitions/AggregateCreatedDTO"
   /update-restaurant/:restId/single-menu-item/:itemId:
     post:
       tags:
@@ -605,6 +606,58 @@ paths:
           description: "请求格式有误"
           schema:
             $ref: "#/definitions/EX40007"
+  /update-self-details:
+    post:
+      tags:
+        - "用户维护自己信息"
+      summary: "用户（所有角色）更新个人信息接口"
+      parameters:
+        - name: "更新用户自己的信息"
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateUserSelfDetailsDTO"
+      responses:
+        204:
+          description: "更新成功"
+  /create-mr-group:
+    post:
+      tags:
+        - "点餐员维护点餐团信息"
+      summary: "点餐员创建点参团接口"
+      parameters:
+        - name: "点参团创建信息"
+          in: body
+          required: true
+          schema:
+            $ref: "#/definitions/CreateMealReservationGroupDTO"
+      responses:
+        200:
+          description: "创建成功"
+          schema:
+            $ref: "#/definitions/AggregateCreatedDTO"
+  /get-details-of-mr-group/:id:
+    get:
+      tags:
+        - "用户查看点餐团信息"
+      summary: "用户查看点参团信息接口"
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            $ref: "#/definitions/MealReservationGroupDetailsDTO"
+  /get-members-of-mr-group/:id:
+    get:
+      tags:
+        - "用户查看点餐团成员列表"
+      summary: "用户查看点参团信息接口"
+      parameters:
+        -
 securityDefinitions:
   CMRSSecurity:
     type: apiKey
@@ -809,7 +862,7 @@ definitions:
       userId:
         type: string
         example: "a8d17dcb-49dd-4e68-8c75-db20eb28b258"
-  CreateAggregateSuccess:
+  AggregateCreatedDTO:
     type: object
     properties:
       code:
@@ -1127,6 +1180,50 @@ definitions:
           example:
             - "fe925f17-7746-41fd-b420-1268e60b5910"
             - "dc80b746-d889-45c9-8c5e-4b35257c871d"
+  UpdateUserSelfDetailsDTO:
+    type: object
+    properties:
+      id:
+        type: string
+        example: "b6bdf1c1-5094-45d8-ad1d-231e0f19b48b"
+      realName:
+        type: string
+        example: "李四"
+    required:
+      - id
+      - realName
+  CreateMealReservationGroupDTO:
+    type: object
+    properties:
+      name:
+        type: string
+        minLength: 4
+        maxLength: 8
+        example: "我的点参团"
+      members:
+        type: array
+        items:
+          type: string
+          example:
+            - "dc80b746-d889-45c9-8c5e-4b35257c871d"
+  MealReservationGroupDetailsDTO:
+    type: object
+    properties:
+      name:
+        type: string
+        example: "我的点餐团"
+      orderTakers:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            joinedAt:
+              type: string
+              description: "加入时间"
   EX40000:
     type: object
     properties:

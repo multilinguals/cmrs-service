@@ -5,11 +5,11 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotEmpty;
 
 public class CreateRestaurantDTO {
-    @NotEmpty(message = "{restaurant.name.NotEmpty}")
-    @Length(max = 20, message = "{restaurant.name.length}")
+    @NotEmpty()
+    @Length(max = 20)
     private String name;
 
-    @Length(min = 5, max = 200, message = "{restaurant.description.length}")
+    @Length(min = 5, max = 200)
     private String description;
 
     public CreateRestaurantDTO() {

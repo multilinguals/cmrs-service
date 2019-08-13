@@ -3,13 +3,13 @@ package org.multilinguals.enterprise.cmrs.interfaces.dto;
 import javax.validation.constraints.NotEmpty;
 
 public class SignUpByUsernameDTO {
-    @NotEmpty(message = "{user.username.NotEmpty}")
+    @NotEmpty()
     private String username;
 
-    @NotEmpty(message = "{user.realName.NotEmpty}")
+    @NotEmpty()
     private String realName;
 
-    @NotEmpty(message = "{password.value.NotEmpty}")
+    @NotEmpty()
     private String password;
 
     public SignUpByUsernameDTO(String username, String realName, String password) {
