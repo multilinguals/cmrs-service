@@ -646,6 +646,7 @@ paths:
           in: path
           type: string
           required: true
+          description: "点参团ID"
       responses:
         200:
           description: "查询成功"
@@ -661,6 +662,7 @@ paths:
           in: path
           type: string
           required: true
+          description: "点参团ID"
         - name: "点参团的更新信息"
           in: body
           required: true
@@ -679,6 +681,7 @@ paths:
           in: path
           type: string
           required: true
+          description: "点参团ID"
       responses:
         204:
           description: "删除成功"
@@ -692,6 +695,7 @@ paths:
           in: path
           type: string
           required: true
+          description: "点参团ID"
       responses:
         200:
           description: "查询成功"
@@ -724,9 +728,11 @@ paths:
           in: path
           type: string
           required: true
+          description: "点参团ID"
         - name: memberIdList
           in: body
           required: true
+          description: "成员列表"
           schema:
             type: object
             properties:
@@ -747,7 +753,9 @@ paths:
           in: path
           type: string
           required: true
+          description: "成员ID"
         - name: groupId
+          description: "点参团ID"
           in: path
           type: string
           required: true
