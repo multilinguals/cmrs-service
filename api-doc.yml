@@ -743,6 +743,31 @@ paths:
       responses:
         204:
           description: "添加成功"
+  /add-order-takers-to-mr-group/:id:
+    post:
+      tags:
+        - "点餐员维护点餐团信息"
+      summary: "为点参团添加点餐员"
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: "点参团ID"
+        - name: memberIdList
+          in: body
+          required: true
+          description: "点餐员列表"
+          schema:
+            type: object
+            properties:
+              memberIdList:
+                type: array
+                items:
+                  type: string
+      responses:
+        204:
+          description: "添加成功"
   /remove-member/:memberId/from-mr-group/:groupId:
     post:
       tags:
@@ -750,6 +775,25 @@ paths:
       summary: "点餐员从点参团移除某个成员接口"
       parameters:
         - name: memberId
+          in: path
+          type: string
+          required: true
+          description: "点餐员ID"
+        - name: groupId
+          description: "点参团ID"
+          in: path
+          type: string
+          required: true
+      responses:
+        204:
+          description: "移除成功"
+  /remove-order-taker/:orderTakerId/from-mr-group/:groupId:
+    post:
+      tags:
+        - "点餐员维护点餐团信息"
+      summary: "点餐员从点参团移除某个点餐员接口"
+      parameters:
+        - name: orderTackerId
           in: path
           type: string
           required: true
@@ -762,6 +806,25 @@ paths:
       responses:
         204:
           description: "移除成功"
+  /hand-over-owner-of-mr-group/:groupId/to/:orderTackerId:
+    post:
+      tags:
+        - "点餐员维护点餐团信息"
+      summary: "将团长职务交给另一个点餐员"
+      parameters:
+        - name: groupId
+          description: "点参团ID"
+          in: path
+          type: string
+          required: true
+        - name: orderTackerId
+          in: path
+          type: string
+          required: true
+          description: "点餐员ID"
+      responses:
+        204:
+          description: "交接成功"
 securityDefinitions:
   CMRSSecurity:
     type: apiKey
