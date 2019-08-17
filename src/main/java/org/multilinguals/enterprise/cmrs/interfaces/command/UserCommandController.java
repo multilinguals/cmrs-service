@@ -17,8 +17,12 @@ import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.Role
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotExistException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotMatchPasswordException;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.*;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.authorization.SignUpByUsernameDTO;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.common.AggregateCreatedDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.user.SetRolesToUserDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.user.UpdateSelfPasswordDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.user.UpdateUserDetailsDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.user.UpdateUserPasswordDTO;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

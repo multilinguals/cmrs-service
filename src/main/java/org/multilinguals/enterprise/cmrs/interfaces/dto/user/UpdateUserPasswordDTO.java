@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.interfaces.dto;
+package org.multilinguals.enterprise.cmrs.interfaces.dto.user;
 
 import javax.validation.constraints.NotEmpty;
 

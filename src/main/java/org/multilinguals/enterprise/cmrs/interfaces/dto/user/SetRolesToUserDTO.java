@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.interfaces.dto;
+package org.multilinguals.enterprise.cmrs.interfaces.dto.user;
 
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.RoleId;
 

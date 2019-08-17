@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.interfaces.dto;
+package org.multilinguals.enterprise.cmrs.interfaces.dto.authorization;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
