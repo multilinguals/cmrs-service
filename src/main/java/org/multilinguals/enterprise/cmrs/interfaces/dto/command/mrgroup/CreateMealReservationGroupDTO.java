@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.interfaces.dto.mrgroup;
+package org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup;
 
 import org.hibernate.validator.constraints.Length;
 

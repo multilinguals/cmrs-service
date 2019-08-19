@@ -1,8 +1,9 @@
 package org.multilinguals.enterprise.cmrs.interfaces.query;
 
 import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.common.CMRSPage;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.common.CMRSPage;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.query.FoundUserDTO;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsView;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -64,5 +67,20 @@ public class UserQueryController {
     public UserDetailsView queryUserDetails(@PathVariable String id) {
         return this.userDetailsViewRepository.findById(id)
                 .orElseThrow(() -> new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, ErrorCode.USER_NOT_EXISTED));
+    }
+
+    @GetMapping("/find-user")
+    @PreAuthorize("isAuthenticated()")
+    public List<FoundUserDTO> findUser(@RequestParam String realName) {
+        List<FoundUserDTO> foundUsers = new ArrayList<>();
+
+        this.userDetailsViewRepository.findByRealNameLike(
+                realName,
+                PageRequest.of(0, 5)
+        ).forEach(userDetailsView -> {
+            foundUsers.add(new FoundUserDTO(userDetailsView.getId(), userDetailsView.getRealName()));
+        });
+
+        return foundUsers;
     }
 }

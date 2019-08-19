@@ -1,24 +1,38 @@
-package org.multilinguals.enterprise.cmrs.interfaces.dto.restaurant;
+package org.multilinguals.enterprise.cmrs.interfaces.dto.command.restaurant;
 
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-public class UpdateSingleMenuItemDTO {
+public class CreateSingleMenuItemDTO {
+    @NotEmpty
+    private String restaurantId;
+
+    @NotEmpty
     @Length(max = 10)
     private String name;
 
+    @NotEmpty
     private String dishTypeId;
 
     private String tasteId;
 
+    @NotNull
     @Min(value = 0)
     private BigDecimal price;
 
-    private Boolean onShelve;
+    public CreateSingleMenuItemDTO() {
+    }
 
-    public UpdateSingleMenuItemDTO() {
+    public String getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(String restaurantId) {
+        this.restaurantId = restaurantId;
     }
 
     public String getName() {
@@ -51,13 +65,5 @@ public class UpdateSingleMenuItemDTO {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
-    }
-
-    public Boolean getOnShelve() {
-        return onShelve;
-    }
-
-    public void setOnShelve(Boolean onShelve) {
-        this.onShelve = onShelve;
     }
 }

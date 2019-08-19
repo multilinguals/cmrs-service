@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.interfaces.dto.restaurant;
+package org.multilinguals.enterprise.cmrs.interfaces.dto.command.restaurant;
 
 import org.hibernate.validator.constraints.Length;
 

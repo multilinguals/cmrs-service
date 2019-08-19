@@ -5,7 +5,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservati
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.CreateMealReservationCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.common.AggregateCreatedDTO;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.mrgroup.CreateMealReservationGroupDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup.CreateMealReservationGroupDTO;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;

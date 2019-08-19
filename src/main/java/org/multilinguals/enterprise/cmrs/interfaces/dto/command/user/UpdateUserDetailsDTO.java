@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.interfaces.dto.user;
+package org.multilinguals.enterprise.cmrs.interfaces.dto.command.user;
 
 import org.hibernate.validator.constraints.Length;
 

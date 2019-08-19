@@ -13,10 +13,10 @@ import org.multilinguals.enterprise.cmrs.constant.aggregate.menutype.DefaultMenu
 import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.*;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.restaurant.CreateRestaurantDTO;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.restaurant.CreateSingleMenuItemDTO;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.restaurant.UpdateRestaurantDetailsDTO;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.restaurant.UpdateSingleMenuItemDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.command.restaurant.CreateRestaurantDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.command.restaurant.CreateSingleMenuItemDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.command.restaurant.UpdateRestaurantDetailsDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.command.restaurant.UpdateSingleMenuItemDTO;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.common.AggregateCreatedDTO;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeViewRepository;
 import org.multilinguals.enterprise.cmrs.query.menuitem.SetMenuItemView;
