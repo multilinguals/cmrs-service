@@ -4,12 +4,12 @@ import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
 
-public class UpdateUserDetailsDTO {
+public class UpdateSelfDetailsDTO {
     @NotEmpty()
     @Length(min = 2, max = 10)
     private String realName;
 
-    public UpdateUserDetailsDTO() {
+    public UpdateSelfDetailsDTO() {
     }
 
     public String getRealName() {

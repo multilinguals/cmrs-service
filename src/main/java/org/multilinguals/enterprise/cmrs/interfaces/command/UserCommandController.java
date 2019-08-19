@@ -19,10 +19,7 @@ import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.User
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.authorization.SignUpByUsernameDTO;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.common.AggregateCreatedDTO;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.user.SetRolesToUserDTO;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.user.UpdateSelfPasswordDTO;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.user.UpdateUserDetailsDTO;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.user.UpdateUserPasswordDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.user.*;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -86,6 +83,17 @@ public class UserCommandController {
             } else {
                 throw new CMRSHTTPException(HttpStatus.INTERNAL_SERVER_ERROR.value(), CommonResultCode.UNKNOWN_EXCEPTION);
             }
+        }
+    }
+
+    @PostMapping("/update-self-details")
+    @PreAuthorize("isAuthenticated()")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateSelfDetails(@RequestBody @Validated UpdateSelfDetailsDTO dto, @RequestAttribute String reqSenderId) {
+        try {
+            commandGateway.sendAndWait(new UpdateUserDetailsCommand(new UserId(reqSenderId), dto.getRealName()));
+        } catch (AggregateNotFoundException ex) {
+            throw new CMRSHTTPException(HttpStatus.NOT_FOUND.value(), CommonResultCode.NOT_FOUND);
         }
     }
 

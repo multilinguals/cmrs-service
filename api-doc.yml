@@ -884,9 +884,6 @@ definitions:
   UpdateUserDetailsCommand:
     type: object
     properties:
-      id:
-        type: string
-        example: "b6bdf1c1-5094-45d8-ad1d-231e0f19b48b"
       realName:
         type: string
         example: "李四"
