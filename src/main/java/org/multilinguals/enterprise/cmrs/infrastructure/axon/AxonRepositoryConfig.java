@@ -4,6 +4,7 @@ import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.axonframework.eventsourcing.eventstore.EventStore;
 import org.axonframework.modelling.command.Repository;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.Account;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroup;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPassword;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.Role;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.User;
@@ -30,5 +31,10 @@ public class AxonRepositoryConfig {
     @Bean()
     public Repository<Role> roleAggregateRepository(EventStore eventStore) {
         return EventSourcingRepository.builder(Role.class).eventStore(eventStore).build();
+    }
+
+    @Bean()
+    public Repository<MealReservationGroup> mrGroupAggregateRepository(EventStore eventStore) {
+        return EventSourcingRepository.builder(MealReservationGroup.class).eventStore(eventStore).build();
     }
 }

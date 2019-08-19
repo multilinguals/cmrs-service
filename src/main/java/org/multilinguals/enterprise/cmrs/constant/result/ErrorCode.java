@@ -37,6 +37,9 @@ public interface ErrorCode {
     // 当前菜单项不是套餐
     String SET_ITEM_REQUIRED = "40010";
 
+    // 用户不是点参团团长
+    String USER_NOT_MR_GROUP_OWNER = "40301";
+
     // 用户ID和密码ID不匹配
     String UserNotMatchPassword = "40011";
 
