@@ -51,4 +51,7 @@ public interface BizErrorCode {
 
     // 用户身份凭证已经存在
     String SIGNED_UP_ACCOUNT = "41206";
+
+    // 用户不是点餐员
+    String USER_NOT_ORDER_TAKER = "41207";
 }

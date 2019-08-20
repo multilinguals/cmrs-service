@@ -7,6 +7,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.Creat
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.DeleteMealReservationGroupCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDeletedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupOwnerTurnOverEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
@@ -77,6 +78,12 @@ public class MealReservationGroup {
     @EventSourcingHandler
     public void on(MealReservationGroupDeletedEvent event) {
         markDeleted();
+    }
+
+    public void turnOverOwnerTo(UserId userId) {
+        this.ownerId = userId;
+
+        apply(new MealReservationGroupOwnerTurnOverEvent(this.id, this.ownerId));
     }
 
     public Boolean isOwner(UserId userId) {
