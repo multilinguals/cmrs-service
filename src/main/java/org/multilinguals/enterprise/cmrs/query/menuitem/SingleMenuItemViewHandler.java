@@ -5,10 +5,8 @@ import org.axonframework.eventhandling.Timestamp;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SingleMenuItemCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SingleMenuItemDeletedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.SingleMenuItemUpdatedEvent;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.DishTypeNotExistException;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.MenuItemNotExistException;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.MenuItemTypeNotExistException;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.TasteNotExistException;
+import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
+import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeView;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeViewRepository;
 import org.multilinguals.enterprise.cmrs.query.menuitemtype.MenuItemTypeView;
@@ -41,9 +39,9 @@ public class SingleMenuItemViewHandler {
     @EventHandler
     public void on(SingleMenuItemCreatedEvent event, @Timestamp java.time.Instant createdTime) throws Exception {
         MenuItemTypeView menuItemTypeView = this.menuItemTypeViewRepository.findById(event.getMenuItemTypeId().getIdentifier())
-                .orElseThrow(MenuItemTypeNotExistException::new);
+                .orElseThrow(() -> new BizException(BizErrorCode.MENU_ITEM_TYPE_NOT_EXISTED));
         DishTypeView dishTypeView = this.dishTypeViewRepository.findById(event.getDishTypeId().getIdentifier())
-                .orElseThrow(DishTypeNotExistException::new);
+                .orElseThrow(() -> new BizException(BizErrorCode.DISH_TYPE_NOT_EXISTED));
 
         SingleMenuItemView singleMenuItemView = new SingleMenuItemView(
                 event.getId().getIdentifier(),
@@ -60,7 +58,7 @@ public class SingleMenuItemViewHandler {
 
         if (event.getTasteId() != null) {
             TasteView tasteView = this.tasteViewRepository.findById(event.getTasteId().getIdentifier())
-                    .orElseThrow(TasteNotExistException::new);
+                    .orElseThrow(() -> new BizException(BizErrorCode.TASTE_NOT_EXISTED));
 
             singleMenuItemView.setTasteId(event.getTasteId().getIdentifier());
             singleMenuItemView.setTasteName(tasteView.getName());
@@ -71,12 +69,13 @@ public class SingleMenuItemViewHandler {
 
     @EventHandler
     public void on(SingleMenuItemUpdatedEvent event, @Timestamp java.time.Instant updatedTime) throws Exception {
-        SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(event.getId().getIdentifier()).orElseThrow(MenuItemNotExistException::new);
+        SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(event.getId().getIdentifier())
+                .orElseThrow(() -> new BizException(BizErrorCode.MENU_ITEM_NOT_EXISTED));
 
         if (event.getDishTypeId() != null) {
             singleMenuItemView.setDishTypeId(event.getDishTypeId().getIdentifier());
             DishTypeView dishTypeView = this.dishTypeViewRepository.findById(event.getDishTypeId().getIdentifier())
-                    .orElseThrow(DishTypeNotExistException::new);
+                    .orElseThrow(() -> new BizException(BizErrorCode.DISH_TYPE_NOT_EXISTED));
             singleMenuItemView.setDishTypeName(dishTypeView.getName());
         }
 
@@ -87,7 +86,7 @@ public class SingleMenuItemViewHandler {
         if (event.getTasteId() != null) {
             singleMenuItemView.setTasteId(event.getTasteId().getIdentifier());
             TasteView tasteView = this.tasteViewRepository.findById(event.getTasteId().getIdentifier())
-                    .orElseThrow(TasteNotExistException::new);
+                    .orElseThrow(() -> new BizException(BizErrorCode.TASTE_NOT_EXISTED));
             singleMenuItemView.setMenuItemTypeName(tasteView.getName());
         }
 

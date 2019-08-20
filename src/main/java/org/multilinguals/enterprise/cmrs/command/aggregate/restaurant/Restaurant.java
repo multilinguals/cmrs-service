@@ -5,10 +5,14 @@ import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateMember;
 import org.axonframework.spring.stereotype.Aggregate;
+import org.multilinguals.enterprise.cmrs.command.aggregate.dishtype.DishTypeId;
+import org.multilinguals.enterprise.cmrs.command.aggregate.menuitemtype.MenuItemTypeId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.command.*;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.*;
+import org.multilinguals.enterprise.cmrs.command.aggregate.taste.TasteId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,42 +46,35 @@ public class Restaurant {
         apply(new RestaurantDetailsUpdatedEvent(command.getId(), command.getName(), command.getDescription()));
     }
 
-    @CommandHandler
-    public MenuItemId handler(CreateSingleMenuItemCommand command) {
+    public MenuItemId createSingleMenuItem(String name, MenuItemTypeId menuItemTypeId, DishTypeId dishTypeId, TasteId tasteId, BigDecimal price) {
         MenuItemId menuItemId = new MenuItemId();
-        apply(new SingleMenuItemCreatedEvent(menuItemId, this.id, command.getName(), command.getMenuItemTypeId(), command.getDishTypeId(), command.getTasteId(), command.getPrice()));
+        apply(new SingleMenuItemCreatedEvent(menuItemId, this.id, name, menuItemTypeId, dishTypeId, tasteId, price));
         return menuItemId;
     }
 
-    @CommandHandler
-    public void handler(UpdateSingleMenuItemCommand command) {
-        apply(new SingleMenuItemUpdatedEvent(command.getRestaurantId(), command.getId(), command.getName(), command.getDishTypeId(), command.getTasteId(), command.getPrice(), command.getOnShelve()));
+    public void updateSingleMenuItem(MenuItemId menuItemId, String name, DishTypeId dishTypeId, TasteId tasteId, BigDecimal price, Boolean onShelve) {
+        apply(new SingleMenuItemUpdatedEvent(this.id, menuItemId, name, dishTypeId, tasteId, price, onShelve));
     }
 
-    @CommandHandler
-    public MenuItemId handler(CreateSetMenuItemCommand command) {
+    public MenuItemId createSetMenuItem(String name, MenuItemTypeId menuItemTypeId, BigDecimal price, List<SetSubItem> subItems) {
         MenuItemId menuItemId = new MenuItemId();
 
-        List<SetSubItem> subItems = command.getSubItems();
         for (SetSubItem subItem : subItems) {
             subItem.setId(new SetSubItemId());
         }
 
-        apply(new SetMenuItemCreatedEvent(menuItemId, command.getRestaurantId(), command.getName(), command.getMenuItemTypeId(), command.getPrice(), subItems, Boolean.FALSE));
+        apply(new SetMenuItemCreatedEvent(menuItemId, this.id, name, menuItemTypeId, price, subItems, Boolean.FALSE));
         return menuItemId;
     }
 
-    @CommandHandler
-    public void handler(UpdateSetMenuItemCommand command) {
-        List<SetSubItem> toUpdateSubItems = command.getSubItems();
-
-        for (SetSubItem subItem : toUpdateSubItems) {
+    public void updateSetMenuItem(MenuItemId menuItemId, String name, BigDecimal price, Boolean onShelve, List<SetSubItem> subItems) {
+        for (SetSubItem subItem : subItems) {
             if (subItem.getId() == null) {
                 subItem.setId(new SetSubItemId());
             }
         }
 
-        apply(new SetMenuItemUpdatedEvent(command.getRestaurantId(), command.getId(), command.getName(), command.getPrice(), command.getOnShelve(), toUpdateSubItems));
+        apply(new SetMenuItemUpdatedEvent(this.id, menuItemId, name, price, onShelve, subItems));
     }
 
     @CommandHandler
@@ -240,5 +237,9 @@ public class Restaurant {
 
     public Map<MenuItemId, MenuItem> getMenu() {
         return menu;
+    }
+
+    public MenuItem getMenuItemById(MenuItemId menuItemId) {
+        return this.menu.get(menuItemId);
     }
 }

@@ -1,7 +1,7 @@
 package org.multilinguals.enterprise.cmrs.interfaces.query;
 
-import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
+import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
+import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.common.CMRSPage;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.query.FoundUserDTO;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsView;
@@ -64,9 +64,9 @@ public class UserQueryController {
      */
     @GetMapping("/get-user-details/{id}")
     @PreAuthorize("hasAnyRole('ROLE_USER_ADMIN','ROLE_SUPER_ADMIN')")
-    public UserDetailsView queryUserDetails(@PathVariable String id) {
+    public UserDetailsView queryUserDetails(@PathVariable String id) throws BizException {
         return this.userDetailsViewRepository.findById(id)
-                .orElseThrow(() -> new CMRSHTTPException(HttpServletResponse.SC_NOT_FOUND, ErrorCode.USER_NOT_EXISTED));
+                .orElseThrow(() -> new BizException(HttpServletResponse.SC_NOT_FOUND, BizErrorCode.USER_NOT_EXISTED));
     }
 
     @GetMapping("/find-user")

@@ -1,15 +1,14 @@
 package org.multilinguals.enterprise.cmrs.infrastructure.exception;
 
 
+import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.messaging.interceptors.JSR303ViolationException;
 import org.multilinguals.enterprise.cmrs.constant.http.HeaderFields;
-import org.multilinguals.enterprise.cmrs.constant.result.CommonResultCode;
+import org.multilinguals.enterprise.cmrs.constant.result.CommonErrorCode;
+import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
+import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.common.BizExceptionResponse;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.common.FieldExceptionResponse;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.CMRSHTTPException;
-import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
@@ -24,40 +23,36 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @ControllerAdvice
-public class CMRSExceptionHandler {
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
-
+public class BizExceptionHandler {
     @Resource
     private I18Translator i18Translator;
 
-    @ExceptionHandler(CMRSHTTPException.class)
+    @ExceptionHandler(BizException.class)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public BizExceptionResponse handleHTTPException(HttpServletResponse response, CMRSHTTPException ex) {
-        response.setStatus(ex.getStatusCode());
-        response.addHeader(HeaderFields.BIZ_CODE, ex.getMessageCode());
-        return new BizExceptionResponse(i18Translator.localize(ex.getMessageCode()));
+    public BizExceptionResponse handleHTTPException(HttpServletResponse response, BizException ex) {
+        response.addHeader(HeaderFields.BIZ_ERR_CODE, ex.getMessage());
+        return new BizExceptionResponse(i18Translator.localize(ex.getMessage()));
     }
 
     @ExceptionHandler(JSR303ViolationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public BizExceptionResponse handleJSR303ViolationException(HttpServletResponse response) {
-        response.addHeader(HeaderFields.BIZ_CODE, CommonResultCode.INVALID_COMMAND_PARAMS);
-        return new BizExceptionResponse(i18Translator.localize(CommonResultCode.INVALID_COMMAND_PARAMS));
+        response.addHeader(HeaderFields.BIZ_ERR_CODE, CommonErrorCode.INVALID_COMMAND_PARAMS);
+        return new BizExceptionResponse(i18Translator.localize(CommonErrorCode.INVALID_COMMAND_PARAMS));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
-    public BizExceptionResponse handleAccessDeniedException(HttpServletResponse response) {
-        response.addHeader(HeaderFields.BIZ_CODE, CommonResultCode.FORBIDDEN);
-        return new BizExceptionResponse(i18Translator.localize(CommonResultCode.FORBIDDEN));
+    public void handleAccessDeniedException() {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public FieldExceptionResponse handleMethodArgumentNotValidException(HttpServletResponse response, MethodArgumentNotValidException ex) {
+    public FieldExceptionResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         FieldExceptionResponse fieldExceptionResponse = new FieldExceptionResponse();
         List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
         for (FieldError fieldError : fieldErrors) {
@@ -67,13 +62,25 @@ public class CMRSExceptionHandler {
         return fieldExceptionResponse;
     }
 
+    @ExceptionHandler(CommandExecutionException.class)
+    @ResponseBody
+    public BizExceptionResponse handleCommandExecutionException(CommandExecutionException ex, HttpServletResponse response) {
+        if (ex.getCause() instanceof BizException) {
+            BizException bizEx = (BizException) ex.getCause();
+            response.addHeader(HeaderFields.BIZ_ERR_CODE, bizEx.getMessage());
+            return new BizExceptionResponse(i18Translator.localize(bizEx.getMessage()));
+        } else {
+            // TODO 输入到日志里
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    public BizExceptionResponse handleException(HttpServletResponse response, Exception ex) {
+    public void handleException(Exception ex) {
         // TODO 输入到日志里
         ex.printStackTrace();
-        response.addHeader(HeaderFields.BIZ_CODE, CommonResultCode.UNKNOWN_EXCEPTION);
-        return new BizExceptionResponse(i18Translator.localize(CommonResultCode.UNKNOWN_EXCEPTION));
     }
 }

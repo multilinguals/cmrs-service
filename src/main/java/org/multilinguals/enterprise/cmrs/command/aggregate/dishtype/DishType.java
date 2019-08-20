@@ -16,6 +16,9 @@ public class DishType {
 
     private String name;
 
+    public DishType() {
+    }
+
     @CommandHandler
     public DishType(CreateDishTypeCommand command) {
         apply(new DishTypeCreatedEvent(new DishTypeId(), command.getName()));

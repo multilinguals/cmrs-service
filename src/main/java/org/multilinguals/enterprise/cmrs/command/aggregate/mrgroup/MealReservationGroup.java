@@ -8,7 +8,8 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.Delet
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDeletedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotMRGroupOwnerException;
+import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
+import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,11 +56,11 @@ public class MealReservationGroup {
     }
 
     @CommandHandler
-    public void handle(DeleteMealReservationGroupCommand command) throws UserNotMRGroupOwnerException {
+    public void handle(DeleteMealReservationGroupCommand command) throws BizException {
         if (command.getOperatorId().equals(this.ownerId)) {
             apply(new MealReservationGroupDeletedEvent(command.getGroupId()));
         } else {
-            throw new UserNotMRGroupOwnerException();
+            throw new BizException(BizErrorCode.USER_NOT_MR_GROUP_OWNER);
         }
     }
 
@@ -76,6 +77,10 @@ public class MealReservationGroup {
     @EventSourcingHandler
     public void on(MealReservationGroupDeletedEvent event) {
         markDeleted();
+    }
+
+    public Boolean isOwner(UserId userId) {
+        return this.ownerId.equals(userId);
     }
 
     public MealReservationGroupId getId() {

@@ -16,6 +16,9 @@ public class MenuItemType {
 
     private String name;
 
+    public MenuItemType() {
+    }
+
     @CommandHandler
     public MenuItemType(CreateMenuItemTypeCommand command) {
         apply(new MenuItemTypeCreatedEvent(new MenuItemTypeId(), command.getName()));

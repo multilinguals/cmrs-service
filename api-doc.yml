@@ -46,7 +46,7 @@ paths:
             $ref: "#/definitions/UserSignInDTO"
         401:
           headers:
-            X-BIZ-CODE:
+            X-BIZ-ERR-CODE:
               type: string
               description: "40101"
           description: "认证失败"
@@ -143,7 +143,7 @@ paths:
           description: "分配角色成功"
         400:
           headers:
-            X-BIZ-CODE:
+            X-BIZ-ERR-CODE:
               type: string
           description: "请求数据异常"
           schema:
@@ -573,7 +573,7 @@ paths:
           description: "删除成功"
         400:
           headers:
-            X-BIZ-CODE:
+            X-BIZ-ERR-CODE:
               type: string
               description: "40007"
           description: "请求格式有误"
@@ -600,7 +600,7 @@ paths:
           description: "删除成功"
         400:
           headers:
-            X-BIZ-CODE:
+            X-BIZ-ERR-CODE:
               type: string
               description: "40007"
           description: "请求格式有误"

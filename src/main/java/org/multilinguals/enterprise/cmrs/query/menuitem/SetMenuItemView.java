@@ -56,8 +56,10 @@ public class SetMenuItemView implements Localizable {
 
     @Override
     public void localize(I18Translator i18Translator) {
-        for (SetSubItemView subItem : this.subItemViews) {
-            subItem.getSingleMenuItemView().localize(i18Translator);
+        if (this.subItemViews != null) {
+            for (SetSubItemView subItem : this.subItemViews) {
+                subItem.getSingleMenuItemView().localize(i18Translator);
+            }
         }
     }
 

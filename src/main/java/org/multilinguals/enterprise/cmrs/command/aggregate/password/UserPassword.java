@@ -10,7 +10,8 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.password.command.Upda
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.event.UserPasswordCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.event.UserPasswordUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.UserNotMatchPasswordException;
+import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
+import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
 import org.springframework.util.DigestUtils;
 
 import java.util.ArrayList;
@@ -39,9 +40,9 @@ public class UserPassword {
     }
 
     @CommandHandler
-    public void handler(UpdateUserPasswordCommand command) throws UserNotMatchPasswordException {
+    public void handler(UpdateUserPasswordCommand command) throws BizException {
         if (!command.getUserId().equals(this.userId)) {
-            throw new UserNotMatchPasswordException();
+            throw new BizException(BizErrorCode.USER_NOT_MATCH_PASSWORD);
         }
 
         apply(new UserPasswordUpdatedEvent(command.getUserPasswordId(), hashInputPassword(command.getNewUserPassword())));

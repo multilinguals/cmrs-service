@@ -4,9 +4,13 @@ import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.axonframework.eventsourcing.eventstore.EventStore;
 import org.axonframework.modelling.command.Repository;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.Account;
+import org.multilinguals.enterprise.cmrs.command.aggregate.dishtype.DishType;
+import org.multilinguals.enterprise.cmrs.command.aggregate.menuitemtype.MenuItemType;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroup;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPassword;
+import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.Restaurant;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.Role;
+import org.multilinguals.enterprise.cmrs.command.aggregate.taste.Taste;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +35,26 @@ public class AxonRepositoryConfig {
     @Bean()
     public Repository<Role> roleAggregateRepository(EventStore eventStore) {
         return EventSourcingRepository.builder(Role.class).eventStore(eventStore).build();
+    }
+
+    @Bean()
+    public Repository<Restaurant> restaurantAggregateRepository(EventStore eventStore) {
+        return EventSourcingRepository.builder(Restaurant.class).eventStore(eventStore).build();
+    }
+
+    @Bean()
+    public Repository<MenuItemType> menuItemTypeAggregateRepository(EventStore eventStore) {
+        return EventSourcingRepository.builder(MenuItemType.class).eventStore(eventStore).build();
+    }
+
+    @Bean()
+    public Repository<DishType> dishTypeAggregateRepository(EventStore eventStore) {
+        return EventSourcingRepository.builder(DishType.class).eventStore(eventStore).build();
+    }
+
+    @Bean()
+    public Repository<Taste> tasteAggregateRepository(EventStore eventStore) {
+        return EventSourcingRepository.builder(Taste.class).eventStore(eventStore).build();
     }
 
     @Bean()

@@ -11,7 +11,8 @@ import org.multilinguals.enterprise.cmrs.constant.aggregate.dishtype.DefaultDish
 import org.multilinguals.enterprise.cmrs.constant.aggregate.menutype.DefaultMenuItemType;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.role.DefaultRoleName;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.taste.DefaultTaste;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.AccountSignedUpException;
+import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
+import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeView;
 import org.multilinguals.enterprise.cmrs.query.dishtype.DishTypeViewRepository;
 import org.multilinguals.enterprise.cmrs.query.menuitemtype.MenuItemTypeView;
@@ -61,12 +62,14 @@ public class PreBizDataProcessListener implements ApplicationListener<Applicatio
                     DefaultRoleName.SUPER_ADMIN);
             commandGateway.sendAndWait(createUserWithUsernameCommand);
         } catch (CommandExecutionException ex) {
-            if (!(ex.getCause() instanceof AccountSignedUpException)) {
+            if (!(ex.getCause() instanceof BizException)) {
                 throw ex;
+            } else {
+                if (BizErrorCode.SIGNED_UP_ACCOUNT.equals(ex.getCause().getMessage())) {
+                    //TODO 替换成log4j
+                    System.out.println("超级管理员已创建");
+                }
             }
-
-            //TODO 替换成log4j
-            System.out.println("超级管理员已创建");
         }
 
         // 预置菜谱相关数据

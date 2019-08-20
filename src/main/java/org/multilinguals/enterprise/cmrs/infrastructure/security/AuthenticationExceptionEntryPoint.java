@@ -2,7 +2,7 @@ package org.multilinguals.enterprise.cmrs.infrastructure.security;
 
 import com.alibaba.fastjson.JSON;
 import org.multilinguals.enterprise.cmrs.constant.http.HeaderFields;
-import org.multilinguals.enterprise.cmrs.constant.result.ErrorCode;
+import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.common.BizExceptionResponse;
 import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
 import org.springframework.security.core.AuthenticationException;
@@ -25,7 +25,7 @@ public class AuthenticationExceptionEntryPoint implements AuthenticationEntryPoi
         e.printStackTrace();
         httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         httpServletResponse.addHeader("Content-Type", "application/json;charset=UTF-8");
-        httpServletResponse.addHeader(HeaderFields.BIZ_CODE, ErrorCode.INVALID_TOKEN);
-        httpServletResponse.getWriter().write(JSON.toJSONString(new BizExceptionResponse(i18Translator.localize(ErrorCode.INVALID_TOKEN))));
+        httpServletResponse.addHeader(HeaderFields.BIZ_ERR_CODE, BizErrorCode.INVALID_TOKEN);
+        httpServletResponse.getWriter().write(JSON.toJSONString(new BizExceptionResponse(i18Translator.localize(BizErrorCode.INVALID_TOKEN))));
     }
 }

@@ -16,6 +16,9 @@ public class Taste {
 
     private String name;
 
+    public Taste() {
+    }
+
     @CommandHandler
     public Taste(CreateTasteCommand command) {
         apply(new TasteCreatedEvent(new TasteId(), command.getName()));

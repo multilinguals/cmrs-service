@@ -1,11 +1,12 @@
 package org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command;
 
 import org.hibernate.validator.constraints.Length;
+import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
 import javax.validation.constraints.NotEmpty;
 
-public class CreateMealReservationGroupCommand {
+public class CreateMealReservationGroupCommand extends AbstractCommand {
     @NotEmpty
     @Length(min = 4, max = 8)
     private String name;

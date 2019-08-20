@@ -6,8 +6,8 @@ import org.axonframework.eventhandling.Timestamp;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.SetSubItem;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.SetSubItemId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.event.*;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.MenuItemNotExistException;
-import org.multilinguals.enterprise.cmrs.infrastructure.exception.aggregate.MenuItemTypeNotExistException;
+import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
+import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
 import org.multilinguals.enterprise.cmrs.query.menuitemtype.MenuItemTypeView;
 import org.multilinguals.enterprise.cmrs.query.menuitemtype.MenuItemTypeViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,16 +31,17 @@ public class SetMenuItemViewHandler {
     }
 
     @EventHandler
-    public void on(SetMenuItemCreatedEvent event, @Timestamp java.time.Instant createdTime) throws MenuItemTypeNotExistException, MenuItemNotExistException {
+    public void on(SetMenuItemCreatedEvent event, @Timestamp java.time.Instant createdTime) throws BizException {
         List<SetSubItemView> subItemViews = new ArrayList<>();
 
         for (SetSubItem subItem : event.getSubItems()) {
-            SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(subItem.getSingleMenuItemId().getIdentifier()).orElseThrow(MenuItemNotExistException::new);
+            SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(subItem.getSingleMenuItemId().getIdentifier())
+                    .orElseThrow(() -> new BizException(BizErrorCode.MENU_ITEM_TYPE_NOT_EXISTED));
             subItemViews.add(new SetSubItemView(subItem.getId().getIdentifier(), subItem.getQuantity(), singleMenuItemView, new Date(createdTime.toEpochMilli())));
         }
 
         MenuItemTypeView menuItemTypeView = this.menuItemTypeViewRepository.findById(event.getMenuItemTypeId().getIdentifier())
-                .orElseThrow(MenuItemTypeNotExistException::new);
+                .orElseThrow(() -> new BizException(BizErrorCode.MENU_ITEM_TYPE_NOT_EXISTED));
 
         SetMenuItemView setMenuItemView = new SetMenuItemView(
                 event.getId().getIdentifier(),
@@ -58,9 +59,9 @@ public class SetMenuItemViewHandler {
     }
 
     @EventHandler
-    public void on(SetMenuItemUpdatedEvent event, @Timestamp java.time.Instant createdTime) throws MenuItemNotExistException {
+    public void on(SetMenuItemUpdatedEvent event, @Timestamp java.time.Instant createdTime) throws BizException {
         SetMenuItemView setMenuItemView = this.setMenuItemViewRepository.findById(event.getId().getIdentifier())
-                .orElseThrow(MenuItemNotExistException::new);
+                .orElseThrow(() -> new BizException(BizErrorCode.MENU_ITEM_NOT_EXISTED));
         if (StringUtils.isNotEmpty(event.getName())) {
             setMenuItemView.setName(event.getName());
         }
@@ -77,7 +78,8 @@ public class SetMenuItemViewHandler {
         setSubItemViews.clear();
 
         for (SetSubItem subItem : event.getSubItems()) {
-            SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(subItem.getSingleMenuItemId().getIdentifier()).orElseThrow(MenuItemNotExistException::new);
+            SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(subItem.getSingleMenuItemId().getIdentifier())
+                    .orElseThrow(() -> new BizException(BizErrorCode.MENU_ITEM_TYPE_NOT_EXISTED));
             setMenuItemView.addSubItem(new SetSubItemView(subItem.getId().getIdentifier(), subItem.getQuantity(), singleMenuItemView, new Date(createdTime.toEpochMilli())));
         }
 
@@ -87,14 +89,15 @@ public class SetMenuItemViewHandler {
     }
 
     @EventHandler
-    public void on(ItemsAddedToSetMenuItemEvent event, @Timestamp java.time.Instant createdTime) throws MenuItemNotExistException {
+    public void on(ItemsAddedToSetMenuItemEvent event, @Timestamp java.time.Instant createdTime) throws BizException {
         SetMenuItemView setMenuItemView = this.setMenuItemViewRepository.findById(event.getSetMenuItemId().getIdentifier())
-                .orElseThrow(MenuItemNotExistException::new);
+                .orElseThrow(() -> new BizException(BizErrorCode.MENU_ITEM_TYPE_NOT_EXISTED));
 
         setMenuItemView.setPrice(event.getPrice());
 
         for (SetSubItem subItem : event.getSubItems()) {
-            SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(subItem.getSingleMenuItemId().getIdentifier()).orElseThrow(MenuItemNotExistException::new);
+            SingleMenuItemView singleMenuItemView = this.singleMenuItemViewRepository.findById(subItem.getSingleMenuItemId().getIdentifier())
+                    .orElseThrow(() -> new BizException(BizErrorCode.MENU_ITEM_TYPE_NOT_EXISTED));
             setMenuItemView.addSubItem(new SetSubItemView(subItem.getId().getIdentifier(), subItem.getQuantity(), singleMenuItemView, new Date(createdTime.toEpochMilli())));
         }
 
@@ -104,9 +107,9 @@ public class SetMenuItemViewHandler {
     }
 
     @EventHandler
-    public void on(ItemsRemovedFromMenuItemEvent event, @Timestamp java.time.Instant createdTime) throws MenuItemNotExistException {
+    public void on(ItemsRemovedFromMenuItemEvent event, @Timestamp java.time.Instant createdTime) throws BizException {
         SetMenuItemView setMenuItemView = this.setMenuItemViewRepository.findById(event.getSetMenuItemId().getIdentifier())
-                .orElseThrow(MenuItemNotExistException::new);
+                .orElseThrow(() -> new BizException(BizErrorCode.MENU_ITEM_TYPE_NOT_EXISTED));
 
         setMenuItemView.setPrice(event.getPrice());
 
