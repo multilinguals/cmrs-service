@@ -80,10 +80,13 @@ public class MealReservationGroup {
         markDeleted();
     }
 
-    public void turnOverOwnerTo(UserId userId) {
-        this.ownerId = userId;
+    @EventSourcingHandler
+    public void on(MealReservationGroupOwnerTurnOverEvent event) {
+        this.ownerId = event.getCurrentOwnerId();
+    }
 
-        apply(new MealReservationGroupOwnerTurnOverEvent(this.id, this.ownerId));
+    public void turnOverOwnerTo(UserId userId) {
+        apply(new MealReservationGroupOwnerTurnOverEvent(this.id, userId));
     }
 
     public Boolean isOwner(UserId userId) {
