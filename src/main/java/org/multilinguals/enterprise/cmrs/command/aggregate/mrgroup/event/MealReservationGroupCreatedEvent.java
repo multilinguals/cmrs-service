@@ -7,11 +7,13 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
 import java.util.List;
 
-public class MealReservationCreatedEvent extends AbstractEvent {
+public class MealReservationGroupCreatedEvent extends AbstractEvent {
     @TargetAggregateIdentifier
     private MealReservationGroupId id;
 
     private String name;
+
+    private String description;
 
     private UserId ownerId;
 
@@ -21,9 +23,10 @@ public class MealReservationCreatedEvent extends AbstractEvent {
 
     private List<UserId> memberIdList;
 
-    public MealReservationCreatedEvent(MealReservationGroupId id, String name, UserId ownerId, UserId creatorId, List<UserId> orderTakerIdList, List<UserId> memberIdList) {
+    public MealReservationGroupCreatedEvent(MealReservationGroupId id, String name, String description, UserId ownerId, UserId creatorId, List<UserId> orderTakerIdList, List<UserId> memberIdList) {
         this.id = id;
         this.name = name;
+        this.description = description;
         this.ownerId = ownerId;
         this.creatorId = creatorId;
         this.orderTakerIdList = orderTakerIdList;
@@ -34,47 +37,27 @@ public class MealReservationCreatedEvent extends AbstractEvent {
         return id;
     }
 
-    public void setId(MealReservationGroupId id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getDescription() {
+        return description;
     }
 
     public UserId getOwnerId() {
         return ownerId;
     }
 
-    public void setOwnerId(UserId ownerId) {
-        this.ownerId = ownerId;
-    }
-
     public UserId getCreatorId() {
         return creatorId;
-    }
-
-    public void setCreatorId(UserId creatorId) {
-        this.creatorId = creatorId;
     }
 
     public List<UserId> getOrderTakerIdList() {
         return orderTakerIdList;
     }
 
-    public void setOrderTakerIdList(List<UserId> orderTakerIdList) {
-        this.orderTakerIdList = orderTakerIdList;
-    }
-
     public List<UserId> getMemberIdList() {
         return memberIdList;
-    }
-
-    public void setMemberIdList(List<UserId> memberIdList) {
-        this.memberIdList = memberIdList;
     }
 }

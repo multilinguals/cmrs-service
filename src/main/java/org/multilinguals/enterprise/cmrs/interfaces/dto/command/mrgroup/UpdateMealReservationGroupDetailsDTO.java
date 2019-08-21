@@ -2,17 +2,14 @@ package org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup;
 
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.NotEmpty;
-
-public class CreateMealReservationGroupDTO {
-    @NotEmpty
+public class UpdateMealReservationGroupDetailsDTO {
     @Length(min = 4, max = 8)
     private String name;
 
     @Length(min = 5, max = 200)
     private String description;
 
-    public CreateMealReservationGroupDTO() {
+    public UpdateMealReservationGroupDetailsDTO() {
     }
 
     public String getName() {

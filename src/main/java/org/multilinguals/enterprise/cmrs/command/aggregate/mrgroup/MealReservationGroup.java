@@ -5,9 +5,11 @@ import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.CreateMealReservationGroupCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.DeleteMealReservationGroupCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.UpdateMealReservationGroupDetailsCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDeletedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupOwnerTurnOverEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
@@ -23,6 +25,8 @@ public class MealReservationGroup {
     private MealReservationGroupId id;
 
     private String name;
+
+    private String description;
 
     private UserId ownerId;
 
@@ -53,7 +57,12 @@ public class MealReservationGroup {
         List<UserId> memberIdList = new ArrayList<>();
         memberIdList.add(command.getCreatorId());
 
-        apply(new MealReservationCreatedEvent(mrGroupId, command.getName(), creatorId, ownerId, orderTakerIdList, memberIdList));
+        apply(new MealReservationGroupCreatedEvent(mrGroupId, command.getName(), command.getDescription(), creatorId, ownerId, orderTakerIdList, memberIdList));
+    }
+
+    @CommandHandler
+    public void handle(UpdateMealReservationGroupDetailsCommand command) {
+        apply(new MealReservationGroupUpdatedEvent(command.getId(), command.getName(), command.getDescription()));
     }
 
     @CommandHandler
@@ -66,13 +75,24 @@ public class MealReservationGroup {
     }
 
     @EventSourcingHandler
-    public void on(MealReservationCreatedEvent event) {
+    public void on(MealReservationGroupCreatedEvent event) {
         this.id = event.getId();
         this.name = event.getName();
         this.ownerId = event.getOwnerId();
         this.creatorId = event.getCreatorId();
         this.orderTakerIdList = event.getOrderTakerIdList();
         this.memberIdList = event.getMemberIdList();
+    }
+
+    @EventSourcingHandler
+    public void on(MealReservationGroupUpdatedEvent event) {
+        if (event.getName() != null) {
+            this.name = event.getName();
+        }
+
+        if (event.getDescription() != null) {
+            this.description = event.getDescription();
+        }
     }
 
     @EventSourcingHandler
@@ -99,6 +119,10 @@ public class MealReservationGroup {
 
     public String getName() {
         return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     public UserId getOwnerId() {
