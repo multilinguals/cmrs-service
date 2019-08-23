@@ -4,7 +4,7 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroupId;
 
-public class MealReservationGroupUpdatedEvent extends AbstractEvent {
+public class MealReservationGroupDetailsUpdatedEvent extends AbstractEvent {
     @TargetAggregateIdentifier
     private MealReservationGroupId mealReservationGroupId;
 
@@ -12,7 +12,7 @@ public class MealReservationGroupUpdatedEvent extends AbstractEvent {
 
     private String description;
 
-    public MealReservationGroupUpdatedEvent(MealReservationGroupId mealReservationGroupId, String name, String description) {
+    public MealReservationGroupDetailsUpdatedEvent(MealReservationGroupId mealReservationGroupId, String name, String description) {
         this.mealReservationGroupId = mealReservationGroupId;
         this.name = name;
         this.description = description;

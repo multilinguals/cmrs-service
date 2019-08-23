@@ -9,7 +9,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.Updat
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDeletedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupOwnerTurnOverEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupUpdatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDetailsUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
@@ -62,7 +62,7 @@ public class MealReservationGroup {
 
     @CommandHandler
     public void handle(UpdateMealReservationGroupDetailsCommand command) {
-        apply(new MealReservationGroupUpdatedEvent(command.getId(), command.getName(), command.getDescription()));
+        apply(new MealReservationGroupDetailsUpdatedEvent(command.getId(), command.getName(), command.getDescription()));
     }
 
     @CommandHandler
@@ -85,7 +85,7 @@ public class MealReservationGroup {
     }
 
     @EventSourcingHandler
-    public void on(MealReservationGroupUpdatedEvent event) {
+    public void on(MealReservationGroupDetailsUpdatedEvent event) {
         if (event.getName() != null) {
             this.name = event.getName();
         }
