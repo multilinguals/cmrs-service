@@ -5,6 +5,7 @@ import org.axonframework.eventhandling.Timestamp;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDeletedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDetailsUpdatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupOwnerTurnOverEvent;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -65,6 +66,20 @@ public class MealReservationGroupDetailsViewHandler {
         this.mealReservationGroupDetailsRepository.findById(event.getId().getIdentifier())
                 .ifPresent(mealReservationGroupDetailsView -> {
                     this.mealReservationGroupDetailsRepository.delete(mealReservationGroupDetailsView);
+                });
+    }
+
+    @EventHandler
+    public void on(MealReservationGroupOwnerTurnOverEvent event, @Timestamp java.time.Instant createdTime) {
+        this.mealReservationGroupDetailsRepository.findById(event.getMealReservationGroupId().getIdentifier())
+                .ifPresent(mrGroup -> {
+                    this.userDetailsViewRepository.findById(event.getCurrentOwnerId().getIdentifier())
+                            .ifPresent(currentOwner -> {
+                                mrGroup.setOwnerId(currentOwner.getId());
+                                mrGroup.setOwnerRealName(currentOwner.getRealName());
+                                mrGroup.setUpdatedAt(new Date(createdTime.toEpochMilli()));
+                                this.mealReservationGroupDetailsRepository.save(mrGroup);
+                            });
                 });
     }
 }
