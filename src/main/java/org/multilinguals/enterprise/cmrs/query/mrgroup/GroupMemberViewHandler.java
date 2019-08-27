@@ -4,6 +4,7 @@ import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDeletedEvent;
+import org.multilinguals.enterprise.cmrs.query.mrgroup.constant.GroupRoles;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
@@ -27,14 +28,20 @@ public class GroupMemberViewHandler {
     @EventHandler
     public void on(MealReservationGroupCreatedEvent event, @Timestamp java.time.Instant createdTime) {
         this.userDetailsViewRepository.findById(event.getOwnerId().getIdentifier()).ifPresent(owner -> {
-            GroupMemberView groupMemberView = new GroupMemberView(owner.getId(), event.getId().getIdentifier(), owner.getRealName(), new Date(createdTime.toEpochMilli()));
+            GroupMemberView groupMemberView = new GroupMemberView(
+                    owner.getId(),
+                    event.getId().getIdentifier(),
+                    owner.getRealName(),
+                    GroupRoles.GROUP_OWNER,
+                    new Date(createdTime.toEpochMilli())
+            );
             this.groupMemberViewRepository.save(groupMemberView);
         });
     }
 
     @EventHandler
     public void on(MealReservationGroupDeletedEvent event) {
-        List<GroupMemberView> memberViews = this.groupMemberViewRepository.findAll(Example.of(new GroupMemberView(null, event.getId().getIdentifier(), null, null)));
+        List<GroupMemberView> memberViews = this.groupMemberViewRepository.findAll(Example.of(new GroupMemberView(null, event.getId().getIdentifier(), null, null, null)));
 
         this.groupMemberViewRepository.deleteAll(memberViews);
     }

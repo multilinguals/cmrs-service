@@ -1,23 +1,37 @@
 package org.multilinguals.enterprise.cmrs.query.mrgroup;
 
+import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
+import org.multilinguals.enterprise.cmrs.infrastructure.persistence.Localizable;
+
 import java.util.Date;
 
-public class GroupMemberView {
+public class GroupMemberView implements Localizable {
     private String id;
 
     private String mrGroupId;
 
     private String realName;
 
+    private String groupRole;
+
+    private String groupRoleLocalName;
+
     private Date createdAt;
 
     private Date updatedAt;
 
-    public GroupMemberView(String id, String mrGroupId, String realName, Date createdAt) {
+
+    public GroupMemberView(String id, String mrGroupId, String realName, String groupRole, Date createdAt) {
         this.id = id;
         this.mrGroupId = mrGroupId;
         this.realName = realName;
+        this.groupRole = groupRole;
         this.createdAt = createdAt;
+    }
+
+    @Override
+    public void localize(I18Translator i18Translator) {
+        this.groupRoleLocalName = i18Translator.localize("GROUP_ROLE_" + this.groupRole);
     }
 
     public String getId() {
@@ -42,6 +56,14 @@ public class GroupMemberView {
 
     public void setRealName(String realName) {
         this.realName = realName;
+    }
+
+    public String getGroupRole() {
+        return groupRole;
+    }
+
+    public void setGroupRole(String groupRole) {
+        this.groupRole = groupRole;
     }
 
     public Date getCreatedAt() {
