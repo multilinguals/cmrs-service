@@ -7,6 +7,9 @@ public interface BizErrorCode {
     // Token失效
     String INVALID_TOKEN = "40102";
 
+    // 没有权限
+    String NO_PERMISSION = "40300";
+
     // 用户不存在
     String USER_NOT_EXISTED = "40401";
 

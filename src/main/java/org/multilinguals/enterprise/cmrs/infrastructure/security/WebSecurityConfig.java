@@ -43,6 +43,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(new RequestValidationFilter(authenticationManager(), this.userDetailsViewRepository))
                 .exceptionHandling()
                 .authenticationEntryPoint(new AuthenticationExceptionEntryPoint(this.i18Translator))
-                .accessDeniedHandler(new CmrsAccessDeniedHandler());
+                .accessDeniedHandler(new CmrsAccessDeniedHandler(this.i18Translator));
     }
 }

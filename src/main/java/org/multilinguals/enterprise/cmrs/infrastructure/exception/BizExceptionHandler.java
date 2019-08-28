@@ -4,6 +4,7 @@ package org.multilinguals.enterprise.cmrs.infrastructure.exception;
 import org.axonframework.commandhandling.CommandExecutionException;
 import org.axonframework.messaging.interceptors.JSR303ViolationException;
 import org.multilinguals.enterprise.cmrs.constant.http.HeaderFields;
+import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
 import org.multilinguals.enterprise.cmrs.constant.result.CommonErrorCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
 import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
@@ -44,9 +45,11 @@ public class BizExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public void handleAccessDeniedException() {
+    public BizExceptionResponse handleAccessDeniedException(HttpServletResponse response) {
+        response.addHeader(HeaderFields.BIZ_ERR_CODE, BizErrorCode.NO_PERMISSION);
+        return new BizExceptionResponse(i18Translator.localize(BizErrorCode.NO_PERMISSION));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
