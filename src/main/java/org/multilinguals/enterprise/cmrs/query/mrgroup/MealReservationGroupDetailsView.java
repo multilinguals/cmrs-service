@@ -21,6 +21,9 @@ public class MealReservationGroupDetailsView {
 
     private Date updatedAt;
 
+    public MealReservationGroupDetailsView() {
+    }
+
     public MealReservationGroupDetailsView(String id, String name, String description) {
         this.id = id;
         this.name = name;

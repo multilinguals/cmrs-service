@@ -6,12 +6,13 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservati
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class DeleteMealReservationGroupCommand extends AbstractCommand {
     @AggregateIdentifier
     private MealReservationGroupId groupId;
 
-    @NotEmpty
+    @NotNull
     private UserId operatorId;
 
     public DeleteMealReservationGroupCommand(MealReservationGroupId groupId, UserId operatorId) {

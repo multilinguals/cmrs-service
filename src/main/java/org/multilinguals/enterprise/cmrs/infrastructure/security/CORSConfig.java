@@ -1,5 +1,6 @@
 package org.multilinguals.enterprise.cmrs.infrastructure.security;
 
+import org.multilinguals.enterprise.cmrs.constant.http.HeaderFields;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -16,6 +17,7 @@ public class CORSConfig {
         corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.addExposedHeader(HeaderFields.BIZ_ERR_CODE);
         urlBasedCorsConfigurationSource.registerCorsConfiguration("/**", corsConfiguration);
         return new CorsFilter(urlBasedCorsConfigurationSource);
     }

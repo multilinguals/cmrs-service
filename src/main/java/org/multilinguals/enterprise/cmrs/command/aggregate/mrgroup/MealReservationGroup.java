@@ -2,14 +2,15 @@ package org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup;
 
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
+import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.CreateMealReservationGroupCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.DeleteMealReservationGroupCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.UpdateMealReservationGroupDetailsCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDeletedEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupOwnerTurnOverEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDetailsUpdatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupOwnerTurnOverEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
@@ -22,6 +23,7 @@ import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted
 
 @Aggregate
 public class MealReservationGroup {
+    @AggregateIdentifier
     private MealReservationGroupId id;
 
     private String name;
@@ -78,6 +80,7 @@ public class MealReservationGroup {
     public void on(MealReservationGroupCreatedEvent event) {
         this.id = event.getId();
         this.name = event.getName();
+        this.description = event.getDescription();
         this.ownerId = event.getOwnerId();
         this.creatorId = event.getCreatorId();
         this.orderTakerIdList = event.getOrderTakerIdList();

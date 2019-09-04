@@ -5,6 +5,7 @@ import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class CreateMealReservationGroupCommand extends AbstractCommand {
     @NotEmpty
@@ -14,10 +15,10 @@ public class CreateMealReservationGroupCommand extends AbstractCommand {
     @Length(min = 5, max = 200)
     private String description;
 
-    @NotEmpty
+    @NotNull
     private UserId creatorId;
 
-    public CreateMealReservationGroupCommand(@NotEmpty @Length(min = 4, max = 8) String name, @Length(min = 5, max = 200) String description, @NotEmpty UserId creatorId) {
+    public CreateMealReservationGroupCommand(String name, String description, UserId creatorId) {
         this.name = name;
         this.description = description;
         this.creatorId = creatorId;
