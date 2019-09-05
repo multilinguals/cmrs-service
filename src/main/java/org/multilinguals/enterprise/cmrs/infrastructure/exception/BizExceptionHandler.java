@@ -55,13 +55,13 @@ public class BizExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public FieldExceptionResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
+    public FieldExceptionResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletResponse response) {
         FieldExceptionResponse fieldExceptionResponse = new FieldExceptionResponse();
         List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
         for (FieldError fieldError : fieldErrors) {
             fieldExceptionResponse.addMessage(fieldError.getField(), fieldError.getDefaultMessage());
         }
-
+        response.addHeader(HeaderFields.BIZ_ERR_CODE, CommonErrorCode.INVALID_COMMAND_PARAMS);
         return fieldExceptionResponse;
     }
 
