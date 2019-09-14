@@ -621,12 +621,11 @@ paths:
       tags:
         - "点餐员维护点餐团信息"
       summary: "用户查看自己所属点参团简讯"
-      parameters:
       responses:
         200:
           description: "查询成功"
           schema:
-            $ref: "#/definitions/MealReservationGroupDetailsDTO"
+            $ref: "#/definitions/MealReservationGroupProfileDTO"
   /create-mr-group:
     post:
       tags:
@@ -1397,6 +1396,18 @@ definitions:
             joinedAt:
               type: string
               description: "加入时间"
+  MealReservationGroupProfileDTO:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+        example: "我的点餐团"
+      ownerId:
+        type: string
+      ownerName:
+        type: string
   MRGroupMemberPageDTO:
     type: object
     properties:
