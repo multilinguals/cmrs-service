@@ -691,6 +691,22 @@ paths:
       responses:
         204:
           description: "删除成功"
+  /get-order-takers-of-mr-group/:id:
+    get:
+      tags:
+        - "点餐员维护点餐团信息"
+      summary: "用户查看点参团成员列表接口"
+      parameters:
+        - name: id
+          in: path
+          type: string
+          required: true
+          description: "点参团ID"
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            $ref: "#/definitions/MRGroupMemberPageDTO"
   /get-members-of-mr-group/:id:
     get:
       tags:
@@ -702,6 +718,13 @@ paths:
           type: string
           required: true
           description: "点参团ID"
+        - name: roleName
+          in: query
+          type: string
+          enum:
+            - "GROUP_ROLE_OWNER"
+            - "GROUP_ROLE_ORDER_TAKER"
+            - "GROUP_ROLE_MEMBER"
       responses:
         200:
           description: "查询成功"

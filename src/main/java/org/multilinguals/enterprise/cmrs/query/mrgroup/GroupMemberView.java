@@ -66,6 +66,14 @@ public class GroupMemberView implements Localizable {
         this.groupRole = groupRole;
     }
 
+    public String getGroupRoleLocalName() {
+        return groupRoleLocalName;
+    }
+
+    public void setGroupRoleLocalName(String groupRoleLocalName) {
+        this.groupRoleLocalName = groupRoleLocalName;
+    }
+
     public Date getCreatedAt() {
         return createdAt;
     }
