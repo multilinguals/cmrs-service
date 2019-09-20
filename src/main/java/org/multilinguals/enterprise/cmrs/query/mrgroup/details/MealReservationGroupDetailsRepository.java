@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.query.mrgroup;
+package org.multilinguals.enterprise.cmrs.query.mrgroup.details;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 

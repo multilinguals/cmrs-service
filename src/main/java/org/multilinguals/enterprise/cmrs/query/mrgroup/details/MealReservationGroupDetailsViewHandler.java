@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.query.mrgroup;
+package org.multilinguals.enterprise.cmrs.query.mrgroup.details;
 
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
@@ -26,16 +26,16 @@ public class MealReservationGroupDetailsViewHandler {
 
     @EventHandler
     public void on(MealReservationGroupCreatedEvent event, @Timestamp java.time.Instant createdTime) {
-        this.userDetailsViewRepository.findById(event.getOwnerId().getIdentifier()).ifPresent(owner -> {
+        this.userDetailsViewRepository.findById(event.getOwnerId().getIdentifier()).ifPresent(creator -> {
             MealReservationGroupDetailsView mealReservationGroupDetailsView = new MealReservationGroupDetailsView(
                     event.getId().getIdentifier(), event.getName(), event.getDescription()
             );
 
-            mealReservationGroupDetailsView.setOwnerId(owner.getId());
-            mealReservationGroupDetailsView.setOwnerRealName(owner.getRealName());
+            mealReservationGroupDetailsView.setOwnerId(creator.getId());
+            mealReservationGroupDetailsView.setOwnerRealName(creator.getRealName());
 
-            mealReservationGroupDetailsView.setCreatorId(owner.getId());
-            mealReservationGroupDetailsView.setCreatorRealName(owner.getRealName());
+            mealReservationGroupDetailsView.setCreatorId(creator.getId());
+            mealReservationGroupDetailsView.setCreatorRealName(creator.getRealName());
 
             mealReservationGroupDetailsView.setCreatedAt(new Date(createdTime.toEpochMilli()));
 

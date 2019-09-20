@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.query.mrgroup;
+package org.multilinguals.enterprise.cmrs.query.mrgroup.member;
 
 import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
 import org.multilinguals.enterprise.cmrs.infrastructure.persistence.Localizable;

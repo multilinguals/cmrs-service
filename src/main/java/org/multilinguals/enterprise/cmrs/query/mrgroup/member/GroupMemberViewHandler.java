@@ -1,4 +1,4 @@
-package org.multilinguals.enterprise.cmrs.query.mrgroup;
+package org.multilinguals.enterprise.cmrs.query.mrgroup.member;
 
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
