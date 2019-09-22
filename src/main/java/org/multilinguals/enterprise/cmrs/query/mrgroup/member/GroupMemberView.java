@@ -20,6 +20,12 @@ public class GroupMemberView implements Localizable {
 
     private Date updatedAt;
 
+    public GroupMemberView() {
+    }
+
+    public GroupMemberView(String groupRole) {
+        this.groupRole = groupRole;
+    }
 
     public GroupMemberView(String id, String mrGroupId, String realName, String groupRole, Date createdAt) {
         this.id = id;
