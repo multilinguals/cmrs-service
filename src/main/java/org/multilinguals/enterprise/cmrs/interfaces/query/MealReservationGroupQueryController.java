@@ -1,5 +1,7 @@
 package org.multilinguals.enterprise.cmrs.interfaces.query;
 
+import org.apache.commons.lang3.StringUtils;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.common.CMRSPage;
 import org.multilinguals.enterprise.cmrs.query.mrgroup.details.MealReservationGroupDetailsRepository;
 import org.multilinguals.enterprise.cmrs.query.mrgroup.details.MealReservationGroupDetailsView;
 import org.multilinguals.enterprise.cmrs.query.mrgroup.member.GroupMemberView;
@@ -8,11 +10,11 @@ import org.multilinguals.enterprise.cmrs.query.mrgroup.profile.UserMealReservati
 import org.multilinguals.enterprise.cmrs.query.mrgroup.profile.UserMealReservationGroupProfileView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 public class MealReservationGroupQueryController {
@@ -43,8 +45,16 @@ public class MealReservationGroupQueryController {
 
     @GetMapping("/get-members-of-mr-group/{id}")
     @PreAuthorize("isAuthenticated()")
-    public List<GroupMemberView> queryMembersOfMRGroup(@PathVariable String id, @RequestParam String roleName, @RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
+    public CMRSPage<GroupMemberView> queryMembersOfMRGroup(@PathVariable String id, @RequestParam(required = false) String roleName, @RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
         Sort sort = new Sort(Sort.Direction.DESC, "createdAt");
-        return this.groupMemberViewRepository.findAll(Example.of(new GroupMemberView(roleName)), sort);
+
+        Page<GroupMemberView> groupMemberViews = null;
+        if (StringUtils.isNotEmpty(roleName) && StringUtils.isNotBlank(roleName)) {
+            groupMemberViews = this.groupMemberViewRepository.findAll(Example.of(new GroupMemberView(roleName)), PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), sort));
+        } else {
+            groupMemberViews = this.groupMemberViewRepository.findAll(PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), sort));
+        }
+
+        return new CMRSPage<>(groupMemberViews);
     }
 }

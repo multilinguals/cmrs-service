@@ -722,9 +722,9 @@ paths:
           in: query
           type: string
           enum:
-            - "GROUP_ROLE_OWNER"
-            - "GROUP_ROLE_ORDER_TAKER"
-            - "GROUP_ROLE_MEMBER"
+            - "OWNER"
+            - "ORDER_TAKER"
+            - "MEMBER"
       responses:
         200:
           description: "查询成功"
