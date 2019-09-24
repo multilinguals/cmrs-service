@@ -109,7 +109,7 @@ public class MealReservationGroup {
     }
 
     public void turnOverOwnerTo(UserId userId) {
-        apply(new MealReservationGroupOwnerTurnOverEvent(this.id, userId));
+        apply(new MealReservationGroupOwnerTurnOverEvent(this.id, this.ownerId, userId));
     }
 
     public Boolean isOwner(UserId userId) {

@@ -23,6 +23,10 @@ public class UserMealReservationGroupProfileView {
     public UserMealReservationGroupProfileView() {
     }
 
+    public UserMealReservationGroupProfileView(String groupId) {
+        this.groupId = groupId;
+    }
+
     public UserMealReservationGroupProfileView(String memberId, String groupId, String name, String ownerId, String ownerRealName, Date createdAt) {
         this.memberId = memberId;
         this.groupId = groupId;

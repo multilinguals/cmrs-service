@@ -4,6 +4,7 @@ import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDeletedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupOwnerTurnOverEvent;
 import org.multilinguals.enterprise.cmrs.query.mrgroup.constant.GroupRoles;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,5 +45,18 @@ public class GroupMemberViewHandler {
         List<GroupMemberView> memberViews = this.groupMemberViewRepository.findAll(Example.of(new GroupMemberView(null, event.getId().getIdentifier(), null, null, null)));
 
         this.groupMemberViewRepository.deleteAll(memberViews);
+    }
+
+    @EventHandler
+    public void on(MealReservationGroupOwnerTurnOverEvent event, @Timestamp java.time.Instant createdTime) {
+        this.groupMemberViewRepository.findById(event.getPastOwnerId().getIdentifier()).ifPresent(pastOwner -> {
+            pastOwner.setGroupRole(GroupRoles.GROUP_ORDER_TAKER);
+            pastOwner.setUpdatedAt(new Date(createdTime.toEpochMilli()));
+        });
+
+        this.groupMemberViewRepository.findById(event.getCurrentOwnerId().getIdentifier()).ifPresent(owner -> {
+            owner.setGroupRole(GroupRoles.GROUP_OWNER);
+            owner.setUpdatedAt(new Date(createdTime.toEpochMilli()));
+        });
     }
 }
