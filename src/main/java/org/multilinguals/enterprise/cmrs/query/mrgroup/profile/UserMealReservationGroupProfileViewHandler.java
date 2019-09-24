@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDeletedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDetailsUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupOwnerTurnOverEvent;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
@@ -39,6 +40,17 @@ public class UserMealReservationGroupProfileViewHandler {
 
             this.userMealReservationGroupProfileRepository.save(userMealReservationGroupProfileView);
         });
+    }
+
+    @EventHandler
+    public void on(MealReservationGroupDeletedEvent event) {
+        List<UserMealReservationGroupProfileView> userMealReservationGroupProfileViewList = this.userMealReservationGroupProfileRepository.findAll(
+                Example.of(new UserMealReservationGroupProfileView(event.getId().getIdentifier()))
+        );
+
+        if (userMealReservationGroupProfileViewList != null && userMealReservationGroupProfileViewList.size() > 0) {
+            this.userMealReservationGroupProfileRepository.deleteAll(userMealReservationGroupProfileViewList);
+        }
     }
 
     @EventHandler
