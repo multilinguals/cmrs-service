@@ -5,6 +5,7 @@ import org.axonframework.modelling.command.Aggregate;
 import org.axonframework.modelling.command.AggregateNotFoundException;
 import org.axonframework.modelling.command.Repository;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroup;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.AddMembersToMealReservationGroupCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.Role;
 import org.multilinguals.enterprise.cmrs.command.aggregate.role.RoleId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.User;
@@ -27,6 +28,32 @@ public class MRGroupCommandHandler {
 
     @Resource
     Repository<MealReservationGroup> mrGroupAggregateRepository;
+
+    @CommandHandler
+    public void handle(AddMembersToMealReservationGroupCommand command) throws BizException {
+        Aggregate<MealReservationGroup> mealReservationGroupAggregate;
+
+        try {
+            mealReservationGroupAggregate = this.mrGroupAggregateRepository.load(command.getGroupId().getIdentifier());
+        } catch (AggregateNotFoundException ex) {
+            throw new BizException(BizErrorCode.MR_GROUP_NOT_EXISTED);
+        }
+
+        if (!mealReservationGroupAggregate.invoke(mrGroup -> mrGroup.isOwner(command.getOperatorId()))) {
+            throw new BizException(BizErrorCode.USER_NOT_MR_GROUP_OWNER);
+        }
+
+//        try {
+//            Aggregate<User> userAggregate = this.userAggregateRepository.load(command.getTargetUserId().getIdentifier());
+//            if (isOrderTaker(userAggregate)) {
+//                mealReservationGroupAggregate.execute(mrGroup -> mrGroup.turnOverOwnerTo(command.getTargetUserId()));
+//            } else {
+//                throw new BizException(BizErrorCode.USER_NOT_ORDER_TAKER);
+//            }
+//        } catch (AggregateNotFoundException ex) {
+//            throw new BizException(BizErrorCode.USER_NOT_EXISTED);
+//        }
+    }
 
     @CommandHandler
     public void handle(TurnOverGroupOwnerCommand command) throws BizException {

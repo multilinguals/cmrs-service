@@ -3,20 +3,21 @@ package org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
+import org.axonframework.modelling.command.AggregateMember;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.CreateMealReservationGroupCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.DeleteMealReservationGroupCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.UpdateMealReservationGroupDetailsCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupCreatedEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDeletedEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDetailsUpdatedEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupOwnerTurnOverEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.*;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
+import org.multilinguals.enterprise.cmrs.query.mrgroup.constant.GroupRoles;
 
-import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted;
@@ -34,9 +35,8 @@ public class MealReservationGroup {
 
     private UserId creatorId;
 
-    private List<UserId> orderTakerIdList;
-
-    private List<UserId> memberIdList;
+    @AggregateMember
+    private Map<UserId, GroupMember> members = new HashMap<>();
 
     public MealReservationGroup() {
     }
@@ -51,15 +51,12 @@ public class MealReservationGroup {
 
         UserId creatorId = command.getCreatorId();
 
-        // 创建人默认成为团队的点餐员
-        List<UserId> orderTakerIdList = new ArrayList<>();
-        orderTakerIdList.add(command.getCreatorId());
+        Map<UserId, GroupMember> members = new HashMap<>();
 
-        // 创建人默认成为团队的成员
-        List<UserId> memberIdList = new ArrayList<>();
-        memberIdList.add(command.getCreatorId());
+        List<String> memberRoles = Arrays.asList(GroupRoles.GROUP_OWNER, GroupRoles.GROUP_MEMBER, GroupRoles.GROUP_ORDER_TAKER);
+        members.put(ownerId, new GroupMember(ownerId, memberRoles));
 
-        apply(new MealReservationGroupCreatedEvent(mrGroupId, command.getName(), command.getDescription(), creatorId, ownerId, orderTakerIdList, memberIdList));
+        apply(new MealReservationGroupCreatedEvent(mrGroupId, command.getName(), command.getDescription(), creatorId, ownerId, members));
     }
 
     @CommandHandler
@@ -83,8 +80,7 @@ public class MealReservationGroup {
         this.description = event.getDescription();
         this.ownerId = event.getOwnerId();
         this.creatorId = event.getCreatorId();
-        this.orderTakerIdList = event.getOrderTakerIdList();
-        this.memberIdList = event.getMemberIdList();
+        this.members = event.getMembers();
     }
 
     @EventSourcingHandler
@@ -106,6 +102,16 @@ public class MealReservationGroup {
     @EventSourcingHandler
     public void on(MealReservationGroupOwnerTurnOverEvent event) {
         this.ownerId = event.getCurrentOwnerId();
+    }
+
+    public void addMembers(Map<UserId, GroupMember> newMembers) {
+        for (Map.Entry<UserId, GroupMember> entry : newMembers.entrySet()) {
+            if (!this.members.containsKey(entry.getKey())) {
+                this.members.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        apply(new MembersAddedToMealReservationGroupEvent(this.id, newMembers));
     }
 
     public void turnOverOwnerTo(UserId userId) {
@@ -136,11 +142,7 @@ public class MealReservationGroup {
         return creatorId;
     }
 
-    public List<UserId> getOrderTakerIdList() {
-        return orderTakerIdList;
-    }
-
-    public List<UserId> getMemberIdList() {
-        return memberIdList;
+    public Map<UserId, GroupMember> getMembers() {
+        return members;
     }
 }

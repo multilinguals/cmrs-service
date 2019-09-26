@@ -33,7 +33,7 @@ public class GroupMemberViewHandler {
                     owner.getId(),
                     event.getId().getIdentifier(),
                     owner.getRealName(),
-                    GroupRoles.GROUP_OWNER,
+                    event.getMembers().get(event.getOwnerId()).getGroupRoles(),
                     new Date(createdTime.toEpochMilli())
             );
             this.groupMemberViewRepository.save(groupMemberView);
@@ -50,12 +50,12 @@ public class GroupMemberViewHandler {
     @EventHandler
     public void on(MealReservationGroupOwnerTurnOverEvent event, @Timestamp java.time.Instant createdTime) {
         this.groupMemberViewRepository.findById(event.getPastOwnerId().getIdentifier()).ifPresent(pastOwner -> {
-            pastOwner.setGroupRole(GroupRoles.GROUP_ORDER_TAKER);
+            pastOwner.removeGroupRole(GroupRoles.GROUP_OWNER);
             pastOwner.setUpdatedAt(new Date(createdTime.toEpochMilli()));
         });
 
         this.groupMemberViewRepository.findById(event.getCurrentOwnerId().getIdentifier()).ifPresent(owner -> {
-            owner.setGroupRole(GroupRoles.GROUP_OWNER);
+            owner.addGroupRole(GroupRoles.GROUP_OWNER);
             owner.setUpdatedAt(new Date(createdTime.toEpochMilli()));
         });
     }

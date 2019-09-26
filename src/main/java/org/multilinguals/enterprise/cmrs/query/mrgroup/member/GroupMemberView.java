@@ -2,8 +2,12 @@ package org.multilinguals.enterprise.cmrs.query.mrgroup.member;
 
 import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
 import org.multilinguals.enterprise.cmrs.infrastructure.persistence.Localizable;
+import org.springframework.data.annotation.Transient;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GroupMemberView implements Localizable {
     private String id;
@@ -12,9 +16,10 @@ public class GroupMemberView implements Localizable {
 
     private String realName;
 
-    private String groupRole;
+    private List<String> groupRoles;
 
-    private String groupRoleLocalName;
+    @Transient
+    private Map<String, String> groupRoleLocalNames;
 
     private Date createdAt;
 
@@ -23,21 +28,32 @@ public class GroupMemberView implements Localizable {
     public GroupMemberView() {
     }
 
-    public GroupMemberView(String groupRole) {
-        this.groupRole = groupRole;
+    public GroupMemberView(List<String> groupRoles) {
+        this.groupRoles = groupRoles;
     }
 
-    public GroupMemberView(String id, String mrGroupId, String realName, String groupRole, Date createdAt) {
+    public GroupMemberView(String id, String mrGroupId, String realName, List<String> groupRoles, Date createdAt) {
         this.id = id;
         this.mrGroupId = mrGroupId;
         this.realName = realName;
-        this.groupRole = groupRole;
+        this.groupRoles = groupRoles;
         this.createdAt = createdAt;
     }
 
     @Override
     public void localize(I18Translator i18Translator) {
-        this.groupRoleLocalName = i18Translator.localize("GROUP_ROLE_" + this.groupRole);
+        this.groupRoleLocalNames = new HashMap<>();
+        for (String role : this.groupRoles) {
+            this.groupRoleLocalNames.put(role, i18Translator.localize("GROUP_ROLE_" + role));
+        }
+    }
+
+    public void addGroupRole(String roleName) {
+        this.groupRoles.add(roleName);
+    }
+
+    public void removeGroupRole(String roleName) {
+        this.groupRoles.remove(roleName);
     }
 
     public String getId() {
@@ -64,20 +80,20 @@ public class GroupMemberView implements Localizable {
         this.realName = realName;
     }
 
-    public String getGroupRole() {
-        return groupRole;
+    public List<String> getGroupRoles() {
+        return groupRoles;
     }
 
-    public void setGroupRole(String groupRole) {
-        this.groupRole = groupRole;
+    public void setGroupRoles(List<String> groupRoles) {
+        this.groupRoles = groupRoles;
     }
 
-    public String getGroupRoleLocalName() {
-        return groupRoleLocalName;
+    public Map<String, String> getGroupRoleLocalNames() {
+        return groupRoleLocalNames;
     }
 
-    public void setGroupRoleLocalName(String groupRoleLocalName) {
-        this.groupRoleLocalName = groupRoleLocalName;
+    public void setGroupRoleLocalNames(Map<String, String> groupRoleLocalNames) {
+        this.groupRoleLocalNames = groupRoleLocalNames;
     }
 
     public Date getCreatedAt() {

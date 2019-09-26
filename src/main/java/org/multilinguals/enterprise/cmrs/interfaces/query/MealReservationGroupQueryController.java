@@ -9,7 +9,6 @@ import org.multilinguals.enterprise.cmrs.query.mrgroup.member.GroupMemberViewRep
 import org.multilinguals.enterprise.cmrs.query.mrgroup.profile.UserMealReservationGroupProfileRepository;
 import org.multilinguals.enterprise.cmrs.query.mrgroup.profile.UserMealReservationGroupProfileView;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -49,8 +48,12 @@ public class MealReservationGroupQueryController {
         Sort sort = new Sort(Sort.Direction.DESC, "createdAt");
 
         Page<GroupMemberView> groupMemberViews = null;
+
         if (StringUtils.isNotEmpty(roleName) && StringUtils.isNotBlank(roleName)) {
-            groupMemberViews = this.groupMemberViewRepository.findAll(Example.of(new GroupMemberView(roleName)), PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), sort));
+            groupMemberViews = this.groupMemberViewRepository.findAllByGroupRoles(
+                    roleName,
+                    PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), sort)
+            );
         } else {
             groupMemberViews = this.groupMemberViewRepository.findAll(PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), sort));
         }
