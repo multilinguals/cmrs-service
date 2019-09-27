@@ -14,10 +14,7 @@ import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
 import org.multilinguals.enterprise.cmrs.query.mrgroup.constant.GroupRoles;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 import static org.axonframework.modelling.command.AggregateLifecycle.markDeleted;
@@ -73,6 +70,23 @@ public class MealReservationGroup {
         }
     }
 
+    public void addMembers(List<UserId> newMemberIdList) {
+        Map<UserId, GroupMember> newMembers = new HashMap<>();
+        for (UserId memberId : newMemberIdList) {
+            if (this.members.containsKey(memberId)) {
+                newMemberIdList.remove(memberId);
+            } else {
+                newMembers.put(memberId, new GroupMember(memberId, Collections.singletonList(GroupRoles.GROUP_MEMBER)));
+            }
+        }
+
+        apply(new MembersAddedToMealReservationGroupEvent(this.id, newMembers));
+    }
+
+    public void turnOverOwnerTo(UserId userId) {
+        apply(new MealReservationGroupOwnerTurnOverEvent(this.id, this.ownerId, userId));
+    }
+
     @EventSourcingHandler
     public void on(MealReservationGroupCreatedEvent event) {
         this.id = event.getId();
@@ -104,18 +118,9 @@ public class MealReservationGroup {
         this.ownerId = event.getCurrentOwnerId();
     }
 
-    public void addMembers(Map<UserId, GroupMember> newMembers) {
-        for (Map.Entry<UserId, GroupMember> entry : newMembers.entrySet()) {
-            if (!this.members.containsKey(entry.getKey())) {
-                this.members.put(entry.getKey(), entry.getValue());
-            }
-        }
-
-        apply(new MembersAddedToMealReservationGroupEvent(this.id, newMembers));
-    }
-
-    public void turnOverOwnerTo(UserId userId) {
-        apply(new MealReservationGroupOwnerTurnOverEvent(this.id, this.ownerId, userId));
+    @EventSourcingHandler
+    public void on(MembersAddedToMealReservationGroupEvent event) {
+        this.members.putAll(event.getNewMembers());
     }
 
     public Boolean isOwner(UserId userId) {

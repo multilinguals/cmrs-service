@@ -1,6 +1,6 @@
 package org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event;
 
-import org.axonframework.modelling.command.AggregateIdentifier;
+import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.GroupMember;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroupId;
@@ -10,7 +10,7 @@ import javax.validation.constraints.NotEmpty;
 import java.util.Map;
 
 public class MembersAddedToMealReservationGroupEvent extends AbstractEvent {
-    @AggregateIdentifier
+    @TargetAggregateIdentifier
     private MealReservationGroupId groupId;
 
     @NotEmpty

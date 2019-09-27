@@ -7,21 +7,21 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Map;
+import java.util.List;
 
 public class AddMembersToMealReservationGroupCommand extends AbstractCommand {
     @AggregateIdentifier
     private MealReservationGroupId groupId;
 
     @NotEmpty
-    private Map<UserId, String> newMembers;
+    private List<UserId> newMemberIdList;
 
     @NotNull
     private UserId operatorId;
 
-    public AddMembersToMealReservationGroupCommand(MealReservationGroupId groupId, Map<UserId, String> newMembers, UserId operatorId) {
+    public AddMembersToMealReservationGroupCommand(MealReservationGroupId groupId, @NotEmpty List<UserId> newMemberIdList, @NotNull UserId operatorId) {
         this.groupId = groupId;
-        this.newMembers = newMembers;
+        this.newMemberIdList = newMemberIdList;
         this.operatorId = operatorId;
     }
 
@@ -33,12 +33,12 @@ public class AddMembersToMealReservationGroupCommand extends AbstractCommand {
         this.groupId = groupId;
     }
 
-    public Map<UserId, String> getNewMembers() {
-        return newMembers;
+    public List<UserId> getNewMemberIdList() {
+        return newMemberIdList;
     }
 
-    public void setNewMembers(Map<UserId, String> newMembers) {
-        this.newMembers = newMembers;
+    public void setNewMemberIdList(List<UserId> newMemberIdList) {
+        this.newMemberIdList = newMemberIdList;
     }
 
     public UserId getOperatorId() {

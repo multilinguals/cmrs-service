@@ -43,16 +43,9 @@ public class MRGroupCommandHandler {
             throw new BizException(BizErrorCode.USER_NOT_MR_GROUP_OWNER);
         }
 
-//        try {
-//            Aggregate<User> userAggregate = this.userAggregateRepository.load(command.getTargetUserId().getIdentifier());
-//            if (isOrderTaker(userAggregate)) {
-//                mealReservationGroupAggregate.execute(mrGroup -> mrGroup.turnOverOwnerTo(command.getTargetUserId()));
-//            } else {
-//                throw new BizException(BizErrorCode.USER_NOT_ORDER_TAKER);
-//            }
-//        } catch (AggregateNotFoundException ex) {
-//            throw new BizException(BizErrorCode.USER_NOT_EXISTED);
-//        }
+        mealReservationGroupAggregate.execute(mrGroup -> {
+            mrGroup.addMembers(command.getNewMemberIdList());
+        });
     }
 
     @CommandHandler

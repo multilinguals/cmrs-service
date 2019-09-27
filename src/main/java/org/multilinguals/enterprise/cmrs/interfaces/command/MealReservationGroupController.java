@@ -21,6 +21,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class MealReservationGroupController {
@@ -63,11 +65,17 @@ public class MealReservationGroupController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addMembersToMRGroup(@PathVariable String id, @RequestBody @Validated AddMembersToGroupDTO dto, @RequestAttribute String reqSenderId) throws BizException {
         try {
-            commandGateway.sendAndWait(new AddMembersToMealReservationGroupCommand(new MealReservationGroupId(id), dto.getNewMembers(), new UserId(reqSenderId)));
+            List<UserId> memberIdList = new ArrayList<>();
+            for (String memberId : dto.getNewMembers()) {
+                memberIdList.add(new UserId(memberId));
+            }
+
+            commandGateway.sendAndWait(new AddMembersToMealReservationGroupCommand(
+                    new MealReservationGroupId(id), memberIdList, new UserId(reqSenderId))
+            );
         } catch (AggregateNotFoundException ex) {
             throw new BizException(BizErrorCode.USER_NOT_EXISTED);
         }
-        this.commandGateway.sendAndWait(new DeleteMealReservationGroupCommand(new MealReservationGroupId(id), new UserId(reqSenderId)));
     }
 
     @PostMapping("/turn-over-owner-of-group/{groupId}/to-user/{userId}")
