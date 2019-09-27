@@ -7,6 +7,7 @@ import org.axonframework.modelling.command.AggregateMember;
 import org.axonframework.spring.stereotype.Aggregate;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.CreateMealReservationGroupCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.DeleteMealReservationGroupCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.RemoveMembersFromMealReservationGroupCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.UpdateMealReservationGroupDetailsCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.*;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
@@ -70,6 +71,21 @@ public class MealReservationGroup {
         }
     }
 
+    @CommandHandler
+    public void handle(RemoveMembersFromMealReservationGroupCommand command) throws BizException {
+        if (command.getOperatorId().equals(this.ownerId)) {
+            List<UserId> memberIdList = command.getMemberIdList();
+            for (UserId memberId : command.getMemberIdList()) {
+                if (!this.members.containsKey(memberId)) {
+                    memberIdList.remove(memberId);
+                }
+            }
+            apply(new MembersRemovedFromMealReservationGroupEvent(command.getGroupId(), memberIdList));
+        } else {
+            throw new BizException(BizErrorCode.USER_NOT_MR_GROUP_OWNER);
+        }
+    }
+
     public void addMembers(List<UserId> newMemberIdList) {
         Map<UserId, GroupMember> newMembers = new HashMap<>();
         for (UserId memberId : newMemberIdList) {
@@ -121,6 +137,13 @@ public class MealReservationGroup {
     @EventSourcingHandler
     public void on(MembersAddedToMealReservationGroupEvent event) {
         this.members.putAll(event.getNewMembers());
+    }
+
+    @EventSourcingHandler
+    public void on(MembersRemovedFromMealReservationGroupEvent event) {
+        for (UserId removedMemberId : event.getRemovedMemberIdList()) {
+            this.members.remove(removedMemberId);
+        }
     }
 
     public Boolean isOwner(UserId userId) {

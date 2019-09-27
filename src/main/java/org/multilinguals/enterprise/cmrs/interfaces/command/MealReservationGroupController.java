@@ -3,16 +3,14 @@ package org.multilinguals.enterprise.cmrs.interfaces.command;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.command.AggregateNotFoundException;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroupId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.AddMembersToMealReservationGroupCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.CreateMealReservationGroupCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.DeleteMealReservationGroupCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.UpdateMealReservationGroupDetailsCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.*;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.command.handler.mrgroup.command.TurnOverGroupOwnerCommand;
 import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup.AddMembersToGroupDTO;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup.CreateMealReservationGroupDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup.RemoveMembersToGroupDTO;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup.UpdateMealReservationGroupDetailsDTO;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.common.AggregateCreatedDTO;
 import org.springframework.http.HttpStatus;
@@ -66,11 +64,29 @@ public class MealReservationGroupController {
     public void addMembersToMRGroup(@PathVariable String id, @RequestBody @Validated AddMembersToGroupDTO dto, @RequestAttribute String reqSenderId) throws BizException {
         try {
             List<UserId> memberIdList = new ArrayList<>();
-            for (String memberId : dto.getNewMembers()) {
+            for (String memberId : dto.getMemberIdList()) {
                 memberIdList.add(new UserId(memberId));
             }
 
             commandGateway.sendAndWait(new AddMembersToMealReservationGroupCommand(
+                    new MealReservationGroupId(id), memberIdList, new UserId(reqSenderId))
+            );
+        } catch (AggregateNotFoundException ex) {
+            throw new BizException(BizErrorCode.USER_NOT_EXISTED);
+        }
+    }
+
+    @PostMapping("/remove-members-from-mr-group/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_ORDER_TAKER')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeMembersToMRGroup(@PathVariable String id, @RequestBody @Validated RemoveMembersToGroupDTO dto, @RequestAttribute String reqSenderId) throws BizException {
+        try {
+            List<UserId> memberIdList = new ArrayList<>();
+            for (String memberId : dto.getMemberIdList()) {
+                memberIdList.add(new UserId(memberId));
+            }
+
+            commandGateway.sendAndWait(new RemoveMembersFromMealReservationGroupCommand(
                     new MealReservationGroupId(id), memberIdList, new UserId(reqSenderId))
             );
         } catch (AggregateNotFoundException ex) {

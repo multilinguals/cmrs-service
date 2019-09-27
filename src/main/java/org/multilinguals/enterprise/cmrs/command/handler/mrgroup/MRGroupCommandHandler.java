@@ -44,7 +44,7 @@ public class MRGroupCommandHandler {
         }
 
         mealReservationGroupAggregate.execute(mrGroup -> {
-            mrGroup.addMembers(command.getNewMemberIdList());
+            mrGroup.addMembers(command.getMemberIdList());
         });
     }
 

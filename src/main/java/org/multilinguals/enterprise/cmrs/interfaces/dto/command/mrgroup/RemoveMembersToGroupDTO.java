@@ -3,11 +3,11 @@ package org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
-public class AddMembersToGroupDTO {
+public class RemoveMembersToGroupDTO {
     @NotEmpty()
     private List<String> memberIdList;
 
-    public AddMembersToGroupDTO() {
+    public RemoveMembersToGroupDTO() {
     }
 
     public List<String> getMemberIdList() {

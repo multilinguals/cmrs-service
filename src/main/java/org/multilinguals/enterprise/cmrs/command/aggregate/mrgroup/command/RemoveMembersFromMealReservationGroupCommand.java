@@ -9,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-public class AddMembersToMealReservationGroupCommand extends AbstractCommand {
+public class RemoveMembersFromMealReservationGroupCommand extends AbstractCommand {
     @TargetAggregateIdentifier
     private MealReservationGroupId groupId;
 
@@ -19,7 +19,7 @@ public class AddMembersToMealReservationGroupCommand extends AbstractCommand {
     @NotNull
     private UserId operatorId;
 
-    public AddMembersToMealReservationGroupCommand(MealReservationGroupId groupId, @NotEmpty List<UserId> memberIdList, @NotNull UserId operatorId) {
+    public RemoveMembersFromMealReservationGroupCommand(MealReservationGroupId groupId, @NotEmpty List<UserId> memberIdList, @NotNull UserId operatorId) {
         this.groupId = groupId;
         this.memberIdList = memberIdList;
         this.operatorId = operatorId;

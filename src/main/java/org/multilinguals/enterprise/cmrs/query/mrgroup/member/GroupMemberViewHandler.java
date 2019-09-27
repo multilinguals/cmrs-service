@@ -3,10 +3,7 @@ package org.multilinguals.enterprise.cmrs.query.mrgroup.member;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.GroupMember;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupCreatedEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDeletedEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupOwnerTurnOverEvent;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MembersAddedToMealReservationGroupEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.*;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.query.mrgroup.constant.GroupRoles;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
@@ -66,6 +63,13 @@ public class GroupMemberViewHandler {
                 );
                 this.groupMemberViewRepository.save(groupMemberView);
             });
+        }
+    }
+
+    @EventHandler
+    public void on(MembersRemovedFromMealReservationGroupEvent event, @Timestamp java.time.Instant createdTime) {
+        for (UserId removedMemberId : event.getRemovedMemberIdList()) {
+            this.groupMemberViewRepository.deleteById(removedMemberId.getIdentifier());
         }
     }
 
