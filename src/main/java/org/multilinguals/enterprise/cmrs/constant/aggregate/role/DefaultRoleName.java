@@ -9,5 +9,5 @@ public interface DefaultRoleName {
 
     String CLERK = "ROLE_CLERK";
 
-    String ORDER_TAKER = "ROLE_ORDER_TAKER";
+    String MR_GROUP_ADMIN = "ROLE_MR_GROUP_ADMIN";
 }

@@ -51,7 +51,7 @@ public class PreBizDataProcessListener implements ApplicationListener<Applicatio
         this.createRole(DefaultRoleName.USER_ADMIN);
         this.createRole(DefaultRoleName.REST_ADMIN);
         this.createRole(DefaultRoleName.CLERK);
-        this.createRole(DefaultRoleName.ORDER_TAKER);
+        this.createRole(DefaultRoleName.MR_GROUP_ADMIN);
 
         // 创建超级管理员
         try {

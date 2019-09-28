@@ -39,7 +39,7 @@ public class MealReservationGroupController {
     }
 
     @PostMapping("/update-details-of-mr-group/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ORDER_TAKER')")
+    @PreAuthorize("hasAnyRole('ROLE_MR_GROUP_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateMRGroupDetails(@PathVariable String id, @RequestBody @Validated UpdateMealReservationGroupDetailsDTO dto) throws BizException {
         try {
@@ -52,14 +52,14 @@ public class MealReservationGroupController {
     }
 
     @PostMapping("/delete-mr-group/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ORDER_TAKER')")
+    @PreAuthorize("hasAnyRole('ROLE_MR_GROUP_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMRGroup(@PathVariable String id, @RequestAttribute String reqSenderId) {
         this.commandGateway.sendAndWait(new DeleteMealReservationGroupCommand(new MealReservationGroupId(id), new UserId(reqSenderId)));
     }
 
     @PostMapping("/add-members-to-mr-group/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ORDER_TAKER')")
+    @PreAuthorize("hasAnyRole('ROLE_MR_GROUP_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void addMembersToMRGroup(@PathVariable String id, @RequestBody @Validated AddMembersToGroupDTO dto, @RequestAttribute String reqSenderId) throws BizException {
         try {
@@ -77,7 +77,7 @@ public class MealReservationGroupController {
     }
 
     @PostMapping("/remove-members-from-mr-group/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_ORDER_TAKER')")
+    @PreAuthorize("hasAnyRole('ROLE_MR_GROUP_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeMembersToMRGroup(@PathVariable String id, @RequestBody @Validated RemoveMembersToGroupDTO dto, @RequestAttribute String reqSenderId) throws BizException {
         try {
@@ -95,7 +95,7 @@ public class MealReservationGroupController {
     }
 
     @PostMapping("/turn-over-owner-of-group/{groupId}/to-user/{userId}")
-    @PreAuthorize("hasAnyRole('ROLE_ORDER_TAKER')")
+    @PreAuthorize("hasAnyRole('ROLE_MR_GROUP_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void turnOverOwner(@PathVariable String groupId, @PathVariable String userId, @RequestAttribute String reqSenderId) {
         this.commandGateway.sendAndWait(new TurnOverGroupOwnerCommand(new UserId(reqSenderId), new MealReservationGroupId(groupId), new UserId(userId)));

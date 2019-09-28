@@ -81,7 +81,7 @@ public class MRGroupCommandHandler {
         for (RoleId roleId : roleIdList) {
             Aggregate<Role> roleAggregate = this.roleAggregateRepository.load(roleId.getIdentifier());
             String roleName = roleAggregate.invoke(Role::getName);
-            if (DefaultRoleName.ORDER_TAKER.equals(roleName)) {
+            if (DefaultRoleName.MR_GROUP_ADMIN.equals(roleName)) {
                 isOrderTaker = true;
                 break;
             }
