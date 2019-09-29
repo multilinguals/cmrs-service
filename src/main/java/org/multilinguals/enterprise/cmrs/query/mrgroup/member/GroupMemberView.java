@@ -12,6 +12,8 @@ import java.util.Map;
 public class GroupMemberView implements Localizable {
     private String id;
 
+    private String userId;
+
     private String mrGroupId;
 
     private String realName;
@@ -32,8 +34,17 @@ public class GroupMemberView implements Localizable {
         this.groupRoles = groupRoles;
     }
 
-    public GroupMemberView(String id, String mrGroupId, String realName, List<String> groupRoles, Date createdAt) {
+    public GroupMemberView(String id, String userId, String mrGroupId, String realName, Date createdAt) {
         this.id = id;
+        this.userId = userId;
+        this.mrGroupId = mrGroupId;
+        this.realName = realName;
+        this.createdAt = createdAt;
+    }
+
+    public GroupMemberView(String id, String userId, String mrGroupId, String realName, List<String> groupRoles, Date createdAt) {
+        this.id = id;
+        this.userId = userId;
         this.mrGroupId = mrGroupId;
         this.realName = realName;
         this.groupRoles = groupRoles;
@@ -58,6 +69,14 @@ public class GroupMemberView implements Localizable {
 
     public String getId() {
         return id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getMrGroupId() {

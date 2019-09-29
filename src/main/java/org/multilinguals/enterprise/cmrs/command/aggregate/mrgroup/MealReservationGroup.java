@@ -34,7 +34,7 @@ public class MealReservationGroup {
     private UserId creatorId;
 
     @AggregateMember
-    private Map<UserId, GroupMember> members = new HashMap<>();
+    private Map<GroupMemberId, GroupMember> members = new HashMap<>();
 
     public MealReservationGroup() {
     }
@@ -49,10 +49,10 @@ public class MealReservationGroup {
 
         UserId creatorId = command.getCreatorId();
 
-        Map<UserId, GroupMember> members = new HashMap<>();
+        Map<GroupMemberId, GroupMember> members = new HashMap<>();
 
         List<String> memberRoles = Arrays.asList(GroupRoles.GROUP_OWNER, GroupRoles.GROUP_MEMBER, GroupRoles.GROUP_ORDER_TAKER);
-        members.put(ownerId, new GroupMember(ownerId, memberRoles));
+        members.put(new GroupMemberId(), new GroupMember(new GroupMemberId(), ownerId, memberRoles));
 
         apply(new MealReservationGroupCreatedEvent(mrGroupId, command.getName(), command.getDescription(), creatorId, ownerId, members));
     }
@@ -74,25 +74,23 @@ public class MealReservationGroup {
     @CommandHandler
     public void handle(RemoveMembersFromMealReservationGroupCommand command) throws BizException {
         if (command.getOperatorId().equals(this.ownerId)) {
-            List<UserId> memberIdList = command.getMemberIdList();
-            for (UserId memberId : command.getMemberIdList()) {
-                if (!this.members.containsKey(memberId)) {
-                    memberIdList.remove(memberId);
+            List<GroupMemberId> removedMemberList = new ArrayList<>();
+            for (GroupMemberId memberId : command.getMemberIdList()) {
+                if (this.members.containsKey(memberId)) {
+                    removedMemberList.add(memberId);
                 }
             }
-            apply(new MembersRemovedFromMealReservationGroupEvent(command.getGroupId(), memberIdList));
+            apply(new MembersRemovedFromMealReservationGroupEvent(command.getGroupId(), removedMemberList));
         } else {
             throw new BizException(BizErrorCode.USER_NOT_MR_GROUP_OWNER);
         }
     }
 
-    public void addMembers(List<UserId> newMemberIdList) {
-        Map<UserId, GroupMember> newMembers = new HashMap<>();
-        for (UserId memberId : newMemberIdList) {
-            if (this.members.containsKey(memberId)) {
-                newMemberIdList.remove(memberId);
-            } else {
-                newMembers.put(memberId, new GroupMember(memberId, Collections.singletonList(GroupRoles.GROUP_MEMBER)));
+    public void addMembers(List<UserId> userIdList) {
+        Map<GroupMemberId, GroupMember> newMembers = new HashMap<>();
+        for (UserId userId : userIdList) {
+            if (!hasUserInMemberList(userId)) {
+                newMembers.put(new GroupMemberId(), new GroupMember(new GroupMemberId(), userId, Collections.singletonList(GroupRoles.GROUP_MEMBER)));
             }
         }
 
@@ -141,9 +139,19 @@ public class MealReservationGroup {
 
     @EventSourcingHandler
     public void on(MembersRemovedFromMealReservationGroupEvent event) {
-        for (UserId removedMemberId : event.getRemovedMemberIdList()) {
+        for (GroupMemberId removedMemberId : event.getRemovedMemberIdList()) {
             this.members.remove(removedMemberId);
         }
+    }
+
+    private boolean hasUserInMemberList(UserId userId) {
+        for (Map.Entry<GroupMemberId, GroupMember> entry : this.members.entrySet()) {
+            if (entry.getValue().getUserId().equals(userId)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public Boolean isOwner(UserId userId) {
@@ -170,7 +178,7 @@ public class MealReservationGroup {
         return creatorId;
     }
 
-    public Map<UserId, GroupMember> getMembers() {
+    public Map<GroupMemberId, GroupMember> getMembers() {
         return members;
     }
 }

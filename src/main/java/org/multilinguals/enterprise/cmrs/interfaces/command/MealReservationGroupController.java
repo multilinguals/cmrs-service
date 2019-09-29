@@ -2,6 +2,7 @@ package org.multilinguals.enterprise.cmrs.interfaces.command;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.command.AggregateNotFoundException;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.GroupMemberId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroupId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.*;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
@@ -28,7 +29,7 @@ public class MealReservationGroupController {
     private CommandGateway commandGateway;
 
     @PostMapping("/create-mr-group")
-    @PreAuthorize("hasAnyRole('ROLE_ORDER_TAKER')")
+    @PreAuthorize("hasAnyRole('ROLE_MR_GROUP_ADMIN')")
     public AggregateCreatedDTO<String> createMRGroup(@RequestBody CreateMealReservationGroupDTO dto, @RequestAttribute String reqSenderId) {
         MealReservationGroupId mrGroupId = this.commandGateway.sendAndWait(
                 new CreateMealReservationGroupCommand(
@@ -64,7 +65,7 @@ public class MealReservationGroupController {
     public void addMembersToMRGroup(@PathVariable String id, @RequestBody @Validated AddMembersToGroupDTO dto, @RequestAttribute String reqSenderId) throws BizException {
         try {
             List<UserId> memberIdList = new ArrayList<>();
-            for (String memberId : dto.getMemberIdList()) {
+            for (String memberId : dto.getUserIdList()) {
                 memberIdList.add(new UserId(memberId));
             }
 
@@ -81,17 +82,24 @@ public class MealReservationGroupController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeMembersToMRGroup(@PathVariable String id, @RequestBody @Validated RemoveMembersToGroupDTO dto, @RequestAttribute String reqSenderId) throws BizException {
         try {
-            List<UserId> memberIdList = new ArrayList<>();
+            List<GroupMemberId> memberIdList = new ArrayList<>();
             for (String memberId : dto.getMemberIdList()) {
-                memberIdList.add(new UserId(memberId));
+                memberIdList.add(new GroupMemberId(memberId));
             }
 
             commandGateway.sendAndWait(new RemoveMembersFromMealReservationGroupCommand(
                     new MealReservationGroupId(id), memberIdList, new UserId(reqSenderId))
             );
         } catch (AggregateNotFoundException ex) {
-            throw new BizException(BizErrorCode.USER_NOT_EXISTED);
+            throw new BizException(BizErrorCode.MR_GROUP_NOT_EXISTED);
         }
+    }
+
+    @PostMapping("/set-roles-to-member/{memberId}/of-group/{groupId}")
+    @PreAuthorize("hasAnyRole('ROLE_MR_GROUP_ADMIN')")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void setRolesToMember(@PathVariable String memberId, @PathVariable String groupId, @RequestAttribute String reqSenderId) {
+        // this.commandGateway.sendAndWait(new TurnOverGroupOwnerCommand(new UserId(reqSenderId), new MealReservationGroupId(groupId), new UserId(memberId)));
     }
 
     @PostMapping("/turn-over-owner-of-group/{groupId}/to-user/{userId}")

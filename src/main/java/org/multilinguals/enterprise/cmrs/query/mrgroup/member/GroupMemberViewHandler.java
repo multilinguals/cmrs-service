@@ -3,18 +3,15 @@ package org.multilinguals.enterprise.cmrs.query.mrgroup.member;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.GroupMember;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.GroupMemberId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.*;
-import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.query.mrgroup.constant.GroupRoles;
 import org.multilinguals.enterprise.cmrs.query.user.UserDetailsViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class GroupMemberViewHandler {
@@ -30,16 +27,24 @@ public class GroupMemberViewHandler {
 
     @EventHandler
     public void on(MealReservationGroupCreatedEvent event, @Timestamp java.time.Instant createdTime) {
-        this.userDetailsViewRepository.findById(event.getOwnerId().getIdentifier()).ifPresent(owner -> {
-            GroupMemberView groupMemberView = new GroupMemberView(
-                    owner.getId(),
-                    event.getId().getIdentifier(),
-                    owner.getRealName(),
-                    event.getMembers().get(event.getOwnerId()).getGroupRoles(),
-                    new Date(createdTime.toEpochMilli())
-            );
-            this.groupMemberViewRepository.save(groupMemberView);
-        });
+        List<GroupMemberView> groupMemberViews = new ArrayList<>();
+        for (Map.Entry<GroupMemberId, GroupMember> entry : event.getMembers().entrySet()) {
+            GroupMember member = entry.getValue();
+            this.userDetailsViewRepository.findById(member.getUserId().getIdentifier()).ifPresent(memberUser -> {
+                GroupMemberView groupMemberView = new GroupMemberView(
+                        member.getId().getIdentifier(),
+                        member.getUserId().getIdentifier(),
+                        event.getId().getIdentifier(),
+                        memberUser.getRealName(),
+                        member.getGroupRoles(),
+                        new Date(createdTime.toEpochMilli())
+                );
+
+                groupMemberViews.add(groupMemberView);
+            });
+        }
+
+        this.groupMemberViewRepository.saveAll(groupMemberViews);
     }
 
     @EventHandler
@@ -51,24 +56,31 @@ public class GroupMemberViewHandler {
 
     @EventHandler
     public void on(MembersAddedToMealReservationGroupEvent event, @Timestamp java.time.Instant createdTime) {
-        for (Map.Entry<UserId, GroupMember> entry : event.getNewMembers().entrySet()) {
+        List<GroupMemberView> groupMemberViews = new ArrayList<>();
+
+        Map<GroupMemberId, GroupMember> newMembers = event.getNewMembers();
+        for (Map.Entry<GroupMemberId, GroupMember> entry : newMembers.entrySet()) {
             String memberId = entry.getKey().getIdentifier();
-            this.userDetailsViewRepository.findById(memberId).ifPresent(member -> {
+            this.userDetailsViewRepository.findById(entry.getValue().getUserId().getIdentifier()).ifPresent(memberUser -> {
                 GroupMemberView groupMemberView = new GroupMemberView(
-                        member.getId(),
+                        memberId,
+                        memberUser.getId(),
                         event.getGroupId().getIdentifier(),
-                        member.getRealName(),
+                        memberUser.getRealName(),
                         Collections.singletonList(GroupRoles.GROUP_MEMBER),
                         new Date(createdTime.toEpochMilli())
                 );
-                this.groupMemberViewRepository.save(groupMemberView);
+
+                groupMemberViews.add(groupMemberView);
             });
         }
+
+        this.groupMemberViewRepository.saveAll(groupMemberViews);
     }
 
     @EventHandler
     public void on(MembersRemovedFromMealReservationGroupEvent event, @Timestamp java.time.Instant createdTime) {
-        for (UserId removedMemberId : event.getRemovedMemberIdList()) {
+        for (GroupMemberId removedMemberId : event.getRemovedMemberIdList()) {
             this.groupMemberViewRepository.deleteById(removedMemberId.getIdentifier());
         }
     }

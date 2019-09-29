@@ -5,16 +5,16 @@ import java.util.List;
 
 public class AddMembersToGroupDTO {
     @NotEmpty()
-    private List<String> memberIdList;
+    private List<String> userIdList;
 
     public AddMembersToGroupDTO() {
     }
 
-    public List<String> getMemberIdList() {
-        return memberIdList;
+    public List<String> getUserIdList() {
+        return userIdList;
     }
 
-    public void setMemberIdList(List<String> memberIdList) {
-        this.memberIdList = memberIdList;
+    public void setUserIdList(List<String> userIdList) {
+        this.userIdList = userIdList;
     }
 }

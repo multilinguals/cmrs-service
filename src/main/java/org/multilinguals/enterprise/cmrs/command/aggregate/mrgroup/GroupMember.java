@@ -7,28 +7,27 @@ import java.util.List;
 
 public class GroupMember {
     @EntityId
-    private UserId id;
+    private GroupMemberId id;
+
+    private UserId userId;
 
     private List<String> groupRoles;
 
-    public GroupMember(UserId id, List<String> groupRoles) {
+    public GroupMember(GroupMemberId id, UserId userId, List<String> groupRoles) {
         this.id = id;
+        this.userId = userId;
         this.groupRoles = groupRoles;
     }
 
-    public UserId getId() {
+    public GroupMemberId getId() {
         return id;
     }
 
-    public void setId(UserId id) {
-        this.id = id;
+    public UserId getUserId() {
+        return userId;
     }
 
     public List<String> getGroupRoles() {
         return groupRoles;
-    }
-
-    public void setGroupRoles(List<String> groupRoles) {
-        this.groupRoles = groupRoles;
     }
 }

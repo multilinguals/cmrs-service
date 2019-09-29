@@ -2,6 +2,7 @@ package org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command;
 
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.GroupMemberId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroupId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
@@ -14,12 +15,12 @@ public class RemoveMembersFromMealReservationGroupCommand extends AbstractComman
     private MealReservationGroupId groupId;
 
     @NotEmpty
-    private List<UserId> memberIdList;
+    private List<GroupMemberId> memberIdList;
 
     @NotNull
     private UserId operatorId;
 
-    public RemoveMembersFromMealReservationGroupCommand(MealReservationGroupId groupId, @NotEmpty List<UserId> memberIdList, @NotNull UserId operatorId) {
+    public RemoveMembersFromMealReservationGroupCommand(MealReservationGroupId groupId, @NotEmpty List<GroupMemberId> memberIdList, @NotNull UserId operatorId) {
         this.groupId = groupId;
         this.memberIdList = memberIdList;
         this.operatorId = operatorId;
@@ -33,11 +34,11 @@ public class RemoveMembersFromMealReservationGroupCommand extends AbstractComman
         this.groupId = groupId;
     }
 
-    public List<UserId> getMemberIdList() {
+    public List<GroupMemberId> getMemberIdList() {
         return memberIdList;
     }
 
-    public void setMemberIdList(List<UserId> memberIdList) {
+    public void setMemberIdList(List<GroupMemberId> memberIdList) {
         this.memberIdList = memberIdList;
     }
 

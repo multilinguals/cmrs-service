@@ -3,6 +3,7 @@ package org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.GroupMember;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.GroupMemberId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroupId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
@@ -20,9 +21,9 @@ public class MealReservationGroupCreatedEvent extends AbstractEvent {
 
     private UserId creatorId;
 
-    private Map<UserId, GroupMember> members;
+    private Map<GroupMemberId, GroupMember> members;
 
-    public MealReservationGroupCreatedEvent(MealReservationGroupId id, String name, String description, UserId ownerId, UserId creatorId, Map<UserId, GroupMember> members) {
+    public MealReservationGroupCreatedEvent(MealReservationGroupId id, String name, String description, UserId ownerId, UserId creatorId, Map<GroupMemberId, GroupMember> members) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -51,7 +52,7 @@ public class MealReservationGroupCreatedEvent extends AbstractEvent {
         return creatorId;
     }
 
-    public Map<UserId, GroupMember> getMembers() {
+    public Map<GroupMemberId, GroupMember> getMembers() {
         return members;
     }
 }
