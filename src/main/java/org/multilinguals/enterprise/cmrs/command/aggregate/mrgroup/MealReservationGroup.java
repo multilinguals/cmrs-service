@@ -5,10 +5,7 @@ import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateMember;
 import org.axonframework.spring.stereotype.Aggregate;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.CreateMealReservationGroupCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.DeleteMealReservationGroupCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.RemoveMembersFromMealReservationGroupCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.UpdateMealReservationGroupDetailsCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.*;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.*;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
@@ -51,7 +48,11 @@ public class MealReservationGroup {
 
         Map<GroupMemberId, GroupMember> members = new HashMap<>();
 
-        List<String> memberRoles = Arrays.asList(GroupRoles.GROUP_OWNER, GroupRoles.GROUP_MEMBER, GroupRoles.GROUP_ORDER_TAKER);
+        List<String> memberRoles = new ArrayList<>(Arrays.asList(
+                GroupRoles.GROUP_OWNER,
+                GroupRoles.GROUP_MEMBER,
+                GroupRoles.GROUP_ORDER_TAKER)
+        );
         members.put(new GroupMemberId(), new GroupMember(new GroupMemberId(), ownerId, memberRoles));
 
         apply(new MealReservationGroupCreatedEvent(mrGroupId, command.getName(), command.getDescription(), creatorId, ownerId, members));
@@ -86,11 +87,20 @@ public class MealReservationGroup {
         }
     }
 
+    @CommandHandler
+    public void handle(SetRolesToMemberCommand command) throws BizException {
+        if (!command.getOperatorId().equals(this.ownerId)) {
+            throw new BizException(BizErrorCode.USER_NOT_MR_GROUP_OWNER);
+        } else {
+            apply(new RolesSetToMemberEvent(this.id, command.getMemberId(), command.getRoleList()));
+        }
+    }
+
     public void addMembers(List<UserId> userIdList) {
         Map<GroupMemberId, GroupMember> newMembers = new HashMap<>();
         for (UserId userId : userIdList) {
             if (!hasUserInMemberList(userId)) {
-                newMembers.put(new GroupMemberId(), new GroupMember(new GroupMemberId(), userId, Collections.singletonList(GroupRoles.GROUP_MEMBER)));
+                newMembers.put(new GroupMemberId(), new GroupMember(new GroupMemberId(), userId, new ArrayList<>(Collections.singletonList(GroupRoles.GROUP_MEMBER))));
             }
         }
 
@@ -142,6 +152,13 @@ public class MealReservationGroup {
         for (GroupMemberId removedMemberId : event.getRemovedMemberIdList()) {
             this.members.remove(removedMemberId);
         }
+    }
+
+    @EventSourcingHandler
+    public void on(RolesSetToMemberEvent event) {
+        GroupMember member = this.members.get(event.getMemberId());
+
+        member.getGroupRoles().addAll(event.getGroupRoles());
     }
 
     private boolean hasUserInMemberList(UserId userId) {

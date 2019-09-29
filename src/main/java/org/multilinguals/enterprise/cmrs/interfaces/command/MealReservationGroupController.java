@@ -9,10 +9,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.command.handler.mrgroup.command.TurnOverGroupOwnerCommand;
 import org.multilinguals.enterprise.cmrs.constant.result.BizErrorCode;
 import org.multilinguals.enterprise.cmrs.infrastructure.exception.http.BizException;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup.AddMembersToGroupDTO;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup.CreateMealReservationGroupDTO;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup.RemoveMembersToGroupDTO;
-import org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup.UpdateMealReservationGroupDetailsDTO;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup.*;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.common.AggregateCreatedDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -98,8 +95,17 @@ public class MealReservationGroupController {
     @PostMapping("/set-roles-to-member/{memberId}/of-group/{groupId}")
     @PreAuthorize("hasAnyRole('ROLE_MR_GROUP_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void setRolesToMember(@PathVariable String memberId, @PathVariable String groupId, @RequestAttribute String reqSenderId) {
-        // this.commandGateway.sendAndWait(new TurnOverGroupOwnerCommand(new UserId(reqSenderId), new MealReservationGroupId(groupId), new UserId(memberId)));
+    public void setRolesToMember(
+            @PathVariable String memberId,
+            @PathVariable String groupId,
+            @RequestBody SetRolesToMemberDTO dto,
+            @RequestAttribute String reqSenderId
+    ) throws BizException {
+        try {
+            this.commandGateway.sendAndWait(new SetRolesToMemberCommand(new MealReservationGroupId(groupId), new GroupMemberId(memberId), dto.getRoleList(), new UserId(reqSenderId)));
+        } catch (AggregateNotFoundException ex) {
+            throw new BizException(BizErrorCode.MR_GROUP_NOT_EXISTED);
+        }
     }
 
     @PostMapping("/turn-over-owner-of-group/{groupId}/to-user/{userId}")

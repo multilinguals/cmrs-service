@@ -86,6 +86,16 @@ public class GroupMemberViewHandler {
     }
 
     @EventHandler
+    public void on(RolesSetToMemberEvent event, @Timestamp java.time.Instant createdTime) {
+        this.groupMemberViewRepository.findById(event.getMemberId().getIdentifier()).ifPresent(groupMemberView -> {
+            groupMemberView.getGroupRoles().addAll(event.getGroupRoles());
+
+            this.groupMemberViewRepository.save(groupMemberView);
+        });
+    }
+
+
+    @EventHandler
     public void on(MealReservationGroupOwnerTurnOverEvent event, @Timestamp java.time.Instant createdTime) {
         this.groupMemberViewRepository.findById(event.getPastOwnerId().getIdentifier()).ifPresent(pastOwner -> {
             pastOwner.removeGroupRole(GroupRoles.GROUP_OWNER);
