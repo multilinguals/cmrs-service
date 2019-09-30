@@ -3,6 +3,7 @@ package org.multilinguals.enterprise.cmrs.query.mrgroup.profile;
 import org.apache.commons.lang3.StringUtils;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.GroupMember;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupCreatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDeletedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.event.MealReservationGroupDetailsUpdatedEvent;
@@ -75,10 +76,11 @@ public class UserMealReservationGroupProfileViewHandler {
                 Example.of(new UserMealReservationGroupProfileView(event.getMealReservationGroupId().getIdentifier()))
         );
 
-        this.userDetailsViewRepository.findById(event.getCurrentOwnerId().getIdentifier()).ifPresent(userDetailsView -> {
+        GroupMember newGroupOwner = event.getNewGroupOwner();
+        this.userDetailsViewRepository.findById(newGroupOwner.getUserId().getIdentifier()).ifPresent(userDetailsView -> {
             String realName = userDetailsView.getRealName();
             for (UserMealReservationGroupProfileView groupProfile : userMealReservationGroupProfileViewList) {
-                groupProfile.setOwnerId(event.getCurrentOwnerId().getIdentifier());
+                groupProfile.setOwnerId(newGroupOwner.getUserId().getIdentifier());
                 groupProfile.setOwnerId(realName);
                 groupProfile.setUpdatedAt(new Date(createdTime.toEpochMilli()));
             }

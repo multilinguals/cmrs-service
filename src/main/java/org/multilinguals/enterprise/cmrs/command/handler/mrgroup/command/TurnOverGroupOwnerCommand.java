@@ -5,23 +5,15 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservati
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
 public class TurnOverGroupOwnerCommand extends AbstractCommand {
-    private UserId operatorId;
-
     private MealReservationGroupId groupId;
 
-    private UserId targetUserId;
+    private UserId groupAdminId;
 
-    public TurnOverGroupOwnerCommand(UserId operatorId, MealReservationGroupId groupId, UserId targetUserId) {
-        this.operatorId = operatorId;
+    private UserId operatorId;
+
+    public TurnOverGroupOwnerCommand(MealReservationGroupId groupId, UserId groupAdminId, UserId operatorId) {
         this.groupId = groupId;
-        this.targetUserId = targetUserId;
-    }
-
-    public UserId getOperatorId() {
-        return operatorId;
-    }
-
-    public void setOperatorId(UserId operatorId) {
+        this.groupAdminId = groupAdminId;
         this.operatorId = operatorId;
     }
 
@@ -29,15 +21,11 @@ public class TurnOverGroupOwnerCommand extends AbstractCommand {
         return groupId;
     }
 
-    public void setGroupId(MealReservationGroupId groupId) {
-        this.groupId = groupId;
+    public UserId getGroupAdminId() {
+        return groupAdminId;
     }
 
-    public UserId getTargetUserId() {
-        return targetUserId;
-    }
-
-    public void setTargetUserId(UserId targetUserId) {
-        this.targetUserId = targetUserId;
+    public UserId getOperatorId() {
+        return operatorId;
     }
 }

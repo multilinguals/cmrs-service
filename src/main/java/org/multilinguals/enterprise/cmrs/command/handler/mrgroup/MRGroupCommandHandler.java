@@ -31,62 +31,53 @@ public class MRGroupCommandHandler {
 
     @CommandHandler
     public void handle(AddMembersToMealReservationGroupCommand command) throws BizException {
-        Aggregate<MealReservationGroup> mealReservationGroupAggregate;
-
         try {
-            mealReservationGroupAggregate = this.mrGroupAggregateRepository.load(command.getGroupId().getIdentifier());
+            Aggregate<MealReservationGroup> mealReservationGroupAggregate = this.mrGroupAggregateRepository.load(command.getGroupId().getIdentifier());
+            if (!mealReservationGroupAggregate.invoke(mrGroup -> mrGroup.isOwner(command.getOperatorId()))) {
+                throw new BizException(BizErrorCode.USER_NOT_MR_GROUP_OWNER);
+            }
+
+            mealReservationGroupAggregate.execute(mrGroup -> {
+                mrGroup.addMembers(command.getMemberIdList());
+            });
         } catch (AggregateNotFoundException ex) {
             throw new BizException(BizErrorCode.MR_GROUP_NOT_EXISTED);
         }
-
-        if (!mealReservationGroupAggregate.invoke(mrGroup -> mrGroup.isOwner(command.getOperatorId()))) {
-            throw new BizException(BizErrorCode.USER_NOT_MR_GROUP_OWNER);
-        }
-
-        mealReservationGroupAggregate.execute(mrGroup -> {
-            mrGroup.addMembers(command.getMemberIdList());
-        });
     }
 
     @CommandHandler
     public void handle(TurnOverGroupOwnerCommand command) throws BizException {
-        Aggregate<MealReservationGroup> mealReservationGroupAggregate;
-
         try {
-            mealReservationGroupAggregate = this.mrGroupAggregateRepository.load(command.getGroupId().getIdentifier());
-        } catch (AggregateNotFoundException ex) {
-            throw new BizException(BizErrorCode.MR_GROUP_NOT_EXISTED);
-        }
+            Aggregate<MealReservationGroup> mealReservationGroupAggregate = this.mrGroupAggregateRepository.load(command.getGroupId().getIdentifier());
+            if (!mealReservationGroupAggregate.invoke(mrGroup -> mrGroup.isOwner(command.getOperatorId()))) {
+                throw new BizException(BizErrorCode.USER_NOT_MR_GROUP_OWNER);
+            }
 
-        if (!mealReservationGroupAggregate.invoke(mrGroup -> mrGroup.isOwner(command.getOperatorId()))) {
-            throw new BizException(BizErrorCode.USER_NOT_MR_GROUP_OWNER);
-        }
-
-        try {
-            Aggregate<User> userAggregate = this.userAggregateRepository.load(command.getTargetUserId().getIdentifier());
-            if (isOrderTaker(userAggregate)) {
-                mealReservationGroupAggregate.execute(mrGroup -> mrGroup.turnOverOwnerTo(command.getTargetUserId()));
+            Aggregate<User> userAggregate = this.userAggregateRepository.load(command.getGroupAdminId().getIdentifier());
+            if (isMRGroupAdmin(userAggregate)) {
+                mealReservationGroupAggregate.execute(mrGroup -> mrGroup.turnOverOwnerTo(command.getGroupAdminId()));
             } else {
                 throw new BizException(BizErrorCode.USER_NOT_ORDER_TAKER);
             }
+
         } catch (AggregateNotFoundException ex) {
-            throw new BizException(BizErrorCode.USER_NOT_EXISTED);
+            throw new BizException(BizErrorCode.MR_GROUP_NOT_EXISTED);
         }
     }
 
-    private boolean isOrderTaker(Aggregate<User> userAggregate) {
+    private boolean isMRGroupAdmin(Aggregate<User> userAggregate) {
         List<RoleId> roleIdList = userAggregate.invoke(User::getRoleIdList);
 
-        boolean isOrderTaker = false;
+        boolean isMRGroupAdmin = false;
         for (RoleId roleId : roleIdList) {
             Aggregate<Role> roleAggregate = this.roleAggregateRepository.load(roleId.getIdentifier());
             String roleName = roleAggregate.invoke(Role::getName);
             if (DefaultRoleName.MR_GROUP_ADMIN.equals(roleName)) {
-                isOrderTaker = true;
+                isMRGroupAdmin = true;
                 break;
             }
         }
 
-        return isOrderTaker;
+        return isMRGroupAdmin;
     }
 }

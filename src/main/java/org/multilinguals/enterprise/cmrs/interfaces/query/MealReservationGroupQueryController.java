@@ -50,7 +50,8 @@ public class MealReservationGroupQueryController {
         Page<GroupMemberView> groupMemberViews = null;
 
         if (StringUtils.isNotEmpty(roleName) && StringUtils.isNotBlank(roleName)) {
-            groupMemberViews = this.groupMemberViewRepository.findAllByGroupRoles(
+            groupMemberViews = this.groupMemberViewRepository.findAllByMrGroupIdAndGroupRoles(
+                    id,
                     roleName,
                     PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), sort)
             );

@@ -108,10 +108,10 @@ public class MealReservationGroupController {
         }
     }
 
-    @PostMapping("/turn-over-owner-of-group/{groupId}/to-user/{userId}")
+    @PostMapping("/turn-over-owner-of-group/{groupId}/to-group-admin/{adminUserId}")
     @PreAuthorize("hasAnyRole('ROLE_MR_GROUP_ADMIN')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void turnOverOwner(@PathVariable String groupId, @PathVariable String userId, @RequestAttribute String reqSenderId) {
-        this.commandGateway.sendAndWait(new TurnOverGroupOwnerCommand(new UserId(reqSenderId), new MealReservationGroupId(groupId), new UserId(userId)));
+    public void turnOverOwner(@PathVariable String groupId, @PathVariable String adminUserId, @RequestAttribute String reqSenderId) {
+        this.commandGateway.sendAndWait(new TurnOverGroupOwnerCommand(new MealReservationGroupId(groupId), new UserId(adminUserId), new UserId(reqSenderId)));
     }
 }

@@ -30,4 +30,8 @@ public class GroupMember {
     public List<String> getGroupRoles() {
         return groupRoles;
     }
+
+    public void setGroupRoles(List<String> groupRoles) {
+        this.groupRoles = groupRoles;
+    }
 }

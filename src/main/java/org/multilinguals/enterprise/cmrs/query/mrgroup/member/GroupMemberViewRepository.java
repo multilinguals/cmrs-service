@@ -5,5 +5,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface GroupMemberViewRepository extends MongoRepository<GroupMemberView, String> {
-    Page<GroupMemberView> findAllByGroupRoles(String roleName, Pageable pageable);
+    Page<GroupMemberView> findAllByMrGroupIdAndGroupRoles(String groupId, String roleName, Pageable pageable);
 }

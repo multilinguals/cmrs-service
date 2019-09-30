@@ -4,10 +4,7 @@ import org.multilinguals.enterprise.cmrs.infrastructure.i18n.I18Translator;
 import org.multilinguals.enterprise.cmrs.infrastructure.persistence.Localizable;
 import org.springframework.data.annotation.Transient;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GroupMemberView implements Localizable {
     private String id;
@@ -40,6 +37,7 @@ public class GroupMemberView implements Localizable {
         this.mrGroupId = mrGroupId;
         this.realName = realName;
         this.createdAt = createdAt;
+        this.groupRoles = new ArrayList<>();
     }
 
     public GroupMemberView(String id, String userId, String mrGroupId, String realName, List<String> groupRoles, Date createdAt) {

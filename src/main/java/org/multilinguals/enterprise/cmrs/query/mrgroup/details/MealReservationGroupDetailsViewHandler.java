@@ -73,7 +73,7 @@ public class MealReservationGroupDetailsViewHandler {
     public void on(MealReservationGroupOwnerTurnOverEvent event, @Timestamp java.time.Instant createdTime) {
         this.mealReservationGroupDetailsRepository.findById(event.getMealReservationGroupId().getIdentifier())
                 .ifPresent(mrGroup -> {
-                    this.userDetailsViewRepository.findById(event.getCurrentOwnerId().getIdentifier())
+                    this.userDetailsViewRepository.findById(event.getNewGroupOwner().getUserId().getIdentifier())
                             .ifPresent(currentOwner -> {
                                 mrGroup.setOwnerId(currentOwner.getId());
                                 mrGroup.setOwnerRealName(currentOwner.getRealName());

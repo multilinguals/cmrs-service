@@ -50,9 +50,8 @@ public class MealReservationGroup {
 
         List<String> memberRoles = new ArrayList<>(Arrays.asList(
                 GroupRoles.GROUP_OWNER,
-                GroupRoles.GROUP_MEMBER,
-                GroupRoles.GROUP_ORDER_TAKER)
-        );
+                GroupRoles.GROUP_MEMBER
+        ));
         members.put(new GroupMemberId(), new GroupMember(new GroupMemberId(), ownerId, memberRoles));
 
         apply(new MealReservationGroupCreatedEvent(mrGroupId, command.getName(), command.getDescription(), creatorId, ownerId, members));
@@ -108,7 +107,14 @@ public class MealReservationGroup {
     }
 
     public void turnOverOwnerTo(UserId userId) {
-        apply(new MealReservationGroupOwnerTurnOverEvent(this.id, this.ownerId, userId));
+        GroupMemberId currentOwnerMemberId = new GroupMemberId();
+        List<String> groupOwnerRoles = new ArrayList<>(Arrays.asList(
+                GroupRoles.GROUP_OWNER,
+                GroupRoles.GROUP_MEMBER
+        ));
+        GroupMember currentOwner = new GroupMember(new GroupMemberId(), userId, groupOwnerRoles);
+
+        apply(new MealReservationGroupOwnerTurnOverEvent(this.id, currentOwner));
     }
 
     @EventSourcingHandler
@@ -139,7 +145,14 @@ public class MealReservationGroup {
 
     @EventSourcingHandler
     public void on(MealReservationGroupOwnerTurnOverEvent event) {
-        this.ownerId = event.getCurrentOwnerId();
+        GroupMember currentOwner = event.getNewGroupOwner();
+
+        for (GroupMember groupMember : this.members.values()) {
+            groupMember.getGroupRoles().remove(GroupRoles.GROUP_OWNER);
+        }
+
+        this.members.put(currentOwner.getId(), currentOwner);
+        this.ownerId = currentOwner.getUserId();
     }
 
     @EventSourcingHandler
@@ -158,7 +171,7 @@ public class MealReservationGroup {
     public void on(RolesSetToMemberEvent event) {
         GroupMember member = this.members.get(event.getMemberId());
 
-        member.getGroupRoles().addAll(event.getGroupRoles());
+        member.setGroupRoles(event.getGroupRoles());
     }
 
     private boolean hasUserInMemberList(UserId userId) {

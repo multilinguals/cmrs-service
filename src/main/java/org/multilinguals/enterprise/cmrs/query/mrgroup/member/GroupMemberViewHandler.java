@@ -94,17 +94,32 @@ public class GroupMemberViewHandler {
         });
     }
 
-
     @EventHandler
     public void on(MealReservationGroupOwnerTurnOverEvent event, @Timestamp java.time.Instant createdTime) {
-        this.groupMemberViewRepository.findById(event.getPastOwnerId().getIdentifier()).ifPresent(pastOwner -> {
-            pastOwner.removeGroupRole(GroupRoles.GROUP_OWNER);
-            pastOwner.setUpdatedAt(new Date(createdTime.toEpochMilli()));
-        });
+        List<GroupMemberView> groupOwnerViews = this.groupMemberViewRepository.findAllByMrGroupIdAndGroupRoles(
+                event.getMealReservationGroupId().getIdentifier(), GroupRoles.GROUP_OWNER, null
+        ).getContent();
 
-        this.groupMemberViewRepository.findById(event.getCurrentOwnerId().getIdentifier()).ifPresent(owner -> {
-            owner.addGroupRole(GroupRoles.GROUP_OWNER);
-            owner.setUpdatedAt(new Date(createdTime.toEpochMilli()));
+        for (GroupMemberView groupMemberView : groupOwnerViews) {
+            groupMemberView.removeGroupRole(GroupRoles.GROUP_OWNER);
+            groupMemberView.setUpdatedAt(new Date(createdTime.toEpochMilli()));
+            this.groupMemberViewRepository.save(groupMemberView);
+        }
+
+        GroupMember currentOwner = event.getNewGroupOwner();
+        this.userDetailsViewRepository.findById(currentOwner.getUserId().getIdentifier()).ifPresent(userDetailsView -> {
+            GroupMemberView groupMemberView = new GroupMemberView(
+                    currentOwner.getId().getIdentifier(),
+                    currentOwner.getUserId().getIdentifier(),
+                    event.getMealReservationGroupId().getIdentifier(),
+                    userDetailsView.getRealName(),
+                    new Date(createdTime.toEpochMilli())
+            );
+
+            groupMemberView.addGroupRole(GroupRoles.GROUP_MEMBER);
+            groupMemberView.addGroupRole(GroupRoles.GROUP_OWNER);
+
+            this.groupMemberViewRepository.save(groupMemberView);
         });
     }
 }
