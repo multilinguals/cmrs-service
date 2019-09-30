@@ -56,7 +56,7 @@ public class MealReservationGroupQueryController {
                     PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), sort)
             );
         } else {
-            groupMemberViews = this.groupMemberViewRepository.findAll(PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), sort));
+            groupMemberViews = this.groupMemberViewRepository.findAllByMrGroupId(id, PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), sort));
         }
 
         return new CMRSPage<>(groupMemberViews);
