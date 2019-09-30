@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class UserMealReservationGroupProfileView {
     @Id
-    private String memberId;
+    private String userId;
 
     private String groupId;
 
@@ -27,8 +27,8 @@ public class UserMealReservationGroupProfileView {
         this.groupId = groupId;
     }
 
-    public UserMealReservationGroupProfileView(String memberId, String groupId, String name, String ownerId, String ownerRealName, Date createdAt) {
-        this.memberId = memberId;
+    public UserMealReservationGroupProfileView(String userId, String groupId, String name, String ownerId, String ownerRealName, Date createdAt) {
+        this.userId = userId;
         this.groupId = groupId;
         this.name = name;
         this.ownerId = ownerId;
@@ -36,12 +36,12 @@ public class UserMealReservationGroupProfileView {
         this.createdAt = createdAt;
     }
 
-    public String getMemberId() {
-        return memberId;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setMemberId(String memberId) {
-        this.memberId = memberId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     public String getGroupId() {

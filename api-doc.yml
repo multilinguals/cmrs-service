@@ -630,7 +630,7 @@ paths:
     post:
       tags:
         - "点餐员维护点餐团信息"
-      summary: "点餐员创建点参团接口"
+      summary: "点餐团管理员创建点参团接口"
       parameters:
         - name: "点参团的创建信息"
           in: body
@@ -646,13 +646,13 @@ paths:
     get:
       tags:
         - "点餐员维护点餐团信息"
-      summary: "用户查看点参团信息接口"
+      summary: "用户查看点餐团信息接口"
       parameters:
         - name: id
           in: path
           type: string
           required: true
-          description: "点参团ID"
+          description: "点餐团ID"
       responses:
         200:
           description: "查询成功"
@@ -661,15 +661,15 @@ paths:
   /update-details-of-mr-group/:id:
     get:
       tags:
-        - "点餐员维护点餐团信息"
-      summary: "点餐员更新点参团信息接口"
+        - "点餐团管理员维护点餐团信息"
+      summary: "更新点餐团信息接口"
       parameters:
         - name: id
           in: path
           type: string
           required: true
-          description: "点参团ID"
-        - name: "点参团的更新信息"
+          description: "点餐团ID"
+        - name: "点餐团的更新信息"
           in: body
           required: true
           schema:
@@ -680,44 +680,28 @@ paths:
   /delete-mr-group/:id:
     get:
       tags:
-        - "点餐员维护点餐团信息"
-      summary: "点餐员删除点参团接口"
+        - "点餐团管理员维护点餐团信息"
+      summary: "点餐员删除点餐团接口"
       parameters:
         - name: id
           in: path
           type: string
           required: true
-          description: "点参团ID"
+          description: "点餐团ID"
       responses:
         204:
           description: "删除成功"
-  /get-order-takers-of-mr-group/:id:
-    get:
-      tags:
-        - "点餐员维护点餐团信息"
-      summary: "用户查看点参团成员列表接口"
-      parameters:
-        - name: id
-          in: path
-          type: string
-          required: true
-          description: "点参团ID"
-      responses:
-        200:
-          description: "查询成功"
-          schema:
-            $ref: "#/definitions/MRGroupMemberPageDTO"
   /get-members-of-mr-group/:id:
     get:
       tags:
-        - "点餐员维护点餐团信息"
-      summary: "用户查看点参团成员列表接口"
+        - "点餐团管理员维护点餐团信息"
+      summary: "用户查看点餐团成员列表接口"
       parameters:
         - name: id
           in: path
           type: string
           required: true
-          description: "点参团ID"
+          description: "点餐团ID"
         - name: roleName
           in: query
           type: string
@@ -750,18 +734,43 @@ paths:
   /add-members-to-mr-group/:id:
     post:
       tags:
-        - "点餐员维护点餐团信息"
-      summary: "点餐员添加点参团成员"
+        - "点餐团管理员维护点餐团信息"
+      summary: "添加点餐团成员"
       parameters:
         - name: id
           in: path
           type: string
           required: true
-          description: "点参团ID"
+          description: "点餐团ID"
+        - name: "新成员用户ID"
+          in: body
+          required: true
+          description: "要添加成员的用户ID列表"
+          schema:
+            type: object
+            properties:
+              userIdList:
+                type: array
+                items:
+                  type: string
+      responses:
+        204:
+          description: "添加成功"
+  /remove-members-from-mr-group/:id:
+    post:
+      tags:
+        - "点餐团管理员维护点餐团信息"
+      summary: "从某个点餐团移除一批成员接口"
+      parameters:
+        - name: id
+          description: "点餐团ID"
+          in: path
+          type: string
+          required: true
         - name: memberIdList
           in: body
           required: true
-          description: "成员列表"
+          description: "成员ID列表"
           schema:
             type: object
             properties:
@@ -771,86 +780,52 @@ paths:
                   type: string
       responses:
         204:
-          description: "添加成功"
-  /add-order-takers-to-mr-group/:id:
+          description: "移除成功"
+  /set-roles-to-member/:memberId/of-group/:groupId:
     post:
       tags:
-        - "点餐员维护点餐团信息"
-      summary: "为点参团添加点餐员"
-      parameters:
-        - name: id
-          in: path
-          type: string
-          required: true
-          description: "点参团ID"
-        - name: memberIdList
-          in: body
-          required: true
-          description: "点餐员列表"
-          schema:
-            type: object
-            properties:
-              memberIdList:
-                type: array
-                items:
-                  type: string
-      responses:
-        204:
-          description: "添加成功"
-  /remove-member/:memberId/from-mr-group/:groupId:
-    post:
-      tags:
-        - "点餐员维护点餐团信息"
-      summary: "点餐员从点参团移除某个成员接口"
+        - "点餐团管理员维护点餐团信息"
+      summary: "为某个点餐团成员设置角色"
       parameters:
         - name: memberId
-          in: path
-          type: string
-          required: true
-          description: "点餐员ID"
-        - name: groupId
-          description: "点参团ID"
-          in: path
-          type: string
-          required: true
-      responses:
-        204:
-          description: "移除成功"
-  /remove-order-taker/:orderTakerId/from-mr-group/:groupId:
-    post:
-      tags:
-        - "点餐员维护点餐团信息"
-      summary: "点餐员从点参团移除某个点餐员接口"
-      parameters:
-        - name: orderTackerId
-          in: path
-          type: string
-          required: true
           description: "成员ID"
-        - name: groupId
-          description: "点参团ID"
           in: path
           type: string
           required: true
+        - name: groupId
+          description: "点餐团ID"
+          in: path
+          type: string
+          required: true
+        - name: roleList
+          description: "要设置的角色列表"
+          in: body
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - "ORDER_TAKER"
+                - "MEMBER"
       responses:
         204:
-          description: "移除成功"
-  /hand-over-owner-of-mr-group/:groupId/to/:orderTackerId:
+          description: "交接成功"
+  /turn-over-owner-of-group/:groupId/to-group-admin/:adminUserId:
     post:
       tags:
         - "点餐员维护点餐团信息"
-      summary: "将团长职务交给另一个点餐员"
+      summary: "将团长职务交给另一个点餐团管理员"
       parameters:
         - name: groupId
-          description: "点参团ID"
+          description: "点餐团ID"
           in: path
           type: string
           required: true
-        - name: orderTackerId
+        - name: adminUserId
           in: path
           type: string
           required: true
-          description: "点餐员ID"
+          description: "点餐团管理员ID"
       responses:
         204:
           description: "交接成功"
@@ -1392,7 +1367,14 @@ definitions:
         type: string
         minLength: 4
         maxLength: 8
-        example: "我的点参团"
+        example: "我的点餐团"
+      description:
+        type: string
+        minLength: 5
+        maxLength: 200
+        example: "点餐团的描述"
+    required:
+      - name
   UpdateMealReservationGroupDTO:
     type: object
     properties:
@@ -1400,37 +1382,66 @@ definitions:
         type: string
         minLength: 4
         maxLength: 8
-        example: "我的点参团"
-  MealReservationGroupDetailsDTO:
-    type: object
-    properties:
-      name:
-        type: string
         example: "我的点餐团"
-      orderTakers:
-        type: array
-        items:
-          type: object
-          properties:
-            id:
-              type: string
-            realName:
-              type: string
-            joinedAt:
-              type: string
-              description: "加入时间"
-  MealReservationGroupProfileDTO:
+      description:
+        type: string
+        minLength: 5
+        maxLength: 200
+        example: "点餐团的描述"
+  MealReservationGroupDetailsDTO:
     type: object
     properties:
       id:
         type: string
+        example: "7c07c0c0-6a71-4fc1-ac2a-afab01eadd74",
       name:
         type: string
-        example: "我的点餐团"
+        example: "小小的团"
+      description:
+        type: string
+        example: "小小的团的描述"
       ownerId:
         type: string
-      ownerName:
+        example: "2aaf6480-f8e5-48d7-8cda-1d10e7438bf8",
+      ownerRealName:
         type: string
+        example: "王五"
+      creatorId:
+        type: string
+        example: "9a3c51ff-5777-45b5-9869-2bb2bfd0088e"
+      creatorRealName:
+        type: string
+        example: "张三"
+      createdAt:
+        type: string
+        example: "2019-09-29T11:58:42.782+0000"
+      updatedAt:
+        type: string
+        example: "2019-09-30T05:33:25.362+0000"
+  MealReservationGroupProfileDTO:
+    type: object
+    properties:
+      userId:
+        type: string
+        example: "9a3c51ff-5777-45b5-9869-2bb2bfd0088e",
+      groupId:
+        type: string
+        example: "7c07c0c0-6a71-4fc1-ac2a-afab01eadd74",
+      name:
+        type: string
+        example: "小小的团"
+      ownerId:
+        type: string
+        example: "2aaf6480-f8e5-48d7-8cda-1d10e7438bf8",
+      ownerRealName:
+        type: string
+        example: "王五"
+      createdAt:
+        type: string
+        example: "2019-09-29T11:58:42.782+0000"
+      updatedAt:
+        type: string
+        example: "2019-09-30T05:33:25.362+0000"
   MRGroupMemberPageDTO:
     type: object
     properties:
@@ -1441,11 +1452,42 @@ definitions:
           properties:
             id:
               type: string
+              description: "用户在点餐团中的成员ID"
+            userId:
+              type: string
+              description: "成员的用户ID"
+            mrGroupId:
+              type: string
+              description: "成员所在的点参团ID"
             realName:
               type: string
-            joinedAt:
+            groupRoles:
+              type: array
+              items:
+                type: string
+                enum:
+                  - "MEMBER"
+                  - "OWNER"
+                  - "ORDER_TAKER"
+            groupRoleLocalNames:
+              type: object
+              description: "点参团内角色本地化名称"
+              properties:
+                ORDER_TAKER:
+                  type: string
+                  example: "点餐员",
+                MEMBER:
+                  type: string
+                  example: "成员"
+                OWNER:
+                  type: string
+                  example: "团长"
+            createdAt:
               type: string
-              description: "加入时间"
+              example: "2019-09-30T02:24:16.028+0000",
+            updatedAt:
+              type: string
+              example: "null"
       pageInfo:
         $ref: "#/definitions/PageInfo"
   FindUserResultDTO:
