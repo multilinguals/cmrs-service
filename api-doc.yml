@@ -1393,7 +1393,7 @@ definitions:
     properties:
       id:
         type: string
-        example: "7c07c0c0-6a71-4fc1-ac2a-afab01eadd74",
+        example: "7c07c0c0-6a71-4fc1-ac2a-afab01eadd74"
       name:
         type: string
         example: "小小的团"
@@ -1402,7 +1402,7 @@ definitions:
         example: "小小的团的描述"
       ownerId:
         type: string
-        example: "2aaf6480-f8e5-48d7-8cda-1d10e7438bf8",
+        example: "2aaf6480-f8e5-48d7-8cda-1d10e7438bf8"
       ownerRealName:
         type: string
         example: "王五"
@@ -1423,16 +1423,16 @@ definitions:
     properties:
       userId:
         type: string
-        example: "9a3c51ff-5777-45b5-9869-2bb2bfd0088e",
+        example: "9a3c51ff-5777-45b5-9869-2bb2bfd0088e"
       groupId:
         type: string
-        example: "7c07c0c0-6a71-4fc1-ac2a-afab01eadd74",
+        example: "7c07c0c0-6a71-4fc1-ac2a-afab01eadd74"
       name:
         type: string
         example: "小小的团"
       ownerId:
         type: string
-        example: "2aaf6480-f8e5-48d7-8cda-1d10e7438bf8",
+        example: "2aaf6480-f8e5-48d7-8cda-1d10e7438bf8"
       ownerRealName:
         type: string
         example: "王五"
@@ -1475,7 +1475,7 @@ definitions:
               properties:
                 ORDER_TAKER:
                   type: string
-                  example: "点餐员",
+                  example: "点餐员"
                 MEMBER:
                   type: string
                   example: "成员"
@@ -1484,7 +1484,7 @@ definitions:
                   example: "团长"
             createdAt:
               type: string
-              example: "2019-09-30T02:24:16.028+0000",
+              example: "2019-09-30T02:24:16.028+0000"
             updatedAt:
               type: string
               example: "null"
