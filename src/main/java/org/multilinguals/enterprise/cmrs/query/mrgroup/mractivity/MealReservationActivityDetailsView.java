@@ -1,11 +1,14 @@
 package org.multilinguals.enterprise.cmrs.query.mrgroup.mractivity;
 
 import java.util.Date;
+import java.util.List;
 
 public class MealReservationActivityDetailsView {
     private String id;
 
     private String groupId;
+
+    private List<ActivityRestaurantProfileView> restaurantProfileViews;
 
     private int status;
 
@@ -20,9 +23,10 @@ public class MealReservationActivityDetailsView {
     public MealReservationActivityDetailsView() {
     }
 
-    public MealReservationActivityDetailsView(String id, String groupId, int status, Date startedAt, Date endAt, Date createdAt) {
+    public MealReservationActivityDetailsView(String id, String groupId, List<ActivityRestaurantProfileView> restaurantProfileViews, int status, Date startedAt, Date endAt, Date createdAt) {
         this.id = id;
         this.groupId = groupId;
+        this.restaurantProfileViews = restaurantProfileViews;
         this.status = status;
         this.startedAt = startedAt;
         this.endAt = endAt;
@@ -43,6 +47,14 @@ public class MealReservationActivityDetailsView {
 
     public void setGroupId(String groupId) {
         this.groupId = groupId;
+    }
+
+    public List<ActivityRestaurantProfileView> getRestaurantProfileViews() {
+        return restaurantProfileViews;
+    }
+
+    public void setRestaurantProfileViews(List<ActivityRestaurantProfileView> restaurantProfileViews) {
+        this.restaurantProfileViews = restaurantProfileViews;
     }
 
     public int getStatus() {
