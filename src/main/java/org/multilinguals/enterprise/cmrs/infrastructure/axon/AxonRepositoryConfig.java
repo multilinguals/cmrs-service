@@ -6,6 +6,7 @@ import org.axonframework.modelling.command.Repository;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.Account;
 import org.multilinguals.enterprise.cmrs.command.aggregate.dishtype.DishType;
 import org.multilinguals.enterprise.cmrs.command.aggregate.menuitemtype.MenuItemType;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.MealReservationActivity;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroup;
 import org.multilinguals.enterprise.cmrs.command.aggregate.password.UserPassword;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.Restaurant;
@@ -60,5 +61,10 @@ public class AxonRepositoryConfig {
     @Bean()
     public Repository<MealReservationGroup> mrGroupAggregateRepository(EventStore eventStore) {
         return EventSourcingRepository.builder(MealReservationGroup.class).eventStore(eventStore).build();
+    }
+
+    @Bean()
+    public Repository<MealReservationActivity> mrActivityAggregateRepository(EventStore eventStore) {
+        return EventSourcingRepository.builder(MealReservationActivity.class).eventStore(eventStore).build();
     }
 }

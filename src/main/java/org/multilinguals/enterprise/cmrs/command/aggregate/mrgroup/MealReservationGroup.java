@@ -188,6 +188,16 @@ public class MealReservationGroup {
         return this.ownerId.equals(userId);
     }
 
+    public Boolean isOrderTaker(UserId userId) {
+        for (GroupMember groupMember : this.members.values()) {
+            if (groupMember.getUserId().equals(userId)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public MealReservationGroupId getId() {
         return id;
     }
