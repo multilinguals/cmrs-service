@@ -57,4 +57,10 @@ public interface BizErrorCode {
 
     // 用户不是点餐员
     String USER_NOT_ORDER_TAKER = "41207";
+
+    // 点餐团和活动不符合
+    String GROUP_NOT_MATCH_ACTIVITY = "41208";
+
+    // 点餐活动状态不是[等待]状态时，无法修改
+    String ACTIVITY_STATUS_NOT_EDITABLE = "41209";
 }

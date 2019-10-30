@@ -3,6 +3,7 @@ package org.multilinguals.enterprise.cmrs.query.mrgroup.mractivity;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.eventhandling.Timestamp;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.event.MealReservationActivityCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.event.MealReservationActivityUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
 import org.multilinguals.enterprise.cmrs.query.restaurant.RestaurantDetailsViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,5 +44,23 @@ public class MealReservationActivityViewHandler {
         );
 
         this.mealReservationActivityDetailsViewRepository.save(mealReservationActivityDetailsView);
+    }
+
+    @EventHandler
+    public void on(MealReservationActivityUpdatedEvent event, @Timestamp java.time.Instant createdTime) {
+        this.mealReservationActivityDetailsViewRepository.findById(event.getActivityId().getIdentifier()).ifPresent(activity -> {
+            List<ActivityRestaurantProfileView> activityRestaurantProfileViews = new ArrayList<>();
+
+            for (RestaurantId id : event.getRestaurantIdList()) {
+                this.restaurantDetailsViewRepository.findById(id.getIdentifier()).ifPresent(restaurantDetailsView -> {
+                    activityRestaurantProfileViews.add(new ActivityRestaurantProfileView(restaurantDetailsView.getId(), restaurantDetailsView.getName()));
+                });
+            }
+
+            activity.setRestaurantProfileViews(activityRestaurantProfileViews);
+            activity.setStartedAt(event.getStartedAt());
+            activity.setEndAt(event.getEndAt());
+            activity.setUpdatedAt(new Date(createdTime.toEpochMilli()));
+        });
     }
 }

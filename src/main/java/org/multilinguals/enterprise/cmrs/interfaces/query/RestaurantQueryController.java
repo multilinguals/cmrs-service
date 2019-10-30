@@ -70,4 +70,11 @@ public class RestaurantQueryController {
         Page<SetMenuItemView> menuItemViews = this.setMenuItemViewRepository.findAll(Example.of(new SetMenuItemView(restId)), PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), sort));
         return new CMRSPage<>(menuItemViews);
     }
+
+    @GetMapping("/find-restaurant")
+    public CMRSPage<RestaurantDetailsView> findRestaurant(@RequestParam String name, @RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
+        Sort sort = new Sort(Sort.Direction.DESC, "createdAt");
+        Page<RestaurantDetailsView> restaurantDetailsViewPage = this.restaurantDetailsViewRepository.findByNameLike(name, PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), sort));
+        return new CMRSPage<>(restaurantDetailsViewPage);
+    }
 }

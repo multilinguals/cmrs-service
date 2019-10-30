@@ -6,6 +6,7 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.command.AggregateNotFoundException;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.MealReservationActivityId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.command.CreateMealReservationActivityCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.command.UpdateMealReservationActivityCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.GroupMemberId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroupId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.*;
@@ -132,5 +133,19 @@ public class MealReservationGroupController {
                 dateParser.parse(dto.getEndAt()))
         );
         return new AggregateCreatedDTO<>(activityId.getIdentifier());
+    }
+
+    @PostMapping("/update-mr-activity/{id}}")
+    @PreAuthorize("isAuthenticated()")
+    public void updateActivity(@PathVariable String id, @Validated @RequestBody UpdateMealReservationActivityDTO dto, @RequestAttribute String reqSenderId) throws ParseException {
+        DateParser dateParser = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
+        this.commandGateway.sendAndWait(new UpdateMealReservationActivityCommand(
+                new MealReservationActivityId(id),
+                dto.getGroupId(),
+                dto.getRestaurantIdList(),
+                new UserId(reqSenderId),
+                dateParser.parse(dto.getStartedAt()),
+                dateParser.parse(dto.getEndAt()))
+        );
     }
 }

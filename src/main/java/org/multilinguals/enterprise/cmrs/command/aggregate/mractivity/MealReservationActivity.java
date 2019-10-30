@@ -3,6 +3,7 @@ package org.multilinguals.enterprise.cmrs.command.aggregate.mractivity;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.event.MealReservationActivityCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.event.MealReservationActivityUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroupId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.mrgroup.MealReservationActivityStatus;
@@ -44,6 +45,12 @@ public class MealReservationActivity {
         ));
     }
 
+    public void update(List<RestaurantId> restaurantIdList, Date startedAt, Date endAt) {
+        if (isEditable()) {
+            apply(new MealReservationActivityUpdatedEvent(this.id, restaurantIdList, startedAt, endAt));
+        }
+    }
+
     @EventSourcingHandler
     public void on(MealReservationActivityCreatedEvent event) {
         this.id = event.getId();
@@ -52,6 +59,17 @@ public class MealReservationActivity {
         this.status = MealReservationActivityStatus.ONGOING;
         this.startedAt = event.getStartedAt();
         this.endAt = event.getEndAt();
+    }
+
+    @EventSourcingHandler
+    public void on(MealReservationActivityUpdatedEvent event) {
+        this.restaurantIdList = event.getRestaurantIdList();
+        this.startedAt = event.getStartedAt();
+        this.endAt = event.getEndAt();
+    }
+
+    public boolean isEditable() {
+        return this.status.equals(MealReservationActivityStatus.PENDING);
     }
 
     public MealReservationActivityId getId() {
