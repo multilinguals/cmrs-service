@@ -7,7 +7,6 @@ import org.multilinguals.enterprise.cmrs.query.mrgroup.details.MealReservationGr
 import org.multilinguals.enterprise.cmrs.query.mrgroup.member.GroupMemberView;
 import org.multilinguals.enterprise.cmrs.query.mrgroup.member.GroupMemberViewRepository;
 import org.multilinguals.enterprise.cmrs.query.mrgroup.mractivity.MealReservationActivityDetailsView;
-import org.multilinguals.enterprise.cmrs.query.mrgroup.mractivity.MealReservationActivityDetailsViewRepository;
 import org.multilinguals.enterprise.cmrs.query.mrgroup.profile.UserMealReservationGroupProfileRepository;
 import org.multilinguals.enterprise.cmrs.query.mrgroup.profile.UserMealReservationGroupProfileView;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +25,11 @@ public class MealReservationGroupQueryController {
 
     private GroupMemberViewRepository groupMemberViewRepository;
 
-    private MealReservationActivityDetailsViewRepository mealReservationActivityDetailsViewRepository;
-
     @Autowired
-    public MealReservationGroupQueryController(MealReservationGroupDetailsRepository mealReservationGroupDetailsRepository, UserMealReservationGroupProfileRepository userMealReservationGroupProfileRepository, GroupMemberViewRepository groupMemberViewRepository, MealReservationActivityDetailsViewRepository mealReservationActivityDetailsViewRepository) {
+    public MealReservationGroupQueryController(MealReservationGroupDetailsRepository mealReservationGroupDetailsRepository, UserMealReservationGroupProfileRepository userMealReservationGroupProfileRepository, GroupMemberViewRepository groupMemberViewRepository) {
         this.mealReservationGroupDetailsRepository = mealReservationGroupDetailsRepository;
         this.userMealReservationGroupProfileRepository = userMealReservationGroupProfileRepository;
         this.groupMemberViewRepository = groupMemberViewRepository;
-        this.mealReservationActivityDetailsViewRepository = mealReservationActivityDetailsViewRepository;
     }
 
     @GetMapping("/get-profile-of-self-mr-group")
@@ -66,23 +62,5 @@ public class MealReservationGroupQueryController {
         }
 
         return new CMRSPage<>(groupMemberViews);
-    }
-
-    @GetMapping("/get-details-of-mr-activity/{id}")
-    @PreAuthorize("isAuthenticated()")
-    public MealReservationActivityDetailsView queryMRActivityDetails(@PathVariable String id, @RequestAttribute String reqSenderId) {
-        UserMealReservationGroupProfileView mrGroupProfile = this.userMealReservationGroupProfileRepository.findById(reqSenderId)
-                .orElseGet(() -> null);
-        if (mrGroupProfile != null) {
-            MealReservationActivityDetailsView exampleObject = new MealReservationActivityDetailsView();
-            exampleObject.setId(id);
-            exampleObject.setGroupId(mrGroupProfile.getGroupId());
-
-            return this.mealReservationActivityDetailsViewRepository.findOne(Example.of(exampleObject)).orElseGet(() -> null);
-        } else {
-            return null;
-        }
-
-
     }
 }

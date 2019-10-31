@@ -1,12 +1,7 @@
 package org.multilinguals.enterprise.cmrs.interfaces.command;
 
-import org.apache.commons.lang3.time.DateParser;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.modelling.command.AggregateNotFoundException;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.MealReservationActivityId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.command.CreateMealReservationActivityCommand;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.command.UpdateMealReservationActivityCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.GroupMemberId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroupId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.command.*;
@@ -22,7 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -119,33 +113,5 @@ public class MealReservationGroupController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void turnOverOwner(@PathVariable String groupId, @PathVariable String adminUserId, @RequestAttribute String reqSenderId) {
         this.commandGateway.sendAndWait(new TurnOverGroupOwnerCommand(new MealReservationGroupId(groupId), new UserId(adminUserId), new UserId(reqSenderId)));
-    }
-
-    @PostMapping("/create-mr-activity}")
-    @PreAuthorize("isAuthenticated()")
-    public AggregateCreatedDTO<String> createActivity(@RequestBody @Validated CreateMealReservationActivityDTO dto, @RequestAttribute String reqSenderId) throws ParseException {
-        DateParser dateParser = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
-        MealReservationActivityId activityId = this.commandGateway.sendAndWait(new CreateMealReservationActivityCommand(
-                dto.getGroupId(),
-                dto.getRestaurantIdList(),
-                new UserId(reqSenderId),
-                dateParser.parse(dto.getStartedAt()),
-                dateParser.parse(dto.getEndAt()))
-        );
-        return new AggregateCreatedDTO<>(activityId.getIdentifier());
-    }
-
-    @PostMapping("/update-mr-activity/{id}}")
-    @PreAuthorize("isAuthenticated()")
-    public void updateActivity(@PathVariable String id, @Validated @RequestBody UpdateMealReservationActivityDTO dto, @RequestAttribute String reqSenderId) throws ParseException {
-        DateParser dateParser = FastDateFormat.getInstance("yyyy-MM-dd HH:mm:ss");
-        this.commandGateway.sendAndWait(new UpdateMealReservationActivityCommand(
-                new MealReservationActivityId(id),
-                dto.getGroupId(),
-                dto.getRestaurantIdList(),
-                new UserId(reqSenderId),
-                dateParser.parse(dto.getStartedAt()),
-                dateParser.parse(dto.getEndAt()))
-        );
     }
 }

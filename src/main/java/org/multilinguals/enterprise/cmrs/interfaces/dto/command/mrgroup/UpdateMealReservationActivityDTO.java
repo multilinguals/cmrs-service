@@ -1,6 +1,6 @@
 package org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup;
 
-import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroupId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
 
@@ -11,11 +11,11 @@ public class UpdateMealReservationActivityDTO {
 
     private List<RestaurantId> restaurantIdList;
 
-    @Length(min = 10, max = 10)
-    private String startedAt;
+    @Range(min = 1000000000L, max = 9999999999L)
+    private Long startedAt;
 
-    @Length(min = 10, max = 10)
-    private String endAt;
+    @Range(min = 1000000000L, max = 9999999999L)
+    private Long endAt;
 
     public UpdateMealReservationActivityDTO() {
     }
@@ -36,19 +36,19 @@ public class UpdateMealReservationActivityDTO {
         this.restaurantIdList = restaurantIdList;
     }
 
-    public String getStartedAt() {
+    public Long getStartedAt() {
         return startedAt;
     }
 
-    public void setStartedAt(String startedAt) {
+    public void setStartedAt(Long startedAt) {
         this.startedAt = startedAt;
     }
 
-    public String getEndAt() {
+    public Long getEndAt() {
         return endAt;
     }
 
-    public void setEndAt(String endAt) {
+    public void setEndAt(Long endAt) {
         this.endAt = endAt;
     }
 }
