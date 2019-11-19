@@ -4,10 +4,12 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.MealReservationActivityId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.command.CreateMealReservationActivityCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.command.UpdateMealReservationActivityCommand;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroupId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup.CreateMealReservationActivityDTO;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.command.mrgroup.UpdateMealReservationActivityDTO;
 import org.multilinguals.enterprise.cmrs.interfaces.dto.common.AggregateCreatedDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,29 +23,29 @@ public class MealReservationActivityController {
     @Resource
     private CommandGateway commandGateway;
 
-    @PostMapping("/create-mr-activity")
+    @PostMapping("/create-mr-group/{groupId}/-mr-activity")
     @PreAuthorize("isAuthenticated()")
-    public AggregateCreatedDTO<String> createActivity(@RequestBody @Validated CreateMealReservationActivityDTO dto, @RequestAttribute String reqSenderId) throws ParseException {
+    public AggregateCreatedDTO<String> createActivity(@PathVariable String groupId, @RequestBody @Validated CreateMealReservationActivityDTO dto, @RequestAttribute String reqSenderId) throws ParseException {
         MealReservationActivityId activityId = this.commandGateway.sendAndWait(new CreateMealReservationActivityCommand(
-                dto.getGroupId(),
+                new MealReservationGroupId(groupId),
                 dto.getRestaurantIdList(),
                 new UserId(reqSenderId),
-                new Date(dto.getStartedAt()),
-                new Date(dto.getEndAt()))
+                new Date(dto.getStartedAt() * 1000),
+                new Date(dto.getEndAt() * 1000))
         );
         return new AggregateCreatedDTO<>(activityId.getIdentifier());
     }
 
-    @PostMapping("/update-mr-activity/{id}}")
+    @PostMapping("/update-mr-activity/{activityId}")
     @PreAuthorize("isAuthenticated()")
-    public void updateActivity(@PathVariable String id, @Validated @RequestBody UpdateMealReservationActivityDTO dto, @RequestAttribute String reqSenderId) throws ParseException {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateActivity(@PathVariable String activityId, @Validated @RequestBody UpdateMealReservationActivityDTO dto, @RequestAttribute String reqSenderId) throws ParseException {
         this.commandGateway.sendAndWait(new UpdateMealReservationActivityCommand(
-                new MealReservationActivityId(id),
-                dto.getGroupId(),
+                new MealReservationActivityId(activityId),
                 dto.getRestaurantIdList(),
                 new UserId(reqSenderId),
-                new Date(dto.getStartedAt()),
-                new Date(dto.getEndAt()))
+                new Date(dto.getStartedAt() * 1000),
+                new Date(dto.getEndAt() * 1000))
         );
     }
 }

@@ -51,10 +51,6 @@ public class MealReservationActivityCommandHandler {
         Aggregate<MealReservationActivity> mrActivityAggregate = this.mrActivityAggregateRepository.load(command.getId().getIdentifier());
         MealReservationGroupId groupId = mrActivityAggregate.invoke(MealReservationActivity::getGroupId);
 
-        if (!groupId.equals(command.getGroupId())) {
-            throw new BizException(BizErrorCode.GROUP_NOT_MATCH_ACTIVITY);
-        }
-
         Aggregate<MealReservationGroup> mealReservationGroupAggregate = this.mrGroupAggregateRepository.load(groupId.getIdentifier());
         if (!mealReservationGroupAggregate.invoke(mrGroup -> mrGroup.isOrderTaker(command.getOperatorId()))) {
             throw new BizException(BizErrorCode.USER_NOT_ORDER_TAKER);
@@ -62,7 +58,7 @@ public class MealReservationActivityCommandHandler {
 
         restaurantsMustBeExisted(command.getRestaurantIdList());
 
-        if (mrActivityAggregate.invoke(MealReservationActivity::isEditable)) {
+        if (!mrActivityAggregate.invoke(MealReservationActivity::isEditable)) {
             throw new BizException(BizErrorCode.ACTIVITY_STATUS_NOT_EDITABLE);
         }
 

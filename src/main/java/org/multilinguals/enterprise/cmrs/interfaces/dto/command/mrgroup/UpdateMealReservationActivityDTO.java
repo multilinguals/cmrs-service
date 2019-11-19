@@ -7,8 +7,6 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.Restaurant
 import java.util.List;
 
 public class UpdateMealReservationActivityDTO {
-    private MealReservationGroupId groupId;
-
     private List<RestaurantId> restaurantIdList;
 
     @Range(min = 1000000000L, max = 9999999999L)
@@ -18,14 +16,6 @@ public class UpdateMealReservationActivityDTO {
     private Long endAt;
 
     public UpdateMealReservationActivityDTO() {
-    }
-
-    public MealReservationGroupId getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(MealReservationGroupId groupId) {
-        this.groupId = groupId;
     }
 
     public List<RestaurantId> getRestaurantIdList() {

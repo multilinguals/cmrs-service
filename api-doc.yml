@@ -829,6 +829,45 @@ paths:
       responses:
         204:
           description: "交接成功"
+  /create-mr-group/:groupId/-mr-activity:
+    post:
+      tags:
+        - "点餐员维护点餐活动信息"
+      summary: "创建点餐活动"
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          type: string
+        - name: "点餐活动创建信息"
+          in: body
+          required: true
+          description: "要添加成员的用户ID列表"
+          schema:
+            $ref: "#/definitions/CreateMealReservationActivityDTO"
+      responses:
+        200:
+          description: "创建成功"
+          schema:
+            $ref: "#/definitions/AggregateCreatedDTO"
+  /update-mr-activity/:id:
+    post:
+      tags:
+        - "点餐员维护点餐活动信息"
+      summary: "更新点餐活动"
+      parameters:
+        - name: id
+          type: string
+          in: path
+          required: true
+          description: "点餐活动ID"
+        - name: "点餐团更新信息"
+          in: body
+          schema:
+            $ref: "#/definitions/UpdateMealReservationActivityDTO"
+      responses:
+        204:
+          description: "更新成功"
 securityDefinitions:
   CMRSSecurity:
     type: apiKey
@@ -1458,7 +1497,7 @@ definitions:
               description: "成员的用户ID"
             mrGroupId:
               type: string
-              description: "成员所在的点参团ID"
+              description: "成员所在的点餐团ID"
             realName:
               type: string
             groupRoles:
@@ -1471,7 +1510,7 @@ definitions:
                   - "ORDER_TAKER"
             groupRoleLocalNames:
               type: object
-              description: "点参团内角色本地化名称"
+              description: "点餐团内角色本地化名称"
               properties:
                 ORDER_TAKER:
                   type: string
@@ -1500,6 +1539,44 @@ definitions:
           type: string
         realName:
           type: string
+  CreateMealReservationActivityDTO:
+    type: object
+    properties:
+      restaurantIdList:
+        type: array
+        items:
+          type: string
+          example:
+            - "cf44e69c-da54-469a-9d87-075c55f9d0e7"
+      startedAt:
+        type: number
+        example: 1572502813
+      endAt:
+        type: number
+        example: 1572503213
+    required:
+      - restaurantIdList
+      - startedAt
+      - endAt
+  UpdateMealReservationActivityDTO:
+    type: object
+    properties:
+      restaurantIdList:
+        type: array
+        items:
+          type: string
+          example:
+            - "cf44e69c-da54-469a-9d87-075c55f9d0e7"
+      startedAt:
+        type: number
+        example: 1572502813
+      endAt:
+        type: number
+        example: 1572503213
+    required:
+      - restaurantIdList
+      - startedAt
+      - endAt
   EX40000:
     type: object
     properties:

@@ -9,27 +9,18 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class CreateMealReservationActivityDTO {
-    @NotNull
-    private MealReservationGroupId groupId;
-
     @NotEmpty
     private List<RestaurantId> restaurantIdList;
 
+    @NotNull
     @Range(min = 1000000000L, max = 9999999999L)
     private Long startedAt;
 
+    @NotNull
     @Range(min = 1000000000L, max = 9999999999L)
     private Long endAt;
 
     public CreateMealReservationActivityDTO() {
-    }
-
-    public MealReservationGroupId getGroupId() {
-        return groupId;
-    }
-
-    public void setGroupId(MealReservationGroupId groupId) {
-        this.groupId = groupId;
     }
 
     public List<RestaurantId> getRestaurantIdList() {

@@ -3,7 +3,6 @@ package org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.command;
 import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.MealReservationActivityId;
-import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroupId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
@@ -15,9 +14,6 @@ public class UpdateMealReservationActivityCommand extends AbstractCommand {
     @TargetAggregateIdentifier
     private MealReservationActivityId id;
 
-    @NotNull
-    private MealReservationGroupId groupId;
-
     private List<RestaurantId> restaurantIdList;
 
     @NotNull
@@ -27,9 +23,8 @@ public class UpdateMealReservationActivityCommand extends AbstractCommand {
 
     private Date endAt;
 
-    public UpdateMealReservationActivityCommand(MealReservationActivityId id, MealReservationGroupId groupId, List<RestaurantId> restaurantIdList, UserId operatorId, Date startedAt, Date endAt) {
+    public UpdateMealReservationActivityCommand(MealReservationActivityId id, List<RestaurantId> restaurantIdList, UserId operatorId, Date startedAt, Date endAt) {
         this.id = id;
-        this.groupId = groupId;
         this.restaurantIdList = restaurantIdList;
         this.operatorId = operatorId;
         this.startedAt = startedAt;
@@ -38,10 +33,6 @@ public class UpdateMealReservationActivityCommand extends AbstractCommand {
 
     public MealReservationActivityId getId() {
         return id;
-    }
-
-    public MealReservationGroupId getGroupId() {
-        return groupId;
     }
 
     public List<RestaurantId> getRestaurantIdList() {

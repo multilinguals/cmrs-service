@@ -61,6 +61,8 @@ public class MealReservationActivityViewHandler {
             activity.setStartedAt(event.getStartedAt());
             activity.setEndAt(event.getEndAt());
             activity.setUpdatedAt(new Date(createdTime.toEpochMilli()));
+
+            this.mealReservationActivityDetailsViewRepository.save(activity);
         });
     }
 }
