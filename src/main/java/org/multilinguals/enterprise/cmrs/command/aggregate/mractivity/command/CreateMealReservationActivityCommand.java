@@ -5,6 +5,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservati
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -24,6 +25,7 @@ public class CreateMealReservationActivityCommand extends AbstractCommand {
     private Date startedAt;
 
     @NotNull
+    @Future
     private Date endAt;
 
     public CreateMealReservationActivityCommand(@NotNull MealReservationGroupId groupId, @NotEmpty List<RestaurantId> restaurantIdList, @NotNull UserId operatorId, @NotNull Date startedAt, @NotNull Date endAt) {

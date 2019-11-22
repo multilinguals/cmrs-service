@@ -46,9 +46,7 @@ public class MealReservationActivity {
     }
 
     public void update(List<RestaurantId> restaurantIdList, Date startedAt, Date endAt) {
-        if (isEditable()) {
-            apply(new MealReservationActivityUpdatedEvent(this.id, restaurantIdList, startedAt, endAt));
-        }
+        apply(new MealReservationActivityUpdatedEvent(this.id, restaurantIdList, startedAt, endAt));
     }
 
     @EventSourcingHandler

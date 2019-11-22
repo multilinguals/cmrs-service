@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.text.ParseException;
-import java.util.Date;
 
 @RestController
 public class MealReservationActivityController {
@@ -30,8 +29,8 @@ public class MealReservationActivityController {
                 new MealReservationGroupId(groupId),
                 dto.getRestaurantIdList(),
                 new UserId(reqSenderId),
-                new Date(dto.getStartedAt() * 1000),
-                new Date(dto.getEndAt() * 1000))
+                dto.getStartedAt(),
+                dto.getEndAt())
         );
         return new AggregateCreatedDTO<>(activityId.getIdentifier());
     }
@@ -44,8 +43,8 @@ public class MealReservationActivityController {
                 new MealReservationActivityId(activityId),
                 dto.getRestaurantIdList(),
                 new UserId(reqSenderId),
-                new Date(dto.getStartedAt() * 1000),
-                new Date(dto.getEndAt() * 1000))
+                dto.getStartedAt(),
+                dto.getEndAt())
         );
     }
 }
