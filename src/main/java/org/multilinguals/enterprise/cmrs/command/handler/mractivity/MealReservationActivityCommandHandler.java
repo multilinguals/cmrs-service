@@ -58,9 +58,9 @@ public class MealReservationActivityCommandHandler {
 
         restaurantsMustBeExisted(command.getRestaurantIdList());
 
-//        if (!mrActivityAggregate.invoke(MealReservationActivity::isEditable)) {
-//            throw new BizException(BizErrorCode.ACTIVITY_STATUS_NOT_EDITABLE);
-//        }
+        if (!mrActivityAggregate.invoke(MealReservationActivity::isEditable)) {
+            throw new BizException(BizErrorCode.ACTIVITY_STATUS_NOT_EDITABLE);
+        }
 
         mrActivityAggregate.execute(activity -> {
                     activity.update(command.getRestaurantIdList(), command.getStartedAt(), command.getEndAt());
