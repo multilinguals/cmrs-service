@@ -1,6 +1,7 @@
 package org.multilinguals.enterprise.cmrs.interfaces.query;
 
 import org.multilinguals.enterprise.cmrs.interfaces.dto.common.CMRSPage;
+import org.multilinguals.enterprise.cmrs.interfaces.dto.query.FoundRestaurantDTO;
 import org.multilinguals.enterprise.cmrs.query.menuitem.SetMenuItemView;
 import org.multilinguals.enterprise.cmrs.query.menuitem.SetMenuItemViewRepository;
 import org.multilinguals.enterprise.cmrs.query.menuitem.SingleMenuItemView;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -72,9 +74,16 @@ public class RestaurantQueryController {
     }
 
     @GetMapping("/find-restaurant")
-    public CMRSPage<RestaurantDetailsView> findRestaurant(@RequestParam String name, @RequestParam(defaultValue = "0", required = false) String page, @RequestParam(defaultValue = "20", required = false) String size) {
-        Sort sort = new Sort(Sort.Direction.DESC, "createdAt");
-        Page<RestaurantDetailsView> restaurantDetailsViewPage = this.restaurantDetailsViewRepository.findByNameLike(name, PageRequest.of(Integer.parseInt(page), Integer.parseInt(size), sort));
-        return new CMRSPage<>(restaurantDetailsViewPage);
+    public List<FoundRestaurantDTO> findRestaurant(@RequestParam String name) {
+        List<FoundRestaurantDTO> foundRestaurants = new ArrayList<>();
+
+        this.restaurantDetailsViewRepository.findByNameLike(
+                name,
+                PageRequest.of(0, 5)
+        ).forEach(restaurantDetailsView -> {
+            foundRestaurants.add(new FoundRestaurantDTO(restaurantDetailsView.getId(), restaurantDetailsView.getName()));
+        });
+
+        return foundRestaurants;
     }
 }

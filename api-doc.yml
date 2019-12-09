@@ -731,6 +731,23 @@ paths:
           description: "查询成功"
           schema:
             $ref: "#/definitions/FindUserResultDTO"
+  /find-restaurant:
+    get:
+      tags:
+        - "通用"
+      parameters:
+        - name: userId
+          type: string
+          in: query
+        - name: realName
+          type: string
+          minLength: 2
+          in: query
+      responses:
+        200:
+          description: "查询成功"
+          schema:
+            $ref: "#/definitions/FindUserResultDTO"
   /add-members-to-mr-group/:id:
     post:
       tags:
@@ -1537,7 +1554,7 @@ definitions:
       properties:
         id:
           type: string
-        realName:
+        name:
           type: string
   CreateMealReservationActivityDTO:
     type: object
