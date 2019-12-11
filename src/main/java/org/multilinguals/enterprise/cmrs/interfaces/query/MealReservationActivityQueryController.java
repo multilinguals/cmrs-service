@@ -1,5 +1,6 @@
 package org.multilinguals.enterprise.cmrs.interfaces.query;
 
+import org.multilinguals.enterprise.cmrs.constant.aggregate.mrgroup.MealReservationActivityStatus;
 import org.multilinguals.enterprise.cmrs.query.mrgroup.mractivity.MealReservationActivityDetailsView;
 import org.multilinguals.enterprise.cmrs.query.mrgroup.mractivity.MealReservationActivityDetailsViewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Arrays;
 
 @RestController
 public class MealReservationActivityQueryController {
@@ -23,14 +26,14 @@ public class MealReservationActivityQueryController {
     public MealReservationActivityDetailsView queryMRActivityDetails(@PathVariable String id, @RequestAttribute String reqSenderId) {
         return this.mealReservationActivityDetailsViewRepository.findById(id)
                 .orElseGet(() -> null);
-//        if (activityDetailsView != null) {
-//            MealReservationActivityDetailsView exampleObject = new MealReservationActivityDetailsView();
-//            exampleObject.setId(id);
-//            exampleObject.setGroupId(activityDetailsView.getGroupId());
-//
-//            return this.mealReservationActivityDetailsViewRepository.findOne(Example.of(exampleObject)).orElseGet(() -> null);
-//        } else {
-//            return null;
-//        }
+    }
+
+    @GetMapping("/get-active-profile-of-mr-activity-of-mr-group/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public MealReservationActivityDetailsView queryActiveProfileOfActivity(@PathVariable String id, @RequestAttribute String reqSenderId) {
+        return this.mealReservationActivityDetailsViewRepository.findFirstByGroupIdAndStatusIsNotIn(
+                id,
+                Arrays.asList(MealReservationActivityStatus.CLOSED.getValue(), MealReservationActivityStatus.CANCELED.getValue())
+        );
     }
 }
