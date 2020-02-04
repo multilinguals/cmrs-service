@@ -25,10 +25,11 @@ public class MealReservationActivitySaga extends AbstractSaga {
     @StartSaga
     @SagaEventHandler(associationProperty = "id")
     public void handle(MealReservationActivityCreatedEvent event) {
+        // 如果点餐活动是未开始状态，才创建开始的死信
         if(event.getStatus().equals(MealReservationActivityStatus.PENDING)){
-
+            this.mrStartManagerId = deadlineManager.schedule(Duration.ofMillis(500), "mealReservationActivityTimeOut");
         }
-        this.mrStartManagerId = deadlineManager.schedule(Duration.ofMillis(500), "mealReservationActivityTimeOut");
+        this.mrTimeOutManagerId = deadlineManager.schedule(Duration.ofMillis(500), "mealReservationActivityTimeOut");
     }
 
 //    @SagaEventHandler(associationProperty = "invoiceId")
