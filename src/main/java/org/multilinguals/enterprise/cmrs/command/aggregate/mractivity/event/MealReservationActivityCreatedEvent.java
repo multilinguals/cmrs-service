@@ -10,7 +10,7 @@ import org.multilinguals.enterprise.cmrs.constant.aggregate.mrgroup.MealReservat
 import java.util.Date;
 import java.util.List;
 
-public class MealReservationActivityCreatedEvent extends AbstractEvent {
+public class    MealReservationActivityCreatedEvent extends AbstractEvent {
     @TargetAggregateIdentifier
     private MealReservationActivityId id;
 
