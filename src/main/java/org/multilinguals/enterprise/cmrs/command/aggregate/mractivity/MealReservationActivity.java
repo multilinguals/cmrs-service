@@ -31,15 +31,15 @@ public class MealReservationActivity {
     }
 
     public MealReservationActivity(MealReservationGroupId groupId, List<RestaurantId> restaurantIdList, Date startedAt, Date endAt) {
-        MealReservationActivityStatus status = MealReservationActivityStatus.PENDING;
-        if (startedAt.before(new Date())) {
-            status = MealReservationActivityStatus.ONGOING;
-        }
+//        MealReservationActivityStatus status = MealReservationActivityStatus.PENDING;
+//        if (startedAt.before(new Date())) {
+//            status = MealReservationActivityStatus.ONGOING;
+//        }
         apply(new MealReservationActivityCreatedEvent(
                 new MealReservationActivityId(),
                 groupId,
                 restaurantIdList,
-                status,
+                MealReservationActivityStatus.PENDING,
                 startedAt,
                 endAt
         ));

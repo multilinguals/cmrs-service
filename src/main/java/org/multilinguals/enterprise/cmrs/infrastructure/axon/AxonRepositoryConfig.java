@@ -2,6 +2,7 @@ package org.multilinguals.enterprise.cmrs.infrastructure.axon;
 
 import org.axonframework.eventsourcing.EventSourcingRepository;
 import org.axonframework.eventsourcing.eventstore.EventStore;
+import org.axonframework.extensions.mongo.eventhandling.saga.repository.MongoSagaStore;
 import org.axonframework.modelling.command.Repository;
 import org.multilinguals.enterprise.cmrs.command.aggregate.account.Account;
 import org.multilinguals.enterprise.cmrs.command.aggregate.dishtype.DishType;
@@ -66,5 +67,10 @@ public class AxonRepositoryConfig {
     @Bean()
     public Repository<MealReservationActivity> mrActivityAggregateRepository(EventStore eventStore) {
         return EventSourcingRepository.builder(MealReservationActivity.class).eventStore(eventStore).build();
+    }
+
+    @Bean
+    public MongoSagaStore sagaRepository(org.axonframework.extensions.mongo.MongoTemplate axonMongoTemplate) {
+        return MongoSagaStore.builder().mongoTemplate(axonMongoTemplate).build();
     }
 }
