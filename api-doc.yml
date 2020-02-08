@@ -1565,16 +1565,8 @@ definitions:
           type: string
           example:
             - "cf44e69c-da54-469a-9d87-075c55f9d0e7"
-      startedAt:
-        type: number
-        example: 1572502813
-      endAt:
-        type: number
-        example: 1572503213
     required:
       - restaurantIdList
-      - startedAt
-      - endAt
   UpdateMealReservationActivityDTO:
     type: object
     properties:
@@ -1584,16 +1576,8 @@ definitions:
           type: string
           example:
             - "cf44e69c-da54-469a-9d87-075c55f9d0e7"
-      startedAt:
-        type: number
-        example: 1572502813
-      endAt:
-        type: number
-        example: 1572503213
     required:
       - restaurantIdList
-      - startedAt
-      - endAt
   EX40000:
     type: object
     properties:

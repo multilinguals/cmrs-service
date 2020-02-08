@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface MealReservationActivityDetailsViewRepository extends MongoRepository<MealReservationActivityDetailsView, String> {
     MealReservationActivityDetailsView findFirstByGroupIdAndStatusIsNotIn(String groupId, List<Integer> status);
+
+    MealReservationActivityDetailsView findFirstByGroupIdAndStatusIsNot(String groupId, Integer status);
 }

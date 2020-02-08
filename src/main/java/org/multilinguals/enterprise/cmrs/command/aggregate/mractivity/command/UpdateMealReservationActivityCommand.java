@@ -6,9 +6,7 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.MealReserv
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.user.UserId;
 
-import javax.validation.constraints.Future;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
 
 public class UpdateMealReservationActivityCommand extends AbstractCommand {
@@ -20,17 +18,10 @@ public class UpdateMealReservationActivityCommand extends AbstractCommand {
     @NotNull
     private UserId operatorId;
 
-    private Date startedAt;
-
-    @Future
-    private Date endAt;
-
-    public UpdateMealReservationActivityCommand(MealReservationActivityId id, List<RestaurantId> restaurantIdList, UserId operatorId, Date startedAt, Date endAt) {
+    public UpdateMealReservationActivityCommand(MealReservationActivityId id, List<RestaurantId> restaurantIdList, UserId operatorId) {
         this.id = id;
         this.restaurantIdList = restaurantIdList;
         this.operatorId = operatorId;
-        this.startedAt = startedAt;
-        this.endAt = endAt;
     }
 
     public MealReservationActivityId getId() {
@@ -43,13 +34,5 @@ public class UpdateMealReservationActivityCommand extends AbstractCommand {
 
     public UserId getOperatorId() {
         return operatorId;
-    }
-
-    public Date getStartedAt() {
-        return startedAt;
-    }
-
-    public Date getEndAt() {
-        return endAt;
     }
 }

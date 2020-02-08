@@ -5,39 +5,24 @@ import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.MealReservationActivityId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
 
-import java.util.Date;
 import java.util.List;
 
 public class MealReservationActivityUpdatedEvent extends AbstractEvent {
     @TargetAggregateIdentifier
-    private MealReservationActivityId activityId;
+    private MealReservationActivityId id;
 
     private List<RestaurantId> restaurantIdList;
 
-    private Date startedAt;
-
-    private Date endAt;
-
-    public MealReservationActivityUpdatedEvent(MealReservationActivityId activityId, List<RestaurantId> restaurantIdList, Date startedAt, Date endAt) {
-        this.activityId = activityId;
+    public MealReservationActivityUpdatedEvent(MealReservationActivityId id, List<RestaurantId> restaurantIdList) {
+        this.id = id;
         this.restaurantIdList = restaurantIdList;
-        this.startedAt = startedAt;
-        this.endAt = endAt;
     }
 
-    public MealReservationActivityId getActivityId() {
-        return activityId;
+    public MealReservationActivityId getId() {
+        return id;
     }
 
     public List<RestaurantId> getRestaurantIdList() {
         return restaurantIdList;
-    }
-
-    public Date getStartedAt() {
-        return startedAt;
-    }
-
-    public Date getEndAt() {
-        return endAt;
     }
 }

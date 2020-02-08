@@ -1,14 +1,17 @@
 package org.multilinguals.enterprise.cmrs.command.aggregate.mractivity;
 
+import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.command.CloseMealReservationActivityCommand;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.event.MealReservationActivityCreatedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.event.MealReservationActivityClosedEvent;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.event.MealReservationActivityStartedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.event.MealReservationActivityUpdatedEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroupId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.mrgroup.MealReservationActivityStatus;
 
-import java.util.Date;
 import java.util.List;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
@@ -23,30 +26,25 @@ public class MealReservationActivity {
 
     private MealReservationActivityStatus status;
 
-    private Date startedAt;
-
-    private Date endAt;
-
     protected MealReservationActivity() {
     }
 
-    public MealReservationActivity(MealReservationGroupId groupId, List<RestaurantId> restaurantIdList, Date startedAt, Date endAt) {
-//        MealReservationActivityStatus status = MealReservationActivityStatus.PENDING;
-//        if (startedAt.before(new Date())) {
-//            status = MealReservationActivityStatus.ONGOING;
-//        }
+    public MealReservationActivity(MealReservationGroupId groupId, List<RestaurantId> restaurantIdList) {
         apply(new MealReservationActivityCreatedEvent(
                 new MealReservationActivityId(),
                 groupId,
                 restaurantIdList,
-                MealReservationActivityStatus.PENDING,
-                startedAt,
-                endAt
+                MealReservationActivityStatus.ONGOING
         ));
     }
 
-    public void update(List<RestaurantId> restaurantIdList, Date startedAt, Date endAt) {
-        apply(new MealReservationActivityUpdatedEvent(this.id, restaurantIdList, startedAt, endAt));
+    @CommandHandler
+    public void handle(CloseMealReservationActivityCommand command) {
+        apply(new MealReservationActivityClosedEvent(command.getId()));
+    }
+
+    public void update(List<RestaurantId> restaurantIdList) {
+        apply(new MealReservationActivityUpdatedEvent(this.id, restaurantIdList));
     }
 
     @EventSourcingHandler
@@ -55,19 +53,25 @@ public class MealReservationActivity {
         this.groupId = event.getGroupId();
         this.restaurantIdList = event.getRestaurantIdList();
         this.status = MealReservationActivityStatus.ONGOING;
-        this.startedAt = event.getStartedAt();
-        this.endAt = event.getEndAt();
+    }
+
+    @EventSourcingHandler
+    public void on(MealReservationActivityStartedEvent event) {
+        this.status = MealReservationActivityStatus.ONGOING;
     }
 
     @EventSourcingHandler
     public void on(MealReservationActivityUpdatedEvent event) {
         this.restaurantIdList = event.getRestaurantIdList();
-        this.startedAt = event.getStartedAt();
-        this.endAt = event.getEndAt();
+    }
+
+    @EventSourcingHandler
+    public void on(MealReservationActivityClosedEvent event) {
+        this.status = MealReservationActivityStatus.CLOSED;
     }
 
     public boolean isEditable() {
-        return this.status.equals(MealReservationActivityStatus.PENDING);
+        return this.status.equals(MealReservationActivityStatus.ONGOING);
     }
 
     public MealReservationActivityId getId() {
@@ -84,13 +88,5 @@ public class MealReservationActivity {
 
     public MealReservationActivityStatus getStatus() {
         return status;
-    }
-
-    public Date getStartedAt() {
-        return startedAt;
-    }
-
-    public Date getEndAt() {
-        return endAt;
     }
 }

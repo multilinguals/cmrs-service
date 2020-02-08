@@ -42,9 +42,7 @@ public class MealReservationActivityController {
         this.commandGateway.sendAndWait(new UpdateMealReservationActivityCommand(
                 new MealReservationActivityId(activityId),
                 dto.getRestaurantIdList(),
-                new UserId(reqSenderId),
-                dto.getStartedAt(),
-                dto.getEndAt())
-        );
+                new UserId(reqSenderId)
+        ));
     }
 }

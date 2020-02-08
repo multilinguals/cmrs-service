@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
-
 @RestController
 public class MealReservationActivityQueryController {
     private MealReservationActivityDetailsViewRepository mealReservationActivityDetailsViewRepository;
@@ -31,9 +29,9 @@ public class MealReservationActivityQueryController {
     @GetMapping("/get-active-profile-of-mr-activity-of-mr-group/{id}")
     @PreAuthorize("isAuthenticated()")
     public MealReservationActivityDetailsView queryActiveProfileOfActivity(@PathVariable String id, @RequestAttribute String reqSenderId) {
-        return this.mealReservationActivityDetailsViewRepository.findFirstByGroupIdAndStatusIsNotIn(
+        return this.mealReservationActivityDetailsViewRepository.findFirstByGroupIdAndStatusIsNot(
                 id,
-                Arrays.asList(MealReservationActivityStatus.CLOSED.getValue(), MealReservationActivityStatus.CANCELED.getValue())
+                MealReservationActivityStatus.CLOSED.getValue()
         );
     }
 }

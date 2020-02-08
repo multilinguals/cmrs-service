@@ -7,7 +7,6 @@ import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservati
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.mrgroup.MealReservationActivityStatus;
 
-import java.util.Date;
 import java.util.List;
 
 public class MealReservationActivityCreatedEvent extends AbstractEvent {
@@ -20,17 +19,11 @@ public class MealReservationActivityCreatedEvent extends AbstractEvent {
 
     private MealReservationActivityStatus status;
 
-    private Date startedAt;
-
-    private Date endAt;
-
-    public MealReservationActivityCreatedEvent(MealReservationActivityId id, MealReservationGroupId groupId, List<RestaurantId> restaurantIdList, MealReservationActivityStatus status, Date startedAt, Date endAt) {
+    public MealReservationActivityCreatedEvent(MealReservationActivityId id, MealReservationGroupId groupId, List<RestaurantId> restaurantIdList, MealReservationActivityStatus status) {
         this.id = id;
         this.groupId = groupId;
         this.restaurantIdList = restaurantIdList;
         this.status = status;
-        this.startedAt = startedAt;
-        this.endAt = endAt;
     }
 
     public MealReservationActivityId getId() {
@@ -47,13 +40,5 @@ public class MealReservationActivityCreatedEvent extends AbstractEvent {
 
     public MealReservationActivityStatus getStatus() {
         return status;
-    }
-
-    public Date getStartedAt() {
-        return startedAt;
-    }
-
-    public Date getEndAt() {
-        return endAt;
     }
 }

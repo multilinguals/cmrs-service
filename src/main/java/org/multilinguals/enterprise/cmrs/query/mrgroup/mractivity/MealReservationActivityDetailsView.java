@@ -23,13 +23,11 @@ public class MealReservationActivityDetailsView {
     public MealReservationActivityDetailsView() {
     }
 
-    public MealReservationActivityDetailsView(String id, String groupId, List<ActivityRestaurantProfileView> restaurantProfileViews, int status, Date startedAt, Date endAt, Date createdAt) {
+    public MealReservationActivityDetailsView(String id, String groupId, List<ActivityRestaurantProfileView> restaurantProfileViews, int status, Date createdAt) {
         this.id = id;
         this.groupId = groupId;
         this.restaurantProfileViews = restaurantProfileViews;
         this.status = status;
-        this.startedAt = startedAt;
-        this.endAt = endAt;
         this.createdAt = createdAt;
     }
 

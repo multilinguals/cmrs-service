@@ -38,7 +38,7 @@ public class MealReservationActivityCommandHandler {
         }
 
         Aggregate<MealReservationActivity> mealReservationActivityAggregate = mrActivityAggregateRepository.newInstance(() ->
-                new MealReservationActivity(command.getGroupId(), command.getRestaurantIdList(), command.getStartedAt(), command.getEndAt())
+                new MealReservationActivity(command.getGroupId(), command.getRestaurantIdList())
         );
 
         restaurantsMustBeExisted(command.getRestaurantIdList());
@@ -63,7 +63,7 @@ public class MealReservationActivityCommandHandler {
         }
 
         mrActivityAggregate.execute(activity -> {
-                    activity.update(command.getRestaurantIdList(), command.getStartedAt(), command.getEndAt());
+                    activity.update(command.getRestaurantIdList());
                 }
         );
     }
