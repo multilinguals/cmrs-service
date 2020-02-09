@@ -4,6 +4,7 @@ import org.axonframework.modelling.command.TargetAggregateIdentifier;
 import org.multilinguals.enterprise.cmrs.command.AbstractEvent;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mractivity.MealReservationActivityId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.mrgroup.MealReservationGroupId;
+import org.multilinguals.enterprise.cmrs.command.aggregate.mrorder.MealReservationOrderId;
 import org.multilinguals.enterprise.cmrs.command.aggregate.restaurant.RestaurantId;
 import org.multilinguals.enterprise.cmrs.constant.aggregate.mrgroup.MealReservationActivityStatus;
 
@@ -19,11 +20,14 @@ public class MealReservationActivityCreatedEvent extends AbstractEvent {
 
     private MealReservationActivityStatus status;
 
-    public MealReservationActivityCreatedEvent(MealReservationActivityId id, MealReservationGroupId groupId, List<RestaurantId> restaurantIdList, MealReservationActivityStatus status) {
+    private MealReservationOrderId orderId;
+
+    public MealReservationActivityCreatedEvent(MealReservationActivityId id, MealReservationGroupId groupId, List<RestaurantId> restaurantIdList, MealReservationActivityStatus status, MealReservationOrderId orderId) {
         this.id = id;
         this.groupId = groupId;
         this.restaurantIdList = restaurantIdList;
         this.status = status;
+        this.orderId = orderId;
     }
 
     public MealReservationActivityId getId() {
@@ -40,5 +44,9 @@ public class MealReservationActivityCreatedEvent extends AbstractEvent {
 
     public MealReservationActivityStatus getStatus() {
         return status;
+    }
+
+    public MealReservationOrderId getOrderId() {
+        return orderId;
     }
 }

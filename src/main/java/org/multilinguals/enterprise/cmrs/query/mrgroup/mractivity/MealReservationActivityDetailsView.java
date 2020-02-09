@@ -12,10 +12,6 @@ public class MealReservationActivityDetailsView {
 
     private int status;
 
-    private Date startedAt;
-
-    private Date endAt;
-
     private Date createdAt;
 
     private Date updatedAt;
@@ -61,22 +57,6 @@ public class MealReservationActivityDetailsView {
 
     public void setStatus(int status) {
         this.status = status;
-    }
-
-    public Date getStartedAt() {
-        return startedAt;
-    }
-
-    public void setStartedAt(Date startedAt) {
-        this.startedAt = startedAt;
-    }
-
-    public Date getEndAt() {
-        return endAt;
-    }
-
-    public void setEndAt(Date endAt) {
-        this.endAt = endAt;
     }
 
     public Date getCreatedAt() {
